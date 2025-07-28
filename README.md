@@ -1,4 +1,4 @@
-# Nuxt Minimal Starter
+# Substio UI
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
@@ -34,6 +34,24 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Docker
+
+```bash
+docker compose build
+```
+
+```bash
+docker compose up
+```
+
+```bash
+docker compose -f compose.dev.yaml build
+```
+
+```bash
+docker compose -f compose.dev.yaml up
+```
 
 ## Updates
 Update all dependencies to latest version

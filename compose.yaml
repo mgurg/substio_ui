@@ -1,0 +1,12 @@
+services:
+  nuxt-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production-stage
+    container_name: substio_ui_prod
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
