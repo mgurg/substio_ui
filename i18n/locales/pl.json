@@ -1,0 +1,12 @@
+{
+  "common": {
+    "blog": "blog"
+  },
+  "homepage": {
+    "title": "Substitutions",
+    "seo": {
+      "title": "Substitutions",
+      "description": "All in one place"
+    }
+  }
+}
