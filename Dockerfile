@@ -31,11 +31,34 @@ RUN bun run build
 # Stage 2: Serve the application using Bun
 FROM oven/bun:1.2-slim AS production-stage
 
+# Install curl for health checks in a single layer
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
+# Create a non-privileged user that the app will run under
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+
 # Set working directory
 WORKDIR /app
 
 # Copy only the necessary files from the build stage
 COPY --from=build-stage /app/.output /app/.output
+
+# Switch to the non-privileged user
+USER appuser
 
 # Expose the port the Nuxt app will run on
 EXPOSE 3000
