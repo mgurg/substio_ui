@@ -1,5 +1,11 @@
 <template>
   <UContainer>
+    <template>
+      <div>
+        <pre>{{ config }}</pre>
+      </div>
+    </template>
+
     <UCard>
       <template #header>
         <h1 class="text-4xl font-extrabold">Nowe oferty</h1>
@@ -183,6 +189,9 @@ import {
   getLegalRolesOffersLegalRolesGet,
   updateOfferOffersOfferUuidPatch
 } from '~/client'
+
+const config = useRuntimeConfig()
+console.log('Runtime Config:', config)
 
 // Validation Schema
 const schema = yup.object({

@@ -6,34 +6,33 @@
       </template>
 
 
-        <p class=" text-gray-700 leading-relaxed">Otwarty katalog, który łączy zlecających z prawnikami, aplikantami i
-          kancelariami. Wyszukuj substytucje adwokackie, substytucje radców prawnych oraz jednorazowe zastępstwa
-          procesowe. Wygodniej niż zamknięte grupy na Facebooku — bez potrzeby dołączania, bez zbędnego szumu.</p>
+      <p class="leading-relaxed">Otwarty katalog, który łączy zlecających z prawnikami, aplikantami i
+        kancelariami. Wyszukuj substytucje adwokackie, substytucje radców prawnych oraz jednorazowe zastępstwa
+        procesowe. Wygodniej niż zamknięte grupy na Facebooku — bez potrzeby dołączania, bez zbędnego szumu.</p>
 
 
-        <section>
-          <h3 class="text-xl font-semibold pt-6">Dlaczego nasz katalog jest lepszy od zamkniętych grup na Facebooku?</h3>
-          <ul class="mt-4 list-disc list-inside text-gray-700 space-y-2">
-            <li><strong>Otwarty dla każdego</strong> – bez konieczności proszenia o dołączenie do grupy.</li>
-            <li><strong>🚧 Wygodne filtrowanie ogłoszeń</strong> – wyszukuj po mieście, terminie rozprawy, stawce czy
-              rodzaju sprawy.
-            </li>
-            <li><strong>Tylko aktualne oferty</strong> – ogłoszenia publikowane na bieżąco.</li>
-            <li><strong>Bez zbędnego szumu</strong> – tylko oferty substytucji, bez reklam i postów niezwiązanych z
-              tematem.
-            </li>
-          </ul>
-        </section>
+      <section>
+        <h3 class="text-xl font-semibold pt-6">Dlaczego nasz katalog jest lepszy od zamkniętych grup na Facebooku?</h3>
+        <ul class="mt-4 list-disc list-inside space-y-2">
+          <li><strong>Otwarty dla każdego</strong> – bez konieczności proszenia o dołączenie do grupy.</li>
+          <li><strong>🚧 Wygodne filtrowanie ogłoszeń</strong> – wyszukuj po mieście, terminie rozprawy, stawce czy
+            rodzaju sprawy.
+          </li>
+          <li><strong>Tylko aktualne oferty</strong> – ogłoszenia publikowane na bieżąco.</li>
+          <li><strong>Bez zbędnego szumu</strong> – tylko oferty substytucji, bez reklam i postów niezwiązanych z
+            tematem.
+          </li>
+        </ul>
+      </section>
 
-        <section>
-          <h3 class="text-xl font-semibold pt-6">Jak to działa?</h3>
-          <ol class="mt-4 space-y-2 list-decimal list-inside text-gray-700">
-            <li>Przeglądasz ogłoszenia – wybierasz interesującą Cię ofertę substytucji.</li>
-            <li>🚧 Kontaktujesz się bezpośrednio ze zlecającym – bez pośredników i ukrytych kosztów.</li>
-            <li>Ustalasz szczegóły – i możesz przystąpić do realizacji zlecenia.</li>
-          </ol>
-        </section>
-
+      <section>
+        <h3 class="text-xl font-semibold pt-6">Jak to działa?</h3>
+        <ol class="mt-4 space-y-2 list-decimal list-inside ">
+          <li>Przeglądasz ogłoszenia – wybierasz interesującą Cię ofertę substytucji.</li>
+          <li>🚧 Kontaktujesz się bezpośrednio ze zlecającym – bez pośredników i ukrytych kosztów.</li>
+          <li>Ustalasz szczegóły – i możesz przystąpić do realizacji zlecenia.</li>
+        </ol>
+      </section>
 
 
     </UCard>
@@ -47,30 +46,30 @@
         {{ offer.description }}
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm  bg-gray-50 p-3 rounded-lg">
         <div v-if="offer.date" class="flex items-center">
-          <UIcon name="i-lucide-calendar" class="mr-2 h-4 w-4"/>
+          <UIcon class="mr-2 h-4 w-4" name="i-lucide-calendar"/>
           <strong class="mr-2">Data:</strong> {{ offer.date }}
         </div>
 
         <div v-if="offer.hour" class="flex items-center">
-          <UIcon name="i-lucide-clock" class="mr-2 h-4 w-4"/>
+          <UIcon class="mr-2 h-4 w-4" name="i-lucide-clock"/>
           <strong class="mr-2">Godzina:</strong> {{ offer.hour }}
         </div>
 
         <div v-if="offer.author" class="flex items-center">
-          <UIcon name="i-lucide-user" class="mr-2 h-4 w-4"/>
+          <UIcon class="mr-2 h-4 w-4" name="i-lucide-user"/>
           <strong class="mr-2">Autor:</strong> {{ offer.author }}
         </div>
 
         <div v-if="offer.place?.name" class="flex items-center">
-          <UIcon name="i-lucide-map-pin" class="mr-2 h-4 w-4"/>
+          <UIcon class="mr-2 h-4 w-4" name="i-lucide-map-pin"/>
           <strong class="mr-2">Miejsce:</strong> {{ offer.place.name }}
         </div>
       </div>
-      <!--      <template #footer>-->
-      <!--        <UButton to="/">III</UButton>-->
-      <!--      </template>-->
+      <!--<template #footer>-->
+      <!--<UButton to="/">III</UButton>-->
+      <!--</template>-->
     </UCard>
 
     <UCard class="mt-5">
@@ -79,22 +78,22 @@
         <div class="mt-4 space-y-4">
           <div>
             <h4 class="font-semibold">Czym jest substytucja procesowa?</h4>
-            <p class="mt-1 text-gray-600">Substytucja procesowa to zlecenie prowadzenia sprawy lub zastąpienia
+            <p class="mt-1 ">Substytucja procesowa to zlecenie prowadzenia sprawy lub zastąpienia
               pełnomocnika w sądzie przez innego prawnika lub aplikanta.</p>
           </div>
           <div>
             <h4 class="font-semibold">Kto może korzystać z katalogu?</h4>
-            <p class="mt-1 text-gray-600">Z katalogu mogą korzystać adwokaci, radcowie prawni, aplikanci oraz inne
+            <p class="mt-1 ">Z katalogu mogą korzystać adwokaci, radcowie prawni, aplikanci oraz inne
               osoby uprawnione do reprezentowania klientów przed sądem.</p>
           </div>
           <div>
             <h4 class="font-semibold">Jak dodać ogłoszenie?</h4>
-            <p class="mt-1 text-gray-600">🚧 Dodanie ogłoszenia jest proste – wystarczy wypełnić formularz, podać miasto,
+            <p class="mt-1 ">🚧 Dodanie ogłoszenia jest proste – wystarczy wypełnić formularz, podać miasto,
               termin, stawkę i krótki opis sprawy.</p>
           </div>
           <div>
             <h4 class="font-semibold">Czy korzystanie z katalogu jest płatne?</h4>
-            <p class="mt-1 text-gray-600">Przeglądanie i dodawanie ogłoszeń jest bezpłatne.</p>
+            <p class="mt-1 ">Przeglądanie i dodawanie ogłoszeń jest bezpłatne.</p>
           </div>
         </div>
       </section>
