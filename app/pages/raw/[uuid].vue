@@ -434,7 +434,7 @@ const validationSchema = computed(() => {
   if (formData.value.placeCategory === 'court') {
     return yup.object({
       ...baseSchema,
-      placeType: yup.string().required('Wybierz typ sądu').oneOf(['SR', 'SA', 'SO']),
+      placeType: yup.string().oneOf(['SR', 'SA', 'SO']).nullable(),
       facility: yup.object({
         label: yup.string().required(),
         value: yup.string().required()
@@ -710,7 +710,7 @@ const buildUpdatePayload = (data) => {
   }
 
   if (data.placeCategory === 'court' && data.facility) {
-    payload.facility_name = data.facility.label
+    payload.place_name = data.facility.label
     payload.facility_uuid = data.facility.value
   } else if (data.placeCategory === 'other') {
     payload.place_name = data.place
