@@ -25,7 +25,7 @@
 
       <section>
         <h3 class="text-xl font-semibold pt-6">Jak to działa?</h3>
-        <ol class="mt-4 space-y-2 list-decimal list-inside ">
+        <ol class="mt-4 space-y-2 list-decimal list-inside">
           <li>Przeglądasz ogłoszenia – wybierasz interesującą Cię ofertę substytucji.</li>
           <li>🚧 Kontaktujesz się bezpośrednio ze zlecającym – bez pośredników i ukrytych kosztów.</li>
           <li>Ustalasz szczegóły – i możesz przystąpić do realizacji zlecenia.</li>
@@ -76,22 +76,22 @@
         <div class="mt-4 space-y-4">
           <div>
             <h4 class="font-semibold">Czym jest substytucja procesowa?</h4>
-            <p class="mt-1 ">Substytucja procesowa to zlecenie prowadzenia sprawy lub zastąpienia
+            <p class="mt-1">Substytucja procesowa to zlecenie prowadzenia sprawy lub zastąpienia
               pełnomocnika w sądzie przez innego prawnika lub aplikanta.</p>
           </div>
           <div>
             <h4 class="font-semibold">Kto może korzystać z katalogu?</h4>
-            <p class="mt-1 ">Z katalogu mogą korzystać adwokaci, radcowie prawni, aplikanci oraz inne
+            <p class="mt-1">Z katalogu mogą korzystać adwokaci, radcowie prawni, aplikanci oraz inne
               osoby uprawnione do reprezentowania klientów przed sądem.</p>
           </div>
           <div>
             <h4 class="font-semibold">Jak dodać ogłoszenie?</h4>
-            <p class="mt-1 ">🚧 Dodanie ogłoszenia jest proste – wystarczy wypełnić formularz, podać miasto,
+            <p class="mt-1">🚧 Dodanie ogłoszenia jest proste – wystarczy wypełnić formularz, podać miasto,
               termin, stawkę i krótki opis sprawy.</p>
           </div>
           <div>
             <h4 class="font-semibold">Czy korzystanie z katalogu jest płatne?</h4>
-            <p class="mt-1 ">Przeglądanie i dodawanie ogłoszeń jest bezpłatne.</p>
+            <p class="mt-1">Przeglądanie i dodawanie ogłoszeń jest bezpłatne.</p>
           </div>
         </div>
       </section>
@@ -101,7 +101,7 @@
 
 <script setup>
 import {useI18n} from '#imports'
-import {getAllOffersOffersGet} from "@/client/index.ts";
+import {getAllOffersOffersGet} from"@/client/index.ts";
 
 const {t} = useI18n()
 

@@ -374,6 +374,9 @@
             <UButton variant="outline" type="button" @click="resetForm">
               Wyczyść formularz
             </UButton>
+            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer"/>
+            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer"/>
+
           </div>
 
         </UForm>
@@ -659,6 +662,20 @@ const fetchLegalRoles = async () => {
   } finally {
     isLoadingRoles.value = false
   }
+}
+
+const postponeOffer = async () => {
+  await updateOfferOffersOfferUuidPatch({
+    path: {offer_uuid: uuid},
+    body: {status: 'postponed'}
+  })
+}
+
+const rejectOffer = async () => {
+  await updateOfferOffersOfferUuidPatch({
+    path: {offer_uuid: uuid},
+    body: {status: 'rejected'}
+  })
 }
 
 // ====================

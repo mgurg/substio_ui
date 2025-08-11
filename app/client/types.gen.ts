@@ -73,6 +73,28 @@ export type CityIndexResponse = {
 };
 
 /**
+ * CityResponse
+ */
+export type CityResponse = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Lat
+     */
+    lat: string | null;
+    /**
+     * Lon
+     */
+    lon: string | null;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -158,6 +180,7 @@ export type OfferIndexResponse = {
      */
     url: string | null;
     place?: PlaceResponse | null;
+    city?: CityResponse | null;
     /**
      * Legal Roles
      */
@@ -170,12 +193,16 @@ export type OfferIndexResponse = {
      * Hour
      */
     hour?: string | null;
+    /**
+     * Valid To
+     */
+    valid_to?: string | null;
 };
 
 /**
  * OfferStatus
  */
-export type OfferStatus = 'new' | 'draft' | 'processed' | 'accepted' | 'rejected' | 'active';
+export type OfferStatus = 'new' | 'draft' | 'postponed' | 'accepted' | 'rejected' | 'active';
 
 /**
  * OfferUpdate
@@ -449,6 +476,7 @@ export type RawOfferIndexResponse = {
      */
     url: string | null;
     place?: PlaceResponse | null;
+    city?: CityResponse | null;
     /**
      * Legal Roles
      */
