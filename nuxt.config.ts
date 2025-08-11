@@ -1,9 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-
-console.log('Environment Variables Debug:');
-console.log('NUXT_BACKEND_API:', process.env.NUXT_BACKEND_API);
-console.log('All env vars:', process.env);
-
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
@@ -18,7 +13,7 @@ export default defineNuxtConfig({
         strategy: 'prefix_except_default',
         locales: [
             {code: 'pl', iso: 'pl-PL', name: 'Polski', file: 'pl.json'},
-            {code: 'en', iso: 'en-US', name: 'English', file: 'en.json'}
+            // {code: 'en', iso: 'en-US', name: 'English', file: 'en.json'}
         ],
         defaultLocale: 'pl',
         langDir: 'locales',

@@ -5,11 +5,9 @@
         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">{{ t('homepage.title') }}</h1>
       </template>
 
-
       <p class="leading-relaxed">Otwarty katalog, który łączy zlecających z prawnikami, aplikantami i
         kancelariami. Wyszukuj substytucje adwokackie, substytucje radców prawnych oraz jednorazowe zastępstwa
         procesowe. Wygodniej niż zamknięte grupy na Facebooku — bez potrzeby dołączania, bez zbędnego szumu.</p>
-
 
       <section>
         <h3 class="text-xl font-semibold pt-6">Dlaczego nasz katalog jest lepszy od zamkniętych grup na Facebooku?</h3>
@@ -37,7 +35,7 @@
 
     </UCard>
 
-    <UCard v-for="offer in offers" :key="offer.uuid" class="mt-5">
+    <UCard v-for="offer in offers" :key="offer.uuid" class="mt-5" variant="subtle">
       <template #header>
         <h2 class="text-3xl">{{ offer.place.name }}</h2>
       </template>
@@ -46,7 +44,7 @@
         {{ offer.description }}
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm  bg-gray-50 p-3 rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm p-3 rounded-lg">
         <div v-if="offer.date" class="flex items-center">
           <UIcon class="mr-2 h-4 w-4" name="i-lucide-calendar"/>
           <strong class="mr-2">Data:</strong> {{ offer.date }}
@@ -67,11 +65,13 @@
           <strong class="mr-2">Miejsce:</strong> {{ offer.place.name }}
         </div>
       </div>
-      <!--<template #footer>-->
-      <!--<UButton to="/">III</UButton>-->
-      <!--</template>-->
+<!--      <template #footer>-->
+<!--      <UButton to="/">III</UButton>-->
+<!--      </template>-->
     </UCard>
-
+<div>
+  <UButton class="my-6" size="lg" trailing-icon="i-lucide-arrow-right">Zobacz wszystkie</UButton>
+</div>
     <UCard class="mt-5">
       <section>
         <h3 class="text-xl font-semibold">FAQ — najczęściej zadawane pytania</h3>
@@ -113,7 +113,7 @@ const limit = ref(10)
 
 const fetchOffers = async () => {
   const response = await getAllOffersOffersGet({
-    query: {offset: 0, limit: 10},
+    query: {offset: 0, limit: 3},
   });
 
   if (response.data) {
