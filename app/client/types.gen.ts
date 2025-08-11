@@ -162,6 +162,14 @@ export type OfferIndexResponse = {
      * Legal Roles
      */
     legal_roles: Array<RolesResponse>;
+    /**
+     * Date
+     */
+    date?: string | null;
+    /**
+     * Hour
+     */
+    hour?: string | null;
 };
 
 /**
@@ -174,9 +182,21 @@ export type OfferStatus = 'new' | 'draft' | 'processed' | 'accepted' | 'rejected
  */
 export type OfferUpdate = {
     /**
-     * Place Uuid
+     * Facility Uuid
      */
-    place_uuid?: string | null;
+    facility_uuid?: string | null;
+    /**
+     * Facility Name
+     */
+    facility_name?: string | null;
+    /**
+     * City Uuid
+     */
+    city_uuid?: string | null;
+    /**
+     * City Name
+     */
+    city_name?: string | null;
     /**
      * Place Name
      */

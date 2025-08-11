@@ -31,8 +31,6 @@
           <li>Ustalasz szczegóły – i możesz przystąpić do realizacji zlecenia.</li>
         </ol>
       </section>
-
-
     </UCard>
 
     <UCard v-for="offer in offers" :key="offer.uuid" class="mt-5" variant="subtle">
@@ -70,7 +68,7 @@
 <!--      </template>-->
     </UCard>
 <div>
-  <UButton class="my-6" size="lg" trailing-icon="i-lucide-arrow-right">Zobacz wszystkie</UButton>
+  <UButton v-if="offers >0" class="my-6" size="lg" trailing-icon="i-lucide-arrow-right">Zobacz wszystkie</UButton>
 </div>
     <UCard class="mt-5">
       <section>
