@@ -25,7 +25,7 @@
           {{ offer.description }}
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm p-3 rounded-lg">
           <div v-if="offer.date" class="flex items-center">
             <UIcon name="i-lucide-calendar" class="mr-2 h-4 w-4" />
             <strong class="mr-2">Data:</strong> {{ offer.date }}

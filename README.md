@@ -38,6 +38,14 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ## Docker
 
 ```bash
+
+docker build --build-arg NUXT_BACKEND_API=https://my-api.pl -t substio-ui:latest .
+
+docker run -p 3000:3000 substio-ui:latest
+
+```
+
+```bash
 docker compose build
 ```
 
@@ -51,6 +59,10 @@ docker compose -f compose.dev.yaml build
 
 ```bash
 docker compose -f compose.dev.yaml up
+```
+
+```bash
+docker compose build --build-arg NUXT_BACKEND_API=https://your-api-url
 ```
 
 ## Updates

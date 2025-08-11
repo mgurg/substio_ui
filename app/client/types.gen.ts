@@ -73,6 +73,28 @@ export type CityIndexResponse = {
 };
 
 /**
+ * CityResponse
+ */
+export type CityResponse = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Lat
+     */
+    lat: string | null;
+    /**
+     * Lon
+     */
+    lon: string | null;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -158,25 +180,50 @@ export type OfferIndexResponse = {
      */
     url: string | null;
     place?: PlaceResponse | null;
+    city?: CityResponse | null;
     /**
      * Legal Roles
      */
     legal_roles: Array<RolesResponse>;
+    /**
+     * Date
+     */
+    date?: string | null;
+    /**
+     * Hour
+     */
+    hour?: string | null;
+    /**
+     * Valid To
+     */
+    valid_to?: string | null;
 };
 
 /**
  * OfferStatus
  */
-export type OfferStatus = 'new' | 'draft' | 'processed' | 'accepted' | 'rejected' | 'active';
+export type OfferStatus = 'new' | 'draft' | 'postponed' | 'accepted' | 'rejected' | 'active';
 
 /**
  * OfferUpdate
  */
 export type OfferUpdate = {
     /**
-     * Place Uuid
+     * Facility Uuid
      */
-    place_uuid?: string | null;
+    facility_uuid?: string | null;
+    /**
+     * Facility Name
+     */
+    facility_name?: string | null;
+    /**
+     * City Uuid
+     */
+    city_uuid?: string | null;
+    /**
+     * City Name
+     */
+    city_name?: string | null;
     /**
      * Place Name
      */
@@ -429,6 +476,7 @@ export type RawOfferIndexResponse = {
      */
     url: string | null;
     place?: PlaceResponse | null;
+    city?: CityResponse | null;
     /**
      * Legal Roles
      */

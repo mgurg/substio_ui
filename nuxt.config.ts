@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         strategy: 'prefix_except_default',
         locales: [
             {code: 'pl', iso: 'pl-PL', name: 'Polski', file: 'pl.json'},
-            {code: 'en', iso: 'en-US', name: 'English', file: 'en.json'}
+            // {code: 'en', iso: 'en-US', name: 'English', file: 'en.json'}
         ],
         defaultLocale: 'pl',
         langDir: 'locales',
@@ -33,7 +33,7 @@ export default defineNuxtConfig({
         public: {
             blogUrl: process.env.NUXT_PUBLIC_BLOG_URL || 'https://default-blog-url.com',
             baseDomain: process.env.NUXT_PUBLIC_DOMAIN || 'http://localhost:3000',
-            apiBaseUrl: process.env.NUXT_BACKEND_API || 'http://localhost:5000',
+            apiBaseUrl: process.env.NUXT_BACKEND_API,
         }
     },
     future: {

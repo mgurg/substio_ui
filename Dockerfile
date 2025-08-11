@@ -31,6 +31,8 @@ RUN bun run build
 # Stage 2: Serve the application using Bun
 FROM oven/bun:1.2-slim AS production-stage
 
+ARG NUXT_BACKEND_API
+
 # Install curl for health checks in a single layer
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -65,6 +67,7 @@ EXPOSE 3000
 
 # Set environment variable for production
 ENV NODE_ENV=production
+ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
 
 # Command to run the app using Bun
 CMD ["bun", ".output/server/index.mjs"]

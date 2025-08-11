@@ -3,8 +3,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Left: Offer Details -->
       <div>
-
-        <h2 class="text-2xl font-bold mb-4"><UButton icon="i-lucide-arrow-left" class="mr-4" to="/raw">wróć</UButton> Dane oferty</h2>
+        <h2 class="text-2xl font-bold mb-4">
+          <UButton icon="i-lucide-arrow-left" class="mr-4" to="/raw">wróć</UButton>
+          Dane oferty
+        </h2>
 
         <USkeleton v-if="isLoading" class="h-32 w-full"/>
 
@@ -12,13 +14,13 @@
           <p><strong>UUID:</strong> {{ offer?.uuid }}</p>
           <p><strong>Author:</strong> {{ offer?.author }}</p>
           <p><strong>Raw Data:</strong></p>
-          <p class="bg-gray-100 p-4 rounded">{{ offer?.raw_data }}</p>
+          <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded">{{ offer?.raw_data }}</p>
 
           <UButton
               icon="i-lucide-rocket"
               class="mt-6"
               :loading="isGenerating"
-              @click="generateData()"
+              @click="generateData"
           >
             Generuj
           </UButton>
@@ -39,7 +41,8 @@
           <div v-else-if="generatedData">
             <div
                 v-if="generatedData.success && generatedData.data"
-                class="bg-green-50 border border-green-200 rounded-lg p-4">
+                class="bg-green-50 border border-green-200 rounded-lg p-4"
+            >
               <h3 class="font-semibold text-green-800 mb-3">Dane zostały wygenerowane pomyślnie:</h3>
 
               <div class="space-y-3 text-sm">
@@ -73,7 +76,8 @@
 
                 <div
                     v-if="generatedData.data.date && generatedData.data.date.length"
-                    class="flex items-center justify-between">
+                    class="flex items-center justify-between"
+                >
                   <div>
                     <strong>Data:</strong> {{ generatedData.data.date.join(', ') }}
                   </div>
@@ -89,7 +93,8 @@
 
                 <div
                     v-if="generatedData.data.time && generatedData.data.time.length"
-                    class="flex items-center justify-between">
+                    class="flex items-center justify-between"
+                >
                   <div>
                     <strong>Czas:</strong> {{ generatedData.data.time.join(', ') }}
                   </div>
@@ -119,7 +124,8 @@
 
                 <div
                     v-if="generatedData.data.legal_roles && generatedData.data.legal_roles.length"
-                    class="flex items-center justify-between">
+                    class="flex items-center justify-between"
+                >
                   <div>
                     <strong>Role prawne:</strong> {{ generatedData.data.legal_roles.join(', ') }}
                   </div>
@@ -167,102 +173,143 @@
 
         <UForm
             ref="formRef"
-            :schema="schema"
+            :schema="validationSchema"
             :state="formData"
             class="space-y-6"
             @submit="handleSubmit"
-
+            @error="handleFormError"
         >
-          <!-- Place Type Selection -->
+          <!-- Category Selection -->
           <UFormField
-              label="Typ sądu:"
-              name="placeType"
-              :error="errors.placeType"
+              label="Kategoria:"
+              name="placeCategory"
           >
             <UButtonGroup>
               <UButton
-                  :variant="formData.placeType === 'SR' ? 'solid' : 'outline'"
+                  :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
                   color="primary"
                   type="button"
-                  @click="togglePlaceType('SR')"
+                  @click="setPlaceCategory('court')"
               >
-                Rejonowy
+                Sąd
               </UButton>
               <UButton
-                  :variant="formData.placeType === 'SA' ? 'solid' : 'outline'"
+                  :variant="formData.placeCategory === 'other' ? 'solid' : 'outline'"
                   color="primary"
                   type="button"
-                  @click="togglePlaceType('SA')"
+                  @click="setPlaceCategory('other')"
               >
-                Apelacyjny
-              </UButton>
-              <UButton
-                  :variant="formData.placeType === 'SO' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="togglePlaceType('SO')"
-              >
-                Okręgowy
+                Inne
               </UButton>
             </UButtonGroup>
           </UFormField>
 
-          <!-- Facility Search -->
-          <UFormField
-              label="Placówka:"
-              name="facility"
-              :error="errors.facility"
-          >
-            <USelectMenu
-                v-model="formData.facility"
-                v-model:search-term="facilitySearch"
-                :items="facilities"
-                :loading="isLoadingFacilities"
-                placeholder="Wyszukaj placówkę"
-                icon="i-lucide-building"
-                class="w-full"
-                searchable
-            />
-          </UFormField>
+          <!-- Court Fields -->
+          <template v-if="formData.placeCategory === 'court'">
+            <UFormField
+                label="Typ sądu:"
+                name="placeType"
+            >
+              <UButtonGroup>
+                <UButton
+                    v-for="type in courtTypes"
+                    :key="type.value"
+                    :variant="formData.placeType === type.value ? 'solid' : 'outline'"
+                    color="primary"
+                    type="button"
+                    @click="setPlaceType(type.value)"
+                >
+                  {{ type.label }}
+                </UButton>
+              </UButtonGroup>
+            </UFormField>
 
-          <!-- Author -->
-          <UFormField
-              label="Autor:"
-              name="author"
-              :error="errors.author"
-          >
-            <UInput
-                v-model="formData.author"
-                placeholder="Wprowadź autora oferty"
-                class="w-full"
-            />
-          </UFormField>
+            <UFormField
+                label="Placówka:"
+                name="facility"
+            >
+              <USelectMenu
+                  v-model="formData.facility"
+                  v-model:search-term="facilitySearch"
+                  :items="facilities"
+                  :loading="isLoadingFacilities"
+                  placeholder="Wyszukaj placówkę"
+                  icon="i-lucide-building"
+                  searchable
+                  class="w-full"
+              />
+            </UFormField>
+          </template>
 
-          <!-- Description -->
-          <UFormField
-              label="Opis:"
-              name="description"
-              :error="errors.description"
-          >
+          <!-- Other Fields -->
+          <template v-else-if="formData.placeCategory === 'other'">
+            <UFormField
+                label="Miejsce:"
+                name="place"
+            >
+              <UInput
+                  v-model="formData.place"
+                  placeholder="Podaj nazwę miejsca"
+                  class="w-full"
+              />
+            </UFormField>
+
+            <UFormField
+                label="Miasto:"
+                name="city"
+            >
+              <USelectMenu
+                  v-model="formData.city"
+                  v-model:search-term="citySearch"
+                  :items="cities"
+                  :loading="isLoadingCities"
+                  placeholder="Wyszukaj miasto"
+                  icon="i-lucide-map-pin"
+                  searchable
+                  class="w-full"
+              />
+            </UFormField>
+          </template>
+
+          <!-- Common Fields -->
+
+
+          <UFormField label="Opis:" name="description">
             <UTextarea
                 v-model="formData.description"
                 placeholder="Wprowadź opis oferty"
-                class="w-full"
                 :rows="4"
+                class="w-full"
             />
           </UFormField>
 
-          <UFormField label="Email" name="email">
-            <UInput v-model="formData.email" type="email" class="w-72" placeholder="email@example.com"/>
-          </UFormField>
+          <div class="flex gap-4 items-end">
+            <UFormField label="Autor:" name="author">
+              <UInput v-model="formData.author" placeholder="Wprowadź autora oferty" class="w-72"/>
+            </UFormField>
 
-          <!-- Legal Roles -->
-          <UFormField
-              label="Role prawne:"
-              name="roles"
-              :error="errors.roles"
-          >
-            <UButtonGroup>
+            <UFormField label="Email:" name="email">
+              <UInput
+                  v-model="formData.email"
+                  type="email"
+                  placeholder="email@example.com"
+                  class="w-72"
+                  :ui="{ trailing: 'pe-1' }"
+              >
+                <template #trailing>
+                  <UButton
+                      color="neutral"
+                      variant="link"
+                      size="sm"
+                      icon="i-lucide-circle-x"
+                      @click="formData.email = null"
+                  />
+                </template>
+              </UInput>
+            </UFormField>
+          </div>
+          <UFormField label="Role prawne:" name="roles">
+            <UButtonGroup size="lg">
               <UButton
                   v-for="role in legalRoles"
                   :key="role.value"
@@ -276,18 +323,14 @@
             </UButtonGroup>
           </UFormField>
 
-          <!-- Date and Hour -->
+          <!-- Date and Time -->
           <div class="flex gap-4 items-end">
-            <UFormField
-                label="Data:"
-                name="date"
-                :error="errors.date"
-            >
+            <UFormField label="Data:" name="date">
               <UInput
                   v-model="formData.date"
                   type="date"
                   placeholder="Wybierz datę"
-                  class="w-36"
+                  class="w-64"
                   :ui="{ trailing: 'pe-1' }"
               >
                 <template #trailing>
@@ -296,18 +339,13 @@
                       variant="link"
                       size="sm"
                       icon="i-lucide-circle-x"
-                      aria-label="Clear input"
                       @click="formData.date = null"
                   />
                 </template>
-              </uinput>
+              </UInput>
             </UFormField>
 
-            <UFormField
-                label="Godzina:"
-                name="hour"
-                :error="errors.hour"
-            >
+            <UFormField label="Godzina:" name="hour">
               <UInput
                   v-model="formData.hour"
                   type="time"
@@ -321,232 +359,238 @@
                       variant="link"
                       size="sm"
                       icon="i-lucide-circle-x"
-                      aria-label="Clear input"
                       @click="formData.hour = null"
                   />
                 </template>
               </UInput>
             </UFormField>
-
           </div>
-          <!-- Submit Button -->
+
+          <!-- Submit Buttons -->
           <div class="flex gap-2">
-            <UButton
-                type="submit"
-                :loading="isSubmitting"
-            >
+            <UButton type="submit" :loading="isSubmitting">
               {{ isSubmitting ? 'Zapisywanie...' : 'Zaktualizuj ofertę' }}
             </UButton>
-
-            <UButton
-                variant="outline"
-                type="button"
-                @click="resetForm"
-            >
+            <UButton variant="outline" type="button" @click="resetForm">
               Wyczyść formularz
             </UButton>
+            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer"/>
+            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer"/>
+
           </div>
 
-          <!-- Debug Info (remove in production) -->
-          <div v-if="isDevelopment" class="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-semibold mb-2">Debug Info:</h3>
-            <pre class="text-xs">{{
-                JSON.stringify({
-                  formData,
-                  errors,
-                  isFormValid
-                }, null, 2)
-              }}</pre>
-          </div>
         </UForm>
       </div>
+    </div>
+    <div v-if="isDevelopment" class="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <h3 class="font-semibold mb-2">Debug Info:</h3>
+      <pre class="text-xs">{{
+          JSON.stringify({
+            formData,
+          }, null, 2)
+        }}</pre>
     </div>
   </UContainer>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {useRoute} from 'vue-router'
+import {computed, onMounted, ref, watch} from 'vue'
+import * as yup from 'yup'
 import {
+  getCitiesPlacesCityCityNameGet,
   getFacilitiesPlacesFacilityPlaceNameGet,
   getLegalRolesOffersLegalRolesGet,
   getRawOfferOffersRawOfferUuidGet,
   parseRawOffersParseOfferUuidGet,
-  type ParseResponse,
-  type RawOfferIndexResponse,
   updateOfferOffersOfferUuidPatch
 } from '~/client'
-import {computed, onMounted, ref, watch} from 'vue'
-import * as yup from 'yup'
 
+// ====================
+// CONSTANTS & SETUP
+// ====================
 const route = useRoute()
 const toast = useToast()
-const uuid = route.params.uuid as string
-
-// Validation Schema
-const schema = yup.object({
-  placeType: yup
-      .string()
-      .oneOf(['SR', 'SA', 'SO'], 'Wybierz typ sądu'),
-  facility: yup
-      .object()
-      .shape({
-        label: yup.string().required(),
-        value: yup.string().required()
-      })
-      .nullable(),
-  author: yup
-      .string(),
-  description: yup
-      .string(),
-  email: yup
-      .string(),
-  roles: yup
-      .array()
-      .of(yup.string().required()),
-  date: yup
-      .string()
-      .nullable(),
-  // .matches(/^\d{4}-\d{2}-\d{2}$/, 'Nieprawidłowy format daty'),
-  hour: yup
-      .string()
-      .nullable(),
-  // .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Nieprawidłowy format godziny'),
-})
-
-// Constants
+const uuid = route.params.uuid
 const isDevelopment = process.env.NODE_ENV === 'development'
 
-const offer = ref<RawOfferIndexResponse>()
+const courtTypes = [
+  {value: 'SR', label: 'Rejonowy'},
+  {value: 'SA', label: 'Apelacyjny'},
+  {value: 'SO', label: 'Okręgowy'}
+]
+
+// ====================
+// VALIDATION SCHEMA
+// ====================
+const validationSchema = computed(() => {
+  const baseSchema = {
+    placeCategory: yup.string().required('Wybierz kategorię').oneOf(['court', 'other']),
+    author: yup.string(),
+    description: yup.string(),
+    email: yup.string().email('Nieprawidłowy format email').nullable(),
+    roles: yup.array().of(yup.string()),
+    date: yup.string().nullable(),
+    hour: yup.string().nullable()
+  }
+
+  if (formData.value.placeCategory === 'court') {
+    return yup.object({
+      ...baseSchema,
+      placeType: yup.string().oneOf(['SR', 'SA', 'SO']).nullable(),
+      facility: yup.object({
+        label: yup.string().required(),
+        value: yup.string().required()
+      }).required('Wybierz placówkę')
+    })
+  } else if (formData.value.placeCategory === 'other') {
+    return yup.object({
+      ...baseSchema,
+      place: yup.string().required('Podaj nazwę miejsca'),
+      city: yup.object({
+        label: yup.string().required(),
+        value: yup.string().required()
+      }).required('Wybierz miasto')
+    })
+  }
+
+  return yup.object(baseSchema)
+})
+
+// ====================
+// REACTIVE STATE
+// ====================
+const offer = ref(null)
 const isLoading = ref(false)
 const isGenerating = ref(false)
-const generatedData = ref<ParseResponse | null>(null)
+const generatedData = ref(null)
+const isSubmitting = ref(false)
 
-// Form state
-const formRef = ref()
+// Form data with proper initial values
 const formData = ref({
-  placeType: undefined,
+  placeCategory: 'court',
+  placeType: null,
   facility: null,
-  author: null,
-  description: null,
+  place: '',
+  city: null,
+  author: '',
+  description: '',
   email: null,
   roles: [],
   date: null,
   hour: null
 })
 
-const errors = ref({})
-const isSubmitting = ref(false)
-
-// Facilities state
+// Search states
 const facilitySearch = ref('')
 const facilities = ref([])
 const isLoadingFacilities = ref(false)
 
-// Legal roles state
+const citySearch = ref('')
+const cities = ref([])
+const isLoadingCities = ref(false)
+
 const legalRoles = ref([])
 const isLoadingRoles = ref(false)
 
-// Computed properties
-const isFormValid = computed(() => {
-  try {
-    schema.validateSync(formData.value)
-    return true
-  } catch {
-    return false
-  }
-})
-
-// Helper function to populate form with offer data
-const populateFormWithOfferData = (offerData: RawOfferIndexResponse) => {
-  // Populate author
-  if (offerData.author) {
-    formData.value.author = offerData.author
-  }
-
-  // Populate description
-  if (offerData.description) {
-    formData.value.description = offerData.description
-  }
-
-  // Populate email
-  if (offerData.email) {
-    formData.value.email = offerData.email
-  }
-
-  // Populate place/facility
-  if (offerData.place) {
-    formData.value.facility = {
-      label: offerData.place.name,
-      value: offerData.place.uuid
-    }
-    facilitySearch.value = offerData.place.name
-
-    // Try to determine place type from the place name
-    const placeName = offerData.place.name.toLowerCase()
-    if (placeName.includes('rejonowy')) {
-      formData.value.placeType = 'SR'
-    } else if (placeName.includes('apelacyjny')) {
-      formData.value.placeType = 'SA'
-    } else if (placeName.includes('okręgowy')) {
-      formData.value.placeType = 'SO'
-    }
-  }
-
-  // Populate legal roles
-  if (offerData.legal_roles && offerData.legal_roles.length > 0) {
-    formData.value.roles = offerData.legal_roles.map(role => role.uuid)
-  }
-
-  if (offerData.date) {
-    formData.value.date = offerData.date
-  }
-
-  if (offerData.hour) {
-    formData.value.hour = offerData.hour
+// ====================
+// FORM METHODS
+// ====================
+const setPlaceCategory = (category) => {
+  formData.value.placeCategory = category
+  // Reset category-specific fields
+  if (category === 'court') {
+    formData.value.place = ''
+    formData.value.city = null
+  } else {
+    formData.value.placeType = null
+    formData.value.facility = null
   }
 }
 
+const setPlaceType = (type) => {
+  formData.value.placeType = formData.value.placeType === type ? null : type
+  formData.value.facility = null
+  facilitySearch.value = ''
+}
+
+const toggleRole = (roleValue) => {
+  const currentRoles = formData.value.roles
+  if (currentRoles.includes(roleValue)) {
+    formData.value.roles = currentRoles.filter(r => r !== roleValue)
+  } else {
+    formData.value.roles = [...currentRoles, roleValue]
+  }
+}
+
+const resetForm = () => {
+  formData.value = {
+    placeCategory: 'court',
+    placeType: null,
+    facility: null,
+    place: '',
+    city: null,
+    author: '',
+    description: '',
+    email: null,
+    roles: [],
+    date: null,
+    hour: null
+  }
+  facilitySearch.value = ''
+  citySearch.value = ''
+  facilities.value = []
+  cities.value = []
+}
+
+// ====================
+// API METHODS
+// ====================
 const fetchOffer = async () => {
   isLoading.value = true
+  try {
+    const response = await getRawOfferOffersRawOfferUuidGet({
+      path: {offer_uuid: uuid}
+    })
 
-  const response = await getRawOfferOffersRawOfferUuidGet({
-    path: {offer_uuid: uuid},
-  })
-
-  if (response.data) {
-    offer.value = response.data
-
-    // Populate form with the fetched offer data
-    populateFormWithOfferData(response.data)
+    if (response.data) {
+      offer.value = response.data
+      populateFormWithOfferData(response.data)
+    }
+  } catch (error) {
+    console.error('Error fetching offer:', error)
+    toast.add({
+      title: 'Błąd',
+      description: 'Nie udało się pobrać danych oferty',
+      color: 'error'
+    })
+  } finally {
+    isLoading.value = false
   }
-
-  isLoading.value = false
 }
 
 const generateData = async () => {
   isGenerating.value = true
-
   try {
     const response = await parseRawOffersParseOfferUuidGet({
-      path: {offer_uuid: uuid},
+      path: {offer_uuid: uuid}
     })
 
     if (response.data) {
-      generatedData.value = response.data as ParseResponse
-      console.log('Generated data:', response.data)
+      generatedData.value = response.data
 
       if (response.data.success) {
         toast.add({
           title: 'Sukces',
           description: 'Dane zostały wygenerowane pomyślnie',
           color: 'success'
-        });
+        })
       } else {
         toast.add({
           title: 'Błąd',
           description: response.data.error || 'Nie udało się wygenerować danych',
           color: 'error'
-        });
+        })
       }
     }
   } catch (error) {
@@ -555,135 +599,51 @@ const generateData = async () => {
       title: 'Błąd',
       description: 'Wystąpił błąd podczas generowania danych',
       color: 'error'
-    });
+    })
   } finally {
     isGenerating.value = false
   }
 }
 
-// Enhanced function to copy individual fields with better mapping
-const copyField = (fieldName: string, value: string) => {
-  if (!value) return
-
-  // Map generated data fields to form fields
-  switch (fieldName) {
-    case 'place_type':
-      // Map place type abbreviations
-      if (value.toLowerCase().includes('rejonowy')) {
-        formData.value.placeType = 'SR'
-      } else if (value.toLowerCase().includes('apelacyjny')) {
-        formData.value.placeType = 'SA'
-      } else if (value.toLowerCase().includes('okręgowy')) {
-        formData.value.placeType = 'SO'
-      }
-      break
-    case 'place_name':
-      // For facility, we need to set both the search term and create a facility object
-      facilitySearch.value = value
-      formData.value.facility = {label: value, value: value}
-      break
-    case 'description':
-      formData.value.description = value
-      break
-    case 'date':
-      // Convert date format if needed (e.g., from "31.07.2025" to "2025-07-31")
-      try {
-        if (value.includes('.')) {
-          const [day, month, year] = value.split('.')
-          formData.value.date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        } else {
-          formData.value.date = value
-        }
-      } catch (e) {
-        formData.value.date = value
-      }
-      break
-    case 'time':
-      // Convert time format if needed
-      formData.value.hour = value.replace('.', ':')
-      break
-    case 'legal_roles':
-      // This would need mapping between role names and UUIDs
-      // You might need to match against the loaded legalRoles
-      break
-    case 'email':
-      formData.value.email = value
-      break
-  }
-}
-
-// Methods
-const togglePlaceType = (type) => {
-  formData.value.placeType = formData.value.placeType === type ? undefined : type
-  formData.value.facility = null
-  clearFieldError('placeType')
-}
-
-const toggleRole = (roleValue) => {
-  if (formData.value.roles.includes(roleValue)) {
-    formData.value.roles = formData.value.roles.filter(r => r !== roleValue)
-  } else {
-    formData.value.roles = [...formData.value.roles, roleValue]
-  }
-  clearFieldError('roles')
-}
-
-const clearFieldError = (field) => {
-  if (errors.value[field]) {
-    const {[field]: _, ...newErrors} = errors.value
-    errors.value = newErrors
-  }
-}
-
-const resetForm = () => {
-  formData.value = {
-    placeType: undefined,
-    facility: null,
-    author: '',
-    description: '',
-    email: '',
-    roles: [],
-    date: '',
-    hour: ''
-  }
-  errors.value = {}
-  facilitySearch.value = ''
-  facilities.value = []
-}
-
-// API calls
 const searchFacilities = async (searchTerm, placeType) => {
-  if (!searchTerm || searchTerm.length < 2) {
-    return
-  }
+  if (!searchTerm || searchTerm.length < 2) return
 
   isLoadingFacilities.value = true
   try {
-    const queryParams = {}
-    if (placeType) {
-      queryParams.place_type = placeType
-    }
-
+    const queryParams = placeType ? {place_type: placeType} : {}
     const response = await getFacilitiesPlacesFacilityPlaceNameGet({
       path: {place_name: searchTerm},
       query: queryParams
     })
 
-    const data = response.data
-
-    facilities.value = (data ?? []).map((facility) => ({
+    facilities.value = (response.data || []).map(facility => ({
       label: facility.name,
       value: facility.uuid
     }))
   } catch (error) {
     console.error('Error searching facilities:', error)
-    toast.add({
-      title: 'Błąd',
-      description: 'Błąd podczas wyszukiwania placówek',
-      color: 'error'
-    });
   } finally {
     isLoadingFacilities.value = false
+  }
+}
+
+const searchCities = async (searchTerm) => {
+  if (!searchTerm || searchTerm.length < 2) return
+
+  isLoadingCities.value = true
+  try {
+    const response = await getCitiesPlacesCityCityNameGet({
+      path: {city_name: searchTerm}
+    })
+
+    cities.value = (response.data || []).map(city => ({
+      label: city.name,
+      value: city.uuid
+    }))
+  } catch (error) {
+    console.error('Error searching cities:', error)
+  } finally {
+    isLoadingCities.value = false
   }
 }
 
@@ -692,91 +652,173 @@ const fetchLegalRoles = async () => {
   try {
     const {data} = await getLegalRolesOffersLegalRolesGet()
     if (data) {
-      legalRoles.value = data.map((role) => ({
+      legalRoles.value = data.map(role => ({
         label: role.name,
         value: role.uuid
       }))
     }
   } catch (error) {
     console.error('Error fetching legal roles:', error)
-    toast.add({
-      title: 'Błąd',
-      description: 'Błąd podczas pobierania ról prawnych',
-      color: 'error'
-    });
   } finally {
     isLoadingRoles.value = false
   }
 }
 
-const updateOffer = async (validatedData) => {
-  try {
-    const body: any = {}
+const postponeOffer = async () => {
+  await updateOfferOffersOfferUuidPatch({
+    path: {offer_uuid: uuid},
+    body: {status: 'postponed'}
+  })
+}
 
-    if (validatedData.description) body.description = validatedData.description
-    if (validatedData.roles?.length) body.roles = validatedData.roles
-    if (validatedData.date) body.date = validatedData.date
-    if (validatedData.hour) body.hour = validatedData.hour
-    if (validatedData.facility?.label) body.place_name = validatedData.facility.label
-    if (validatedData.facility?.value) body.place_uuid = validatedData.facility.value
-    if (validatedData.author) body.author = validatedData.author
-    if (validatedData.email) body.email = validatedData.email
-    body.status = 'accepted'
+const rejectOffer = async () => {
+  await updateOfferOffersOfferUuidPatch({
+    path: {offer_uuid: uuid},
+    body: {status: 'rejected'}
+  })
+}
+
+// ====================
+// FORM HANDLERS
+// ====================
+const handleSubmit = async (event) => {
+  isSubmitting.value = true
+
+  try {
+    const updateData = buildUpdatePayload(event.data)
 
     await updateOfferOffersOfferUuidPatch({
       path: {offer_uuid: uuid},
-      body
+      body: updateData
     })
 
     toast.add({
       title: 'Sukces',
       description: 'Oferta została zaktualizowana pomyślnie',
       color: 'success'
-    });
-  } catch (error) {
-    console.error('Error updating offer:', error)
-    throw error // Re-throw to be handled by form submit
-  }
-}
-
-// Event handlers
-const handleSubmit = async (event) => {
-  isSubmitting.value = true
-  errors.value = {}
-
-  try {
-    await updateOffer(event.data)
+    })
   } catch (error) {
     console.error('Form submission error:', error)
     toast.add({
       title: 'Błąd',
       description: 'Błąd podczas aktualizacji oferty',
       color: 'error'
-    });
+    })
   } finally {
     isSubmitting.value = false
   }
 }
 
-const onError = (event) => {
+const handleFormError = (event) => {
   const element = document.getElementById(event.errors[0].id)
   element?.focus()
   element?.scrollIntoView({behavior: 'smooth', block: 'center'})
 }
 
-// Watchers
-watch([facilitySearch, () => formData.value.placeType],
-    ([newSearch, newPlaceType]) => {
-      searchFacilities(newSearch, newPlaceType)
-    }
-)
+const buildUpdatePayload = (data) => {
+  const payload = {
+    status: 'accepted',
+    description: data.description || null,
+    author: data.author || null,
+    email: data.email,
+    roles: data.roles || [],
+    date: data.date,
+    hour: data.hour
+  }
 
-// Clear facility when place type changes
+  if (data.placeCategory === 'court' && data.facility) {
+    payload.place_name = data.facility.label
+    payload.facility_uuid = data.facility.value
+  } else if (data.placeCategory === 'other') {
+    payload.place_name = data.place
+    if (data.city) {
+      payload.city_name = data.city.label
+      payload.city_uuid = data.city.value
+    }
+  }
+
+  return payload
+}
+
+// ====================
+// UTILITY METHODS
+// ====================
+const populateFormWithOfferData = (offerData) => {
+  if (offerData.author) formData.value.author = offerData.author
+  if (offerData.description) formData.value.description = offerData.description
+  if (offerData.email) formData.value.email = offerData.email
+  if (offerData.date) formData.value.date = offerData.date
+  if (offerData.hour) formData.value.hour = offerData.hour
+
+  if (offerData.place) {
+    formData.value.facility = {
+      label: offerData.place.name,
+      value: offerData.place.uuid
+    }
+    facilitySearch.value = offerData.place.name
+
+    const placeName = offerData.place.name.toLowerCase()
+    if (placeName.includes('rejonowy')) formData.value.placeType = 'SR'
+    else if (placeName.includes('apelacyjny')) formData.value.placeType = 'SA'
+    else if (placeName.includes('okręgowy')) formData.value.placeType = 'SO'
+  }
+
+  if (offerData.legal_roles?.length) {
+    formData.value.roles = offerData.legal_roles.map(role => role.uuid)
+  }
+}
+
+const copyField = (fieldName, value) => {
+  if (!value) return
+
+  const fieldMappings = {
+    place_type: () => {
+      if (value.toLowerCase().includes('rejonowy')) formData.value.placeType = 'SR'
+      else if (value.toLowerCase().includes('apelacyjny')) formData.value.placeType = 'SA'
+      else if (value.toLowerCase().includes('okręgowy')) formData.value.placeType = 'SO'
+    },
+    place_name: () => {
+      facilitySearch.value = value
+      formData.value.facility = {label: value, value: value}
+    },
+    description: () => formData.value.description = value,
+    date: () => {
+      try {
+        if (value.includes('.')) {
+          const [day, month, year] = value.split('.')
+          formData.value.date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+        } else {
+          formData.value.date = value
+        }
+      } catch {
+        formData.value.date = value
+      }
+    },
+    time: () => formData.value.hour = value.replace('.', ':'),
+    email: () => formData.value.email = value
+  }
+
+  fieldMappings[fieldName]?.()
+}
+
+// ====================
+// WATCHERS
+// ====================
+watch([facilitySearch, () => formData.value.placeType], ([searchTerm, placeType]) => {
+  searchFacilities(searchTerm, placeType)
+})
+
+watch(citySearch, (searchTerm) => {
+  searchCities(searchTerm)
+})
+
 watch(() => formData.value.placeType, () => {
   formData.value.facility = null
 })
 
-// Lifecycle
+// ====================
+// LIFECYCLE
+// ====================
 onMounted(() => {
   fetchLegalRoles()
   fetchOffer()
