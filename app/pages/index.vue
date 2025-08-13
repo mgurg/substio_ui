@@ -33,40 +33,12 @@
       </section>
     </UCard>
 
-    <UCard v-for="offer in offers" :key="offer.uuid" class="mt-5" variant="subtle">
-      <template #header>
-        <h2 class="text-3xl">{{ offer.place.name }}</h2>
-      </template>
-
-      <div class="mb-3">
-        {{ offer.description }}
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm p-3 rounded-lg">
-        <div v-if="offer.date" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4" name="i-lucide-calendar"/>
-          <strong class="mr-2">Data:</strong> {{ offer.date }}
-        </div>
-
-        <div v-if="offer.hour" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4" name="i-lucide-clock"/>
-          <strong class="mr-2">Godzina:</strong> {{ offer.hour }}
-        </div>
-
-        <div v-if="offer.author" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4" name="i-lucide-user"/>
-          <strong class="mr-2">Autor:</strong> {{ offer.author }}
-        </div>
-
-        <div v-if="offer.place?.name" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4" name="i-lucide-map-pin"/>
-          <strong class="mr-2">Miejsce:</strong> {{ offer.place.name }}
-        </div>
-      </div>
-<!--      <template #footer>-->
-<!--      <UButton to="/">III</UButton>-->
-<!--      </template>-->
-    </UCard>
+    <OfferCard 
+      v-for="offer in offers" 
+      :key="offer.uuid" 
+      :offer="offer"
+      :detailed="false"
+    />
 <div>
   <UButton v-if="offers >0" class="my-6" size="lg" trailing-icon="i-lucide-arrow-right">Zobacz wszystkie</UButton>
 </div>
