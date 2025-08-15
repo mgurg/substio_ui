@@ -1,30 +1,70 @@
 <template>
   <UContainer>
-    <!-- City Selection Card -->
+    <!-- Filters Section -->
     <UCard>
       <template #header>
         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">{{ t('homepage.title') }}</h1>
       </template>
 
-      <Form>
-        <div class="space-y-4">
-          <UFormField
-              label="Miasto:"
-              name="city"
-          >
-            <USelectMenu
-                v-model="formData.city"
-                v-model:search-term="citySearch"
-                :items="cities"
-                :loading="isLoadingCities"
-                placeholder="Wyszukaj miasto"
-                icon="i-lucide-map-pin"
-                searchable
+      <UForm :state="formData">
+        <div class="space-y-6">
+          <!-- Filters Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- City Filter -->
+            <UFormField
+                label="Miasto:"
+                name="city"
                 class="w-full"
-            />
-          </UFormField>
+            >
+              <USelectMenu
+                  v-model="formData.city"
+                  v-model:search-term="citySearch"
+                  :items="cities"
+                  :loading="isLoadingCities"
+                  placeholder="Wyszukaj miasto"
+                  icon="i-lucide-map-pin"
+                  searchable
+                  class="w-full"
+              />
+            </UFormField>
 
-          <div class="flex gap-3">
+            <!-- Legal Role Filter -->
+            <UFormField
+                label="Role prawne:"
+                name="legalRoles"
+                class="w-full"
+            >
+              <UButtonGroup class="flex-wrap">
+                <UButton
+                    v-for="role in legalRoles"
+                    :key="role.value"
+                    :variant="formData.selectedLegalRoles.includes(role.value) ? 'solid' : 'outline'"
+                    color="primary"
+                    type="button"
+                    size="sm"
+                    @click="toggleLegalRole(role.value)"
+                    :loading="isLoadingRoles"
+                >
+                  {{ role.label }}
+                </UButton>
+              </UButtonGroup>
+            </UFormField>
+
+            <!-- Invoice Required Filter -->
+            <UFormField
+                label="Wymagana faktura:"
+                name="invoiceRequired"
+                class="w-full"
+            >
+              <UCheckbox
+                  v-model="formData.invoiceRequired"
+                  label="Wymagana faktura"
+              />
+            </UFormField>
+          </div>
+
+          <!-- City Management Buttons -->
+          <div class="flex flex-wrap gap-3">
             <UButton
                 :disabled="!formData.city"
                 color="primary"
@@ -43,6 +83,14 @@
             >
               Usuń zapisane miasto
             </UButton>
+
+            <UButton
+                variant="outline"
+                icon="i-lucide-filter-x"
+                @click="clearAllFilters"
+            >
+              Wyczyść filtry
+            </UButton>
           </div>
 
           <!-- Saved City Display -->
@@ -53,16 +101,10 @@
             </div>
             <div class="text-green-700">
               <div><strong>{{ savedCityData.name }}</strong></div>
-<!--              <div class="text-sm text-green-600">-->
-<!--                Współrzędne: {{ savedCityData.lat }}, {{ savedCityData.lon }}-->
-<!--              </div>-->
-<!--              <div class="text-sm text-green-600">-->
-<!--                UUID: {{ savedCityData.uuid }}-->
-<!--              </div>-->
             </div>
           </div>
         </div>
-      </Form>
+      </UForm>
     </UCard>
 
     <!-- Offers List -->
@@ -87,13 +129,14 @@
 
 <script setup>
 import { useI18n } from '#imports'
-import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet } from "@/client/index.ts"
+import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet, getLegalRolesOffersLegalRolesGet } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
 
 const { t } = useI18n()
 
 // Reactive data
-const offers = ref([])
+const allOffers = ref([]) // Store all fetched offers
+const offers = ref([]) // Store filtered offers for display
 const count = ref(0)
 const limit = ref(10)
 const currentPage = ref(1)
@@ -102,8 +145,14 @@ const citySearch = ref('')
 const cities = ref([])
 const isLoadingCities = ref(false)
 
+// Legal roles data
+const legalRoles = ref([])
+const isLoadingRoles = ref(false)
+
 const formData = ref({
   city: null,
+  selectedLegalRoles: [],
+  invoiceRequired: false
 })
 
 const savedCityData = ref(null)
@@ -143,13 +192,78 @@ const fetchOffers = async () => {
     })
 
     if (response.data) {
-      offers.value = response.data.data || []
+      allOffers.value = response.data.data || []
       count.value = response.data.count || 0
       limit.value = response.data.limit || 10
+      filterOffers()
     }
   } catch (error) {
     console.error('Error fetching offers:', error)
   }
+}
+
+const fetchLegalRoles = async () => {
+  isLoadingRoles.value = true
+  try {
+    const { data } = await getLegalRolesOffersLegalRolesGet()
+    if (data) {
+      legalRoles.value = data.map((role) => ({
+        label: role.name,
+        value: role.uuid
+      }))
+    }
+  } catch (error) {
+    console.error('Error fetching legal roles:', error)
+  } finally {
+    isLoadingRoles.value = false
+  }
+}
+
+const toggleLegalRole = (roleValue) => {
+  if (formData.value.selectedLegalRoles.includes(roleValue)) {
+    formData.value.selectedLegalRoles = formData.value.selectedLegalRoles.filter(r => r !== roleValue)
+  } else {
+    formData.value.selectedLegalRoles = [...formData.value.selectedLegalRoles, roleValue]
+  }
+}
+
+const filterOffers = () => {
+  let filtered = [...allOffers.value]
+
+  // Filter by city if selected
+  if (formData.value.city) {
+    // Assuming offers have a city field or location data
+    // This would need to be adjusted based on actual offer structure
+    filtered = filtered.filter(offer => {
+      return offer.facility?.city_uuid === formData.value.city?.value ||
+             offer.facility?.city?.uuid === formData.value.city?.value
+    })
+  }
+
+  // Filter by legal roles if selected
+  if (formData.value.selectedLegalRoles && formData.value.selectedLegalRoles.length > 0) {
+    filtered = filtered.filter(offer => {
+      return offer.legal_roles?.some(role => 
+        formData.value.selectedLegalRoles.includes(role.uuid)
+      )
+    })
+  }
+
+  // Filter by invoice required if selected
+  if (formData.value.invoiceRequired) {
+    filtered = filtered.filter(offer => {
+      return offer.invoice_required === true
+    })
+  }
+
+  offers.value = filtered
+}
+
+const clearAllFilters = () => {
+  formData.value.city = null
+  formData.value.selectedLegalRoles = []
+  formData.value.invoiceRequired = false
+  filterOffers()
 }
 
 const saveCity = () => {
@@ -185,6 +299,7 @@ const clearSavedCity = () => {
   localStorage.removeItem('savedCity')
   savedCityData.value = null
   formData.value.city = null
+  filterOffers()
 }
 
 const loadSavedCity = () => {
@@ -209,10 +324,24 @@ watch(citySearch, (searchTerm) => {
   searchCities(searchTerm)
 })
 
+// Watch for filter changes and apply filtering
+watch(() => formData.value.city, () => {
+  filterOffers()
+})
+
+watch(() => formData.value.selectedLegalRoles, () => {
+  filterOffers()
+})
+
+watch(() => formData.value.invoiceRequired, () => {
+  filterOffers()
+})
+
 // Lifecycle
 onMounted(() => {
   loadSavedCity()
   fetchOffers()
+  fetchLegalRoles()
 })
 </script>
 
