@@ -738,6 +738,26 @@ export type GetAllOffersOffersGetData = {
          * Order
          */
         order?: 'asc' | 'desc';
+        /**
+         * Lat
+         */
+        lat?: number | null;
+        /**
+         * Lon
+         */
+        lon?: number | null;
+        /**
+         * Distance Km
+         */
+        distance_km?: number | null;
+        /**
+         * Legal Role Uuids
+         */
+        legal_role_uuids?: Array<string> | null;
+        /**
+         * Invoice
+         */
+        invoice?: boolean | null;
     };
     url: '/offers/';
 };

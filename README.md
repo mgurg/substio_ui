@@ -19,6 +19,7 @@ bun run dev
 ```
 
 or `bun run --bun dev` in case where outdated Node.js is also installed.
+
 ## Production
 
 Build the application for production:
@@ -66,6 +67,7 @@ docker compose build --build-arg NUXT_BACKEND_API=https://your-api-url
 ```
 
 ## Updates
+
 Update all dependencies to latest version
 
 ```bash
@@ -77,11 +79,13 @@ bun update -f
 ```
 
 Install dependencies (lockfile)
+
 ```bash
 bun install --frozen-lockfile
 ```
 
 Upgrading **Nuxt**
+
 ```bash
 bunx nuxi@latest upgrade --dedupe
 ```

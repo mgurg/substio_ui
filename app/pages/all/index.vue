@@ -1,170 +1,188 @@
 <template>
   <UContainer>
-    <!-- City Selection Card -->
+    <!-- Filters Section -->
     <UCard>
       <template #header>
         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">{{ t('homepage.title') }}</h1>
       </template>
 
-      <Form>
-        <div class="space-y-4">
-          <UFormField
-              label="Miasto:"
-              name="city"
-          >
-            <USelectMenu
-                v-model="formData.city"
-                v-model:search-term="citySearch"
-                :items="cities"
-                :loading="isLoadingCities"
-                placeholder="Wyszukaj miasto"
-                icon="i-lucide-map-pin"
-                searchable
-                class="w-full"
-            />
-          </UFormField>
+      <UForm :state="formData">
+        <div class="space-y-6">
+          <!-- Filters Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 gap-y-6">
+            <!-- Row 1: City and Distance -->
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- City Filter (only show when no city is saved) -->
+              <UFormField
+                  v-if="!savedCityData"
+                  label="Miasto:"
+                  name="city"
+                  class="w-full"
+              >
+                <div class="space-y-2">
+                  <USelectMenu
+                      v-model="formData.city"
+                      v-model:search-term="citySearch"
+                      :items="cities"
+                      :loading="isLoadingCities"
+                      placeholder="Wyszukaj miasto"
+                      icon="i-lucide-map-pin"
+                      searchable
+                      class="w-full"
+                  />
+                  <UButton
+                      :disabled="!formData.city"
+                      color="primary"
+                      size="md"
+                      icon="i-lucide-save"
+                      @click="saveCity"
+                  >
+                    Zapisz miasto
+                  </UButton>
+                </div>
+              </UFormField>
 
-          <div class="flex gap-3">
-            <UButton
-                :disabled="!formData.city"
-                color="primary"
-                icon="i-lucide-save"
-                @click="saveCity"
-            >
-              Zapisz miasto
-            </UButton>
+              <!-- Saved City Display (show when city is saved) -->
+              <UFormField
+                  v-if="savedCityData"
+                  label="Miasto:"
+                  name="savedCity"
+                  class="w-full"
+              >
+                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                  <div class="flex items-center">
+                    <UIcon name="i-lucide-map-pin" class="mr-2 h-5 w-5 text-green-600"/>
+                    <span class="font-medium text-green-800">{{ savedCityData.name }}</span>
+                  </div>
+                  <UButton
+                      color="red"
+                      variant="outline"
+                      size="md"
+                      icon="i-lucide-trash-2"
+                      @click="clearSavedCity"
+                  >
+                    Usuń
+                  </UButton>
+                </div>
+              </UFormField>
 
-            <UButton
-                v-if="savedCityData"
-                color="red"
-                variant="outline"
-                icon="i-lucide-trash-2"
-                @click="clearSavedCity"
-            >
-              Usuń zapisane miasto
-            </UButton>
-          </div>
-
-          <!-- Saved City Display -->
-          <div v-if="savedCityData" class="p-4 bg-green-50 rounded-lg border border-green-200">
-            <div class="flex items-center mb-2">
-              <UIcon name="i-lucide-check-circle" class="mr-2 h-5 w-5 text-green-600"/>
-              <span class="font-semibold text-green-800">Zapisane miasto:</span>
+              <!-- Distance Filter (show when city is selected or saved) -->
+              <UFormField
+                  v-if="formData.city || savedCityData"
+                  label="Odległość (km):"
+                  name="distance"
+                  class="w-full"
+              >
+                <div class="space-y-3">
+                  <USlider
+                      v-model="formData.distance"
+                      :min="10"
+                      :max="50"
+                      :step="10"
+                      class="w-full"
+                  />
+                  <div class="flex justify-between text-sm text-gray-600">
+                    <span>10 km</span>
+                    <span class="font-medium">{{ formData.distance }} km</span>
+                    <span>50 km</span>
+                  </div>
+                </div>
+              </UFormField>
             </div>
-            <div class="text-green-700">
-              <div><strong>{{ savedCityData.name }}</strong></div>
-<!--              <div class="text-sm text-green-600">-->
-<!--                Współrzędne: {{ savedCityData.lat }}, {{ savedCityData.lon }}-->
-<!--              </div>-->
-<!--              <div class="text-sm text-green-600">-->
-<!--                UUID: {{ savedCityData.uuid }}-->
-<!--              </div>-->
+
+            <!-- Row 2: Legal Roles and Invoice -->
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Invoice Required Filter -->
+              <UFormField
+                  label="Wymagana faktura:"
+                  name="invoiceRequired"
+                  class="w-full"
+              >
+                <UCheckbox
+                    v-model="formData.invoiceRequired"
+                    label="Wymagana faktura"
+                />
+              </UFormField>
+
+              <!-- Legal Role Filter -->
+              <UFormField
+                  label="Role prawne:"
+                  name="legalRoles"
+                  class="w-full"
+              >
+                <div class="flex flex-wrap gap-2">
+                  <UButton
+                      v-for="role in legalRoles"
+                      :key="role.value"
+                      :variant="formData.selectedLegalRoles.includes(role.value) ? 'solid' : 'outline'"
+                      color="primary"
+                      type="button"
+                      size="md"
+                      :loading="isLoadingRoles"
+                      @click="toggleLegalRole(role.value)"
+                  >
+                    {{ role.label }}
+                  </UButton>
+                </div>
+              </UFormField>
+
+
+            </div>
+
+            <!-- Row 3: Search and Clear Filters -->
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+              <!-- Search Filter -->
+              <UFormField
+                  label="Szukaj:"
+                  name="search"
+                  class="w-full"
+              >
+                <UInput
+                    v-model="formData.search"
+                    placeholder="Wyszukaj oferty..."
+                    icon="i-lucide-search"
+                    size="lg"
+                />
+              </UFormField>
+
+              <!-- Clear Filters Button -->
+              <div class="flex items-end h-full">
+                <UButton
+                    variant="outline"
+                    icon="i-lucide-filter-x"
+                    class="w-full md:w-auto"
+                    @click="clearAllFilters"
+                >
+                  Wyczyść filtry
+                </UButton>
+              </div>
             </div>
           </div>
         </div>
-      </Form>
+      </UForm>
     </UCard>
+
+    <!-- Loading State -->
+    <div v-if="isLoadingOffers" class="flex justify-center py-8">
+      <UIcon name="i-lucide-loader-2" class="animate-spin h-8 w-8" />
+    </div>
 
     <!-- Offers List -->
-    <UCard v-for="offer in offers" :key="offer.uuid" class="mt-5" variant="subtle">
-      <template #header>
-        <div class="flex justify-between items-start">
-          <h2 class="text-3xl">{{ offer.place.name }}</h2>
+    <OfferCard
+        v-for="offer in offers"
+        :key="offer.uuid"
+        :offer="offer"
+        :detailed="true"
+    />
 
-          <!-- Email Button or Registration Notice -->
-          <div class="ml-4">
-            <UButton
-                v-if="offer.email"
-                color="primary"
-                icon="i-lucide-mail"
-                size="sm"
-                @click="sendEmail(offer.email)"
-            >
-              Napisz email
-            </UButton>
-            <div v-else class="text-sm text-gray-500 italic">
-              Tylko dla zarejestrowanych użytkowników
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <div class="mb-4">
-        <p class="text-gray-700">{{ offer.description }}</p>
-      </div>
-
-      <!-- Offer Details Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-        <div v-if="offer.date" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-calendar"/>
-          <strong class="mr-2">Data:</strong> {{ offer.date }}
-        </div>
-
-        <div v-if="offer.hour" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-clock"/>
-          <strong class="mr-2">Godzina:</strong> {{ offer.hour }}
-        </div>
-
-        <div v-if="offer.author" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-user"/>
-          <strong class="mr-2">Autor:</strong> {{ offer.author }}
-        </div>
-
-        <div v-if="offer.place?.name" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-map-pin"/>
-          <strong class="mr-2">Miejsce:</strong> {{ offer.place.name }}
-        </div>
-
-        <div v-if="offer.legal_roles && offer.legal_roles.length > 0" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-map-pin"/>
-          <strong class="mr-2">Dla:</strong>
-          <UBadge
-              v-for="role in offer.legal_roles"
-              :key="role.uuid"
-              variant="soft"
-              color="blue"
-          >
-            {{ role.name }}
-          </UBadge>
-        </div>
-
-        <!-- Legal Roles -->
-<!--        <div v-if="offer.legal_roles && offer.legal_roles.length > 0" class="mt-4">-->
-<!--          <div class="flex items-center mb-2">-->
-<!--            <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-briefcase"/>-->
-<!--            <strong class="text-sm">Role prawne:</strong>-->
-<!--          </div>-->
-<!--          <div class="flex flex-wrap gap-2">-->
-<!--            <UBadge-->
-<!--                v-for="role in offer.legal_roles"-->
-<!--                :key="role.uuid"-->
-<!--                variant="soft"-->
-<!--                color="blue"-->
-<!--            >-->
-<!--              {{ role.name }}-->
-<!--            </UBadge>-->
-<!--          </div>-->
-<!--        </div>-->
-
-        <div v-if="offer.valid_to" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-calendar-x"/>
-          <strong class="mr-2">Ważne do:</strong> {{ formatDate(offer.valid_to) }}
-        </div>
-
-        <div v-if="offer.url" class="flex items-center">
-          <UIcon class="mr-2 h-4 w-4 text-gray-600" name="i-lucide-external-link"/>
-          <strong class="mr-2">Link:</strong>
-          <a :href="offer.url" target="_blank" class="text-blue-600 hover:underline">
-            Otwórz link
-          </a>
-        </div>
-      </div>
-
-
-    </UCard>
+    <!-- No Results -->
+    <div v-if="!isLoadingOffers && offers.length === 0" class="text-center py-8">
+      <UIcon name="i-lucide-search-x" class="h-12 w-12 mx-auto mb-4 text-gray-400" />
+      <p class="text-gray-600">Nie znaleziono ofert spełniających kryteria wyszukiwania.</p>
+    </div>
 
     <!-- Pagination -->
-    <div class="flex justify-center mt-6 mb-10 pb-10">
+    <div v-if="offers.length > 0" class="flex justify-center mt-6 mb-10 pb-10">
       <UPagination
           v-model:page="currentPage"
           :page-count="pageCount"
@@ -177,8 +195,9 @@
 
 <script setup>
 import { useI18n } from '#imports'
-import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet } from "@/client/index.ts"
+import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet, getLegalRolesOffersLegalRolesGet } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
+import { debounce } from 'lodash-es'
 
 const { t } = useI18n()
 
@@ -187,13 +206,22 @@ const offers = ref([])
 const count = ref(0)
 const limit = ref(10)
 const currentPage = ref(1)
+const isLoadingOffers = ref(false)
 
 const citySearch = ref('')
 const cities = ref([])
 const isLoadingCities = ref(false)
 
+// Legal roles data
+const legalRoles = ref([])
+const isLoadingRoles = ref(false)
+
 const formData = ref({
   city: null,
+  distance: 30,
+  selectedLegalRoles: [],
+  invoiceRequired: false,
+  search: ''
 })
 
 const savedCityData = ref(null)
@@ -223,13 +251,48 @@ const searchCities = async (searchTerm) => {
   }
 }
 
+const buildQueryParams = () => {
+  const params = {
+    offset: (currentPage.value - 1) * limit.value,
+    limit: limit.value
+  }
+
+  // Add search term
+  if (formData.value.search && formData.value.search.trim()) {
+    params.search = formData.value.search.trim()
+  }
+
+  // Add location-based filters
+  if ((formData.value.city || savedCityData.value) && savedCityData.value) {
+    params.lat = savedCityData.value.lat
+    params.lon = savedCityData.value.lon
+
+    // Add distance if specified
+    if (formData.value.distance && formData.value.distance > 0) {
+      params.distance_km = parseFloat(formData.value.distance)
+    }
+  }
+
+  // Add legal roles filter
+  if (formData.value.selectedLegalRoles.length > 0) {
+    params.legal_role_uuids = formData.value.selectedLegalRoles
+  }
+
+  // Add invoice filter
+  if (formData.value.invoiceRequired) {
+    params.invoice = true
+  }
+
+  return params
+}
+
 const fetchOffers = async () => {
+  isLoadingOffers.value = true
   try {
+    const queryParams = buildQueryParams()
+
     const response = await getAllOffersOffersGet({
-      query: {
-        offset: (currentPage.value - 1) * limit.value,
-        limit: limit.value
-      },
+      query: queryParams
     })
 
     if (response.data) {
@@ -239,20 +302,51 @@ const fetchOffers = async () => {
     }
   } catch (error) {
     console.error('Error fetching offers:', error)
+    offers.value = []
+    count.value = 0
+  } finally {
+    isLoadingOffers.value = false
   }
 }
 
+const fetchLegalRoles = async () => {
+  isLoadingRoles.value = true
+  try {
+    const { data } = await getLegalRolesOffersLegalRolesGet()
+    if (data) {
+      legalRoles.value = data.map((role) => ({
+        label: role.name,
+        value: role.uuid
+      }))
+    }
+  } catch (error) {
+    console.error('Error fetching legal roles:', error)
+  } finally {
+    isLoadingRoles.value = false
+  }
+}
+
+const toggleLegalRole = (roleValue) => {
+  if (formData.value.selectedLegalRoles.includes(roleValue)) {
+    formData.value.selectedLegalRoles = formData.value.selectedLegalRoles.filter(r => r !== roleValue)
+  } else {
+    formData.value.selectedLegalRoles = [...formData.value.selectedLegalRoles, roleValue]
+  }
+}
+
+const clearAllFilters = () => {
+  formData.value.city = null
+  formData.value.distance = 30
+  formData.value.selectedLegalRoles = []
+  formData.value.invoiceRequired = false
+  formData.value.search = ''
+  currentPage.value = 1
+}
+
 const saveCity = () => {
-  console.log('Saving city:', formData.value.city)
-  // if (!formData.value.city) return
+  if (!formData.value.city) return
 
-  console.log('Cities:', cities.value)
-
-
-  // Find the full city data from cities array
   const selectedCity = cities.value.find(city => city.value === formData.value.city.value)
-
-  console.log('Selected city:', selectedCity)
 
   if (selectedCity) {
     const cityToSave = {
@@ -262,19 +356,27 @@ const saveCity = () => {
       lon: selectedCity.lon
     }
 
-    // Save to localStorage
-    localStorage.setItem('savedCity', JSON.stringify(cityToSave))
-    savedCityData.value = cityToSave
-
-    // Show success notification (if you have a notification system)
-    console.log('City saved successfully:', cityToSave)
+    // Save to localStorage (Note: This won't work in Claude artifacts)
+    try {
+      localStorage.setItem('savedCity', JSON.stringify(cityToSave))
+      savedCityData.value = cityToSave
+      console.log('City saved successfully:', cityToSave)
+    } catch (error) {
+      console.warn('localStorage not available, using in-memory storage', error)
+      savedCityData.value = cityToSave
+    }
   }
 }
 
 const clearSavedCity = () => {
-  localStorage.removeItem('savedCity')
+  try {
+    localStorage.removeItem('savedCity')
+  } catch (error) {
+    console.warn('localStorage not available', error)
+  }
   savedCityData.value = null
   formData.value.city = null
+  formData.value.distance = 30
 }
 
 const loadSavedCity = () => {
@@ -284,45 +386,65 @@ const loadSavedCity = () => {
       savedCityData.value = JSON.parse(saved)
     }
   } catch (error) {
-    console.error('Error loading saved city:', error)
-  }
-}
-
-const sendEmail = (email) => {
-  window.location.href = `mailto:${email}`
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-
-  try {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pl-PL', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  } catch (error) {
-    return dateString
+    console.warn('Error loading saved city or localStorage not available:', error)
   }
 }
 
 const handlePageChange = (page) => {
   currentPage.value = page
-  fetchOffers()
 }
+
+// Debounced search function to avoid too many API calls
+const debouncedFetchOffers = debounce(fetchOffers, 300)
 
 // Watchers
 watch(citySearch, (searchTerm) => {
   searchCities(searchTerm)
 })
 
+// Watch for filter changes and refetch offers
+watch(() => formData.value.city, () => {
+  currentPage.value = 1
+  fetchOffers()
+})
+
+watch(() => formData.value.distance, () => {
+  if (formData.value.city || savedCityData.value) {
+    currentPage.value = 1
+    debouncedFetchOffers()
+  }
+})
+
+watch(() => formData.value.selectedLegalRoles, () => {
+  currentPage.value = 1
+  fetchOffers()
+}, { deep: true })
+
+watch(() => formData.value.invoiceRequired, () => {
+  currentPage.value = 1
+  fetchOffers()
+})
+
+watch(() => formData.value.search, () => {
+  currentPage.value = 1
+  debouncedFetchOffers()
+})
+
+watch(() => currentPage.value, () => {
+  fetchOffers()
+})
+
+watch(() => savedCityData.value, () => {
+  if (formData.value.city || savedCityData.value) {
+    fetchOffers()
+  }
+}, { deep: true })
+
 // Lifecycle
 onMounted(() => {
   loadSavedCity()
   fetchOffers()
+  fetchLegalRoles()
 })
 </script>
 
