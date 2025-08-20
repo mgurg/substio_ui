@@ -382,14 +382,11 @@
         </UForm>
       </div>
     </div>
-    <div v-if="isDevelopment" class="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-      <h3 class="font-semibold mb-2">Debug Info:</h3>
-      <pre class="text-xs">{{
-          JSON.stringify({
-            formData,
-          }, null, 2)
-        }}</pre>
-    </div>
+    <!-- Debug Info -->
+    <DebugPanel
+        v-if="isDevelopment"
+        :form-data="formData"
+    />
   </UContainer>
 </template>
 
@@ -405,6 +402,7 @@ import {
   parseRawOffersParseOfferUuidGet,
   updateOfferOffersOfferUuidPatch
 } from '~/client'
+import DebugPanel from "~/components/DebugPanel.vue";
 
 // ====================
 // CONSTANTS & SETUP
