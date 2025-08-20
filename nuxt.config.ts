@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
-    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n'],
+    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami'],
     css: ['~/assets/css/main.css'],
     app: {
         head: {
@@ -24,6 +24,19 @@ export default defineNuxtConfig({
             linkActiveClass: "active",
             linkExactActiveClass: "exact-active"
         }
+    },
+    umami: {
+        id: 'my-w3b517e-id',
+        host: 'https://cloud.umami.is',
+        autoTrack: true,
+        // proxy: 'cloak',
+        // useDirective: true,
+        ignoreLocalhost: true,
+        // excludeQueryParams: false,
+        // domains: ['cool-site.app', 'my-space.site'],
+        // customEndpoint: '/my-custom-endpoint',
+        // enabled: false,
+        // logErrors: true,
     },
     runtimeConfig: {
         // Private keys are only available on the server
