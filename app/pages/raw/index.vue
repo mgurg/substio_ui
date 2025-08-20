@@ -41,11 +41,9 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {useI18n} from '#imports'
 import {getAllRawOffersOffersRawGet} from '~/client'
-import type {RawOfferIndexResponse, OfferStatus} from '@/client/types.gen.ts'
+import type {OfferStatus, RawOfferIndexResponse} from '@/client/types.gen.ts'
 
-const {t} = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -58,13 +56,13 @@ const currentPage = ref<number>(parseInt(route.query.page as string) || 1)
 const selectedStatus = ref<OfferStatus | null>((route.query.status as OfferStatus) ?? 'new')
 
 const statusOptions = [
-  { label: 'Wszystkie', value: null },
-  { label: 'Nowe', value: 'new' },
-  { label: 'Szkic', value: 'draft' },
-  { label: 'Przełożone', value: 'postponed' },
-  { label: 'Zaakceptowane', value: 'accepted' },
-  { label: 'Odrzucone', value: 'rejected' },
-  { label: 'Aktywne', value: 'active' }
+  {label: 'Wszystkie', value: null},
+  {label: 'Nowe', value: 'new'},
+  {label: 'Szkic', value: 'draft'},
+  {label: 'Przełożone', value: 'postponed'},
+  {label: 'Zaakceptowane', value: 'accepted'},
+  {label: 'Odrzucone', value: 'rejected'},
+  {label: 'Aktywne', value: 'active'}
 ]
 
 const pageCount = computed(() =>
