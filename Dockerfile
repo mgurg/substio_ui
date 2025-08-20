@@ -32,6 +32,8 @@ RUN bun run build
 FROM oven/bun:1.2-slim AS production-stage
 
 ARG NUXT_BACKEND_API
+ARG NUXT_UMAMI_ID
+ARG NUXT_UMAMI_HOST
 
 # Install curl for health checks in a single layer
 RUN apt-get update && \
