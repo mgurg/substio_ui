@@ -237,6 +237,9 @@
                   icon="i-lucide-building"
                   searchable
                   class="w-full"
+                  :highlight="!!formData.facility"
+                  color="primary"
+                  :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
               />
             </UFormField>
           </template>
@@ -267,6 +270,9 @@
                   icon="i-lucide-map-pin"
                   searchable
                   class="w-full"
+                  :highlight="!!formData.city"
+                  color="primary"
+                  :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
               />
             </UFormField>
           </template>
@@ -366,6 +372,13 @@
             </UFormField>
           </div>
 
+          <UFormField label="Faktura:" name="invoiceRequired">
+            <UCheckbox
+                v-model="formData.invoiceRequired"
+                label="Wymagana faktura"
+            />
+          </UFormField>
+
           <!-- Submit Buttons -->
           <div class="flex gap-2">
             <UButton type="submit" :loading="isSubmitting">
@@ -374,8 +387,11 @@
             <UButton variant="outline" type="button" @click="resetForm">
               Wyczyść formularz
             </UButton>
-            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer"/>
-            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer"/>
+            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer">
+              Postpone
+            </UButton>
+            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer">Reject
+            </UButton>
 
           </div>
 
@@ -429,7 +445,8 @@ const validationSchema = computed(() => {
     email: yup.string().email('Nieprawidłowy format email').nullable(),
     roles: yup.array().of(yup.string()),
     date: yup.string().nullable(),
-    hour: yup.string().nullable()
+    hour: yup.string().nullable(),
+    invoiceRequired: yup.boolean()
   }
 
   if (formData.value.placeCategory === 'court') {
@@ -476,7 +493,8 @@ const formData = ref({
   email: null,
   roles: [],
   date: null,
-  hour: null
+  hour: null,
+  invoiceRequired: false
 })
 
 // Search states
@@ -533,7 +551,8 @@ const resetForm = () => {
     email: null,
     roles: [],
     date: null,
-    hour: null
+    hour: null,
+    invoiceRequired: false
   }
   facilitySearch.value = ''
   citySearch.value = ''
@@ -721,7 +740,8 @@ const buildUpdatePayload = (data) => {
     email: data.email,
     roles: data.roles || [],
     date: data.date,
-    hour: data.hour
+    hour: data.hour,
+    invoice: data.invoiceRequired
   }
 
   if (data.placeCategory === 'court' && data.facility) {
@@ -747,6 +767,7 @@ const populateFormWithOfferData = (offerData) => {
   if (offerData.email) formData.value.email = offerData.email
   if (offerData.date) formData.value.date = offerData.date
   if (offerData.hour) formData.value.hour = offerData.hour
+  formData.value.invoiceRequired = offerData.invoice === true
 
   if (offerData.place) {
     formData.value.facility = {
@@ -793,7 +814,18 @@ const copyField = (fieldName, value) => {
       }
     },
     time: () => formData.value.hour = value.replace('.', ':'),
-    email: () => formData.value.email = value
+    email: () => formData.value.email = value,
+    legal_roles: () => {
+      // Split the comma-separated role names
+      const roleNames = value.split(',').map(role => role.trim())
+
+      console.log(roleNames)
+
+      console.log(legalRoles.value)
+      formData.value.roles = legalRoles.value
+          .filter(role => roleNames.includes(role.label.toLowerCase()))
+          .map(role => role.value)
+    }
   }
 
   fieldMappings[fieldName]?.()
