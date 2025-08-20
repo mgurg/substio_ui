@@ -70,6 +70,8 @@ EXPOSE 3000
 # Set environment variable for production
 ENV NODE_ENV=production
 ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
+ENV NUXT_UMAMI_ID=${NUXT_UMAMI_ID}
+ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
 
 # Command to run the app using Bun
 CMD ["bun", ".output/server/index.mjs"]
