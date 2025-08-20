@@ -16,14 +16,9 @@ COPY . .
 # Add build args for environment variables
 ARG NUXT_PUBLIC_DOMAIN
 ARG NUXT_BACKEND_API
-ARG NUXT_UMAMI_ID
-ARG NUXT_UMAMI_HOST
 
 ENV NUXT_PUBLIC_DOMAIN=${NUXT_PUBLIC_DOMAIN}
 ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
-ENV NUXT_UMAMI_ID=${NUXT_UMAMI_ID}
-ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
-
 
 # Build the application
 RUN bun run build
@@ -32,8 +27,6 @@ RUN bun run build
 FROM oven/bun:1.2-slim AS production-stage
 
 ARG NUXT_BACKEND_API
-ARG NUXT_UMAMI_ID
-ARG NUXT_UMAMI_HOST
 
 # Install curl for health checks in a single layer
 RUN apt-get update && \
@@ -70,8 +63,6 @@ EXPOSE 3000
 # Set environment variable for production
 ENV NODE_ENV=production
 ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
-ENV NUXT_UMAMI_ID=${NUXT_UMAMI_ID}
-ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
 
 # Command to run the app using Bun
 CMD ["bun", ".output/server/index.mjs"]
