@@ -1,176 +1,17 @@
 <template>
   <UContainer>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Left: Offer Details -->
-      <div>
-        <h2 class="flex items-center text-2xl font-bold mb-4 gap-4">
-          <UButton icon="i-lucide-arrow-left" to="/raw">wróć</UButton>
-          <span class="flex-1">Dane oferty</span>
-          <UBadge size="lg" color="neutral" variant="soft">{{ offerStatus }}</UBadge>
-        </h2>
-
-        <USkeleton v-if="isLoading" class="h-32 w-full"/>
-
-        <div v-else>
-          <p><strong>UUID:</strong> {{ offer?.uuid }}</p>
-          <p><strong>Author:</strong> {{ offer?.author }}</p>
-          <p><strong>Raw Data:</strong></p>
-          <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded">{{ offer?.raw_data }}</p>
-
-          <UButton
-              icon="i-lucide-rocket"
-              class="mt-6"
-              :loading="isGenerating"
-              @click="generateData"
-          >
-            Generuj
-          </UButton>
-        </div>
-
-        <!-- Generated Data Section -->
-        <div class="mt-8">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-bold">Wygenerowane dane</h2>
-          </div>
-
-          <div v-if="isGenerating" class="space-y-2">
-            <USkeleton class="h-4 w-full"/>
-            <USkeleton class="h-4 w-3/4"/>
-            <USkeleton class="h-4 w-1/2"/>
-          </div>
-
-          <div v-else-if="generatedData">
-            <div
-                v-if="generatedData.success && generatedData.data"
-                class="bg-green-50 border border-green-200 rounded-lg p-4"
-            >
-              <h3 class="font-semibold text-green-800 mb-3">Dane zostały wygenerowane pomyślnie:</h3>
-
-              <div class="space-y-3 text-sm">
-                <div v-if="generatedData.data.location" class="flex items-center justify-between">
-                  <div>
-                    <strong>Lokalizacja:</strong> {{ generatedData.data.location }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('place_type', generatedData.data.location)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div v-if="generatedData.data.location_full_name" class="flex items-center justify-between">
-                  <div>
-                    <strong>Pełna nazwa miejsca:</strong> {{ generatedData.data.location_full_name }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('place_name', generatedData.data.location_full_name)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div
-                    v-if="generatedData.data.date && generatedData.data.date.length"
-                    class="flex items-center justify-between"
-                >
-                  <div>
-                    <strong>Data:</strong> {{ generatedData.data.date.join(', ') }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('date', generatedData.data.date.join(', '))"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div
-                    v-if="generatedData.data.time && generatedData.data.time.length"
-                    class="flex items-center justify-between"
-                >
-                  <div>
-                    <strong>Czas:</strong> {{ generatedData.data.time.join(', ') }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('time', generatedData.data.time.join(', '))"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div v-if="generatedData.data.description" class="flex items-start justify-between">
-                  <div class="flex-1 mr-2">
-                    <strong>Opis:</strong> {{ generatedData.data.description }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('description', generatedData.data.description)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div
-                    v-if="generatedData.data.legal_roles && generatedData.data.legal_roles.length"
-                    class="flex items-center justify-between"
-                >
-                  <div>
-                    <strong>Role prawne:</strong> {{ generatedData.data.legal_roles.join(', ') }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('legal_roles', generatedData.data.legal_roles.join(', '))"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div v-if="generatedData.data.email" class="flex items-center justify-between">
-                  <div>
-                    <strong>Email:</strong> {{ generatedData.data.email }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('email', generatedData.data.email)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-              </div>
-            </div>
-
-            <div v-else-if="!generatedData.success" class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <h3 class="font-semibold text-red-800 mb-2">Błąd podczas generowania:</h3>
-              <p class="text-red-700 text-sm">{{ generatedData.error || 'Nieznany błąd' }}</p>
-            </div>
-          </div>
-
-          <div v-else class="text-gray-500 text-sm">
-            Kliknij "Generuj" aby wygenerować dane z surowych danych oferty.
-          </div>
-        </div>
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="flex items-center text-3xl font-bold mb-2 gap-4">
+          <UButton icon="i-lucide-arrow-left" to="/raw" variant="outline">wróć</UButton>
+          <span class="flex-1">Dodaj nową ofertę</span>
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">Wypełnij formularz aby dodać nową ofertę do systemu</p>
       </div>
 
-      <!-- Right: Form -->
-      <div>
-        <h2 class="text-2xl font-bold mb-4">Formularz</h2>
+      <!-- Main Form -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm mt-6 mb-6 px-6 py-4">
 
         <UForm
             ref="formRef"
@@ -278,9 +119,7 @@
             </UFormField>
           </template>
 
-          <!-- Common Fields -->
-
-
+          <!-- Description -->
           <UFormField label="Opis:" name="description">
             <UTextarea
                 v-model="formData.description"
@@ -290,9 +129,14 @@
             />
           </UFormField>
 
-          <div class="flex gap-4 items-end">
+          <!-- Author and Email -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="Autor:" name="author">
-              <UInput v-model="formData.author" placeholder="Wprowadź autora oferty" class="w-72"/>
+              <UInput
+                  v-model="formData.author"
+                  placeholder="Wprowadź autora oferty"
+                  class="w-full"
+              />
             </UFormField>
 
             <UFormField label="Email:" name="email">
@@ -300,7 +144,7 @@
                   v-model="formData.email"
                   type="email"
                   placeholder="email@example.com"
-                  class="w-72"
+                  class="w-full"
                   :ui="{ trailing: 'pe-1' }"
               >
                 <template #trailing>
@@ -315,14 +159,17 @@
               </UInput>
             </UFormField>
           </div>
+
+          <!-- Legal Roles -->
           <UFormField label="Role prawne:" name="roles">
-            <UButtonGroup size="lg">
+            <UButtonGroup size="lg" class="flex-wrap">
               <UButton
                   v-for="role in legalRoles"
                   :key="role.value"
                   :variant="formData.roles.includes(role.value) ? 'solid' : 'outline'"
                   color="primary"
                   type="button"
+                  class="mb-2"
                   @click="toggleRole(role.value)"
               >
                 {{ role.label }}
@@ -331,13 +178,13 @@
           </UFormField>
 
           <!-- Date and Time -->
-          <div class="flex gap-4 items-end">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="Data:" name="date">
               <UInput
                   v-model="formData.date"
                   type="date"
                   placeholder="Wybierz datę"
-                  class="w-64"
+                  class="w-full"
                   :ui="{ trailing: 'pe-1' }"
               >
                 <template #trailing>
@@ -357,7 +204,7 @@
                   v-model="formData.hour"
                   type="time"
                   placeholder="Wybierz godzinę"
-                  class="w-36"
+                  class="w-full"
                   :ui="{ trailing: 'pe-1' }"
               >
                 <template #trailing>
@@ -373,6 +220,7 @@
             </UFormField>
           </div>
 
+          <!-- Invoice Checkbox -->
           <UFormField label="Faktura:" name="invoiceRequired">
             <UCheckbox
                 v-model="formData.invoiceRequired"
@@ -381,52 +229,97 @@
           </UFormField>
 
           <!-- Submit Buttons -->
-          <div class="flex gap-2">
-            <UButton type="submit" :loading="isSubmitting">
-              {{ isSubmitting ? 'Zapisywanie...' : 'Zaktualizuj ofertę' }}
+          <div class="flex gap-3 pt-4">
+            <UButton
+                type="submit"
+                :loading="isSubmitting"
+                size="lg"
+                icon="i-lucide-plus"
+            >
+              {{ isSubmitting ? 'Dodawanie...' : 'Dodaj ofertę' }}
             </UButton>
-            <UButton variant="outline" type="button" @click="resetForm">
+
+            <UButton
+                variant="outline"
+                type="button"
+                size="lg"
+                icon="i-lucide-refresh-cw"
+                @click="resetForm"
+            >
               Wyczyść formularz
             </UButton>
-            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer">
-              Postpone
-            </UButton>
-            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer">Reject
-            </UButton>
-
           </div>
-
         </UForm>
       </div>
+
+      <!-- Success Message -->
+      <div
+          v-if="showSuccessMessage"
+          class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
+      >
+        <div class="flex items-center">
+          <UIcon name="i-lucide-check-circle" class="text-green-600 mr-3" size="20" />
+          <div>
+            <h3 class="font-semibold text-green-800">Oferta została dodana pomyślnie!</h3>
+            <p class="text-green-700 text-sm mt-1">Możesz dodać kolejną ofertę lub wrócić do listy.</p>
+          </div>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <UButton
+              size="sm"
+              color="green"
+              variant="outline"
+              icon="i-lucide-plus"
+              @click="resetForm"
+          >
+            Dodaj kolejną
+          </UButton>
+          <UButton
+              size="sm"
+              color="green"
+              variant="outline"
+              to="/raw"
+              icon="i-lucide-list"
+          >
+            Powrót do listy
+          </UButton>
+        </div>
+      </div>
     </div>
-    <!-- Debug Info -->
+
+    <!-- Debug Panel -->
     <DebugPanel
         v-if="isDevelopment"
         :form-data="formData"
+        :additional-data="{
+          facilities,
+          cities,
+          legalRoles,
+          facilitySearch,
+          citySearch,
+          isLoadingFacilities,
+          isLoadingCities,
+          isSubmitting
+        }"
     />
   </UContainer>
 </template>
 
 <script setup>
-import {useRoute} from 'vue-router'
-import {computed, onMounted, ref, watch} from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import * as yup from 'yup'
 import {
   getCitiesPlacesCityCityNameGet,
   getFacilitiesPlacesFacilityPlaceNameGet,
   getLegalRolesOffersLegalRolesGet,
-  getRawOfferOffersRawOfferUuidGet,
-  parseRawOffersParseOfferUuidGet,
-  updateOfferOffersOfferUuidPatch
+    createUserOfferOffersPost
 } from '~/client'
-import DebugPanel from "~/components/DebugPanel.vue";
+import DebugPanel from "~/components/DebugPanel.vue"
 
 // ====================
 // CONSTANTS & SETUP
 // ====================
-const route = useRoute()
 const toast = useToast()
-const uuid = route.params.uuid
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 const courtTypes = [
@@ -441,9 +334,9 @@ const courtTypes = [
 const validationSchema = computed(() => {
   const baseSchema = {
     placeCategory: yup.string().required('Wybierz kategorię').oneOf(['court', 'other']),
-    author: yup.string(),
-    description: yup.string().required(),
-    email: yup.string().email('Nieprawidłowy format email').nullable(),
+    author: yup.string().required('Autor jest wymagany').max(100),
+    description: yup.string().required('Opis jest wymagany').max(1000),
+    email: yup.string().email('Nieprawidłowy format email').required('Email jest wymagany').max(128),
     roles: yup.array().of(yup.string()),
     date: yup.string().nullable(),
     hour: yup.string().nullable(),
@@ -476,11 +369,8 @@ const validationSchema = computed(() => {
 // ====================
 // REACTIVE STATE
 // ====================
-const offer = ref(null)
-const isLoading = ref(false)
-const isGenerating = ref(false)
-const generatedData = ref(null)
 const isSubmitting = ref(false)
+const showSuccessMessage = ref(false)
 
 // Form data with proper initial values
 const formData = ref({
@@ -510,8 +400,6 @@ const isLoadingCities = ref(false)
 const legalRoles = ref([])
 const isLoadingRoles = ref(false)
 
-
-const offerStatus = ref('')
 // ====================
 // FORM METHODS
 // ====================
@@ -525,6 +413,7 @@ const setPlaceCategory = (category) => {
     formData.value.placeType = null
     formData.value.facility = null
   }
+  showSuccessMessage.value = false
 }
 
 const setPlaceType = (type) => {
@@ -561,72 +450,17 @@ const resetForm = () => {
   citySearch.value = ''
   facilities.value = []
   cities.value = []
+  showSuccessMessage.value = false
 }
 
 // ====================
 // API METHODS
 // ====================
-const fetchOffer = async () => {
-  isLoading.value = true
-  try {
-    const response = await getRawOfferOffersRawOfferUuidGet({
-      path: {offer_uuid: uuid}
-    })
-
-    if (response.data) {
-      offer.value = response.data
-      populateFormWithOfferData(response.data)
-    }
-  } catch (error) {
-    console.error('Error fetching offer:', error)
-    toast.add({
-      title: 'Błąd',
-      description: 'Nie udało się pobrać danych oferty',
-      color: 'error'
-    })
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const generateData = async () => {
-  isGenerating.value = true
-  try {
-    const response = await parseRawOffersParseOfferUuidGet({
-      path: {offer_uuid: uuid}
-    })
-
-    if (response.data) {
-      generatedData.value = response.data
-
-      if (response.data.success) {
-        toast.add({
-          title: 'Sukces',
-          description: 'Dane zostały wygenerowane pomyślnie',
-          color: 'success'
-        })
-      } else {
-        toast.add({
-          title: 'Błąd',
-          description: response.data.error || 'Nie udało się wygenerować danych',
-          color: 'error'
-        })
-      }
-    }
-  } catch (error) {
-    console.error('Error generating data:', error)
-    toast.add({
-      title: 'Błąd',
-      description: 'Wystąpił błąd podczas generowania danych',
-      color: 'error'
-    })
-  } finally {
-    isGenerating.value = false
-  }
-}
-
 const searchFacilities = async (searchTerm, placeType) => {
-  if (!searchTerm || searchTerm.length < 2) return
+  if (!searchTerm || searchTerm.length < 2) {
+    facilities.value = []
+    return
+  }
 
   isLoadingFacilities.value = true
   try {
@@ -642,13 +476,17 @@ const searchFacilities = async (searchTerm, placeType) => {
     }))
   } catch (error) {
     console.error('Error searching facilities:', error)
+    facilities.value = []
   } finally {
     isLoadingFacilities.value = false
   }
 }
 
 const searchCities = async (searchTerm) => {
-  if (!searchTerm || searchTerm.length < 2) return
+  if (!searchTerm || searchTerm.length < 2) {
+    cities.value = []
+    return
+  }
 
   isLoadingCities.value = true
   try {
@@ -662,6 +500,7 @@ const searchCities = async (searchTerm) => {
     }))
   } catch (error) {
     console.error('Error searching cities:', error)
+    cities.value = []
   } finally {
     isLoadingCities.value = false
   }
@@ -679,23 +518,14 @@ const fetchLegalRoles = async () => {
     }
   } catch (error) {
     console.error('Error fetching legal roles:', error)
+    toast.add({
+      title: 'Błąd',
+      description: 'Nie udało się pobrać ról prawnych',
+      color: 'error'
+    })
   } finally {
     isLoadingRoles.value = false
   }
-}
-
-const postponeOffer = async () => {
-  await updateOfferOffersOfferUuidPatch({
-    path: {offer_uuid: uuid},
-    body: {status: 'postponed'}
-  })
-}
-
-const rejectOffer = async () => {
-  await updateOfferOffersOfferUuidPatch({
-    path: {offer_uuid: uuid},
-    body: {status: 'rejected'}
-  })
 }
 
 // ====================
@@ -703,25 +533,34 @@ const rejectOffer = async () => {
 // ====================
 const handleSubmit = async (event) => {
   isSubmitting.value = true
+  showSuccessMessage.value = false
 
   try {
-    const updateData = buildUpdatePayload(event.data)
+    const createData = buildCreatePayload(event.data)
 
-    await updateOfferOffersOfferUuidPatch({
-      path: {offer_uuid: uuid},
-      body: updateData
+    await createUserOfferOffersPost({
+      body: createData
     })
+
+    showSuccessMessage.value = true
 
     toast.add({
       title: 'Sukces',
-      description: 'Oferta została zaktualizowana pomyślnie',
+      description: 'Oferta została dodana pomyślnie',
       color: 'success'
     })
+
+    // Scroll to success message
+    setTimeout(() => {
+      const successElement = document.querySelector('.bg-green-50')
+      successElement?.scrollIntoView({behavior: 'smooth', block: 'center'})
+    }, 100)
+
   } catch (error) {
     console.error('Form submission error:', error)
     toast.add({
       title: 'Błąd',
-      description: 'Błąd podczas aktualizacji oferty',
+      description: error.response?.data?.detail || 'Błąd podczas dodawania oferty',
       color: 'error'
     })
   } finally {
@@ -735,16 +574,16 @@ const handleFormError = (event) => {
   element?.scrollIntoView({behavior: 'smooth', block: 'center'})
 }
 
-const buildUpdatePayload = (data) => {
+const buildCreatePayload = (data) => {
   const payload = {
-    status: 'accepted',
-    description: data.description || null,
-    author: data.author || null,
+    description: data.description,
+    author: data.author,
     email: data.email,
     roles: data.roles || [],
-    date: data.date,
-    hour: data.hour,
-    invoice: data.invoiceRequired
+    date: data.date || null,
+    hour: data.hour || null,
+    invoice: data.invoiceRequired || false,
+    source: 'user'
   }
 
   if (data.placeCategory === 'court' && data.facility) {
@@ -759,80 +598,6 @@ const buildUpdatePayload = (data) => {
   }
 
   return payload
-}
-
-// ====================
-// UTILITY METHODS
-// ====================
-const populateFormWithOfferData = (offerData) => {
-  if (offerData.author) formData.value.author = offerData.author
-  if (offerData.description) formData.value.description = offerData.description
-  if (offerData.email) formData.value.email = offerData.email
-  if (offerData.date) formData.value.date = offerData.date
-  if (offerData.hour) formData.value.hour = offerData.hour
-  formData.value.invoiceRequired = offerData.invoice === true
-  offerStatus.value = offerData.status
-
-  if (offerData.place) {
-    formData.value.facility = {
-      label: offerData.place.name,
-      value: offerData.place.uuid
-    }
-    facilitySearch.value = offerData.place.name
-
-    const placeName = offerData.place.name.toLowerCase()
-    if (placeName.includes('rejonowy')) formData.value.placeType = 'SR'
-    else if (placeName.includes('apelacyjny')) formData.value.placeType = 'SA'
-    else if (placeName.includes('okręgowy')) formData.value.placeType = 'SO'
-  }
-
-  if (offerData.legal_roles?.length) {
-    formData.value.roles = offerData.legal_roles.map(role => role.uuid)
-  }
-}
-
-const copyField = (fieldName, value) => {
-  if (!value) return
-
-  const fieldMappings = {
-    place_type: () => {
-      if (value.toLowerCase().includes('rejonowy')) formData.value.placeType = 'SR'
-      else if (value.toLowerCase().includes('apelacyjny')) formData.value.placeType = 'SA'
-      else if (value.toLowerCase().includes('okręgowy')) formData.value.placeType = 'SO'
-    },
-    place_name: () => {
-      facilitySearch.value = value
-      formData.value.facility = {label: value, value: value}
-    },
-    description: () => formData.value.description = value,
-    date: () => {
-      try {
-        if (value.includes('.')) {
-          const [day, month, year] = value.split('.')
-          formData.value.date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        } else {
-          formData.value.date = value
-        }
-      } catch {
-        formData.value.date = value
-      }
-    },
-    time: () => formData.value.hour = value.replace('.', ':'),
-    email: () => formData.value.email = value,
-    legal_roles: () => {
-      // Split the comma-separated role names
-      const roleNames = value.split(',').map(role => role.trim())
-
-      console.log(roleNames)
-
-      console.log(legalRoles.value)
-      formData.value.roles = legalRoles.value
-          .filter(role => roleNames.includes(role.label.toLowerCase()))
-          .map(role => role.value)
-    }
-  }
-
-  fieldMappings[fieldName]?.()
 }
 
 // ====================
@@ -855,6 +620,17 @@ watch(() => formData.value.placeType, () => {
 // ====================
 onMounted(() => {
   fetchLegalRoles()
-  fetchOffer()
+})
+
+// ====================
+// META
+// ====================
+definePageMeta({
+  title: 'Dodaj ofertę'
+})
+
+useSeoMeta({
+  title: 'Dodaj nową ofertę',
+  description: 'Formularz dodawania nowej oferty do systemu'
 })
 </script>

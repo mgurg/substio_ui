@@ -165,25 +165,54 @@ export type LegalRoleIndexResponse = {
  */
 export type OfferAdd = {
     /**
-     * Raw Data
-     */
-    raw_data: string;
-    /**
      * Author
      */
     author: string;
     /**
-     * Author Uid
+     * Facility Uuid
      */
-    author_uid: string;
+    facility_uuid?: string | null;
     /**
-     * Offer Uid
+     * Facility Name
      */
-    offer_uid: string;
+    facility_name?: string | null;
     /**
-     * Timestamp
+     * City Uuid
      */
-    timestamp: string;
+    city_uuid?: string | null;
+    /**
+     * City Name
+     */
+    city_name?: string | null;
+    /**
+     * Place Name
+     */
+    place_name?: string | null;
+    /**
+     * Email
+     */
+    email?: string | null;
+    /**
+     * Date
+     */
+    date?: string | null;
+    /**
+     * Hour
+     */
+    hour?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Invoice
+     */
+    invoice?: boolean | null;
+    status?: OfferStatus | null;
+    /**
+     * Roles
+     */
+    roles?: Array<string> | null;
     source: SourceType;
 };
 
@@ -199,6 +228,10 @@ export type OfferIndexResponse = {
      * Author
      */
     author: string;
+    /**
+     * Place Name
+     */
+    place_name: string;
     /**
      * Description
      */
@@ -229,6 +262,33 @@ export type OfferIndexResponse = {
      * Valid To
      */
     valid_to?: string | null;
+};
+
+/**
+ * OfferRawAdd
+ */
+export type OfferRawAdd = {
+    /**
+     * Raw Data
+     */
+    raw_data: string;
+    /**
+     * Author
+     */
+    author: string;
+    /**
+     * Author Uid
+     */
+    author_uid: string;
+    /**
+     * Offer Uid
+     */
+    offer_uid: string;
+    /**
+     * Timestamp
+     */
+    timestamp: string;
+    source: SourceType;
 };
 
 /**
@@ -507,6 +567,10 @@ export type RawOfferIndexResponse = {
      * Url
      */
     url: string | null;
+    /**
+     * Invoice
+     */
+    invoice?: boolean | null;
     place?: PlaceResponse | null;
     city?: CityResponse | null;
     /**
@@ -643,6 +707,29 @@ export type ValidationError = {
     type: string;
 };
 
+export type CreateUserOfferOffersPostData = {
+    body: OfferAdd;
+    path?: never;
+    query?: never;
+    url: '/offers';
+};
+
+export type CreateUserOfferOffersPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateUserOfferOffersPostError = CreateUserOfferOffersPostErrors[keyof CreateUserOfferOffersPostErrors];
+
+export type CreateUserOfferOffersPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: unknown;
+};
+
 export type GetAllRawOffersOffersRawGetData = {
     body?: never;
     path?: never;
@@ -694,7 +781,7 @@ export type GetAllRawOffersOffersRawGetResponses = {
 export type GetAllRawOffersOffersRawGetResponse = GetAllRawOffersOffersRawGetResponses[keyof GetAllRawOffersOffersRawGetResponses];
 
 export type CreateRawOfferOffersRawPostData = {
-    body: OfferAdd;
+    body: OfferRawAdd;
     path?: never;
     query?: never;
     url: '/offers/raw';
