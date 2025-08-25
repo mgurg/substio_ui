@@ -191,7 +191,7 @@ export type OfferAdd = {
     /**
      * Email
      */
-    email?: string | null;
+    email: string;
     /**
      * Date
      */
@@ -545,7 +545,7 @@ export type RawOfferIndexResponse = {
     /**
      * Author Uid
      */
-    author_uid: string;
+    author_uid?: string | null;
     /**
      * Offer Uid
      */
@@ -553,7 +553,7 @@ export type RawOfferIndexResponse = {
     /**
      * Raw Data
      */
-    raw_data: string;
+    raw_data?: string | null;
     source: SourceType;
     /**
      * Description
@@ -573,6 +573,10 @@ export type RawOfferIndexResponse = {
     invoice?: boolean | null;
     place?: PlaceResponse | null;
     city?: CityResponse | null;
+    /**
+     * Place Name
+     */
+    place_name?: string | null;
     /**
      * Legal Roles
      */

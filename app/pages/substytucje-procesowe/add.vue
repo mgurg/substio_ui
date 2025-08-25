@@ -258,7 +258,7 @@
           class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
       >
         <div class="flex items-center">
-          <UIcon name="i-lucide-check-circle" class="text-green-600 mr-3" size="20" />
+          <UIcon name="i-lucide-check-circle" class="text-green-600 mr-3" size="20"/>
           <div>
             <h3 class="font-semibold text-green-800">Oferta została dodana pomyślnie!</h3>
             <p class="text-green-700 text-sm mt-1">Możesz dodać kolejną ofertę lub wrócić do listy.</p>
@@ -288,31 +288,28 @@
     </div>
 
     <!-- Debug Panel -->
-    <DebugPanel
-        v-if="isDevelopment"
+    <SubstitutionOfferGenerator
         :form-data="formData"
         :additional-data="{
-          facilities,
-          cities,
-          legalRoles,
-          facilitySearch,
-          citySearch,
-          isLoadingFacilities,
-          isLoadingCities,
-          isSubmitting
-        }"
+      legalRoles,
+      facilitySearch,
+      citySearch,
+      isLoadingFacilities,
+      isLoadingCities,
+      isSubmitting
+    }"
     />
   </UContainer>
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
   getCitiesPlacesCityCityNameGet,
   getFacilitiesPlacesFacilityPlaceNameGet,
   getLegalRolesOffersLegalRolesGet,
-    createUserOfferOffersPost
+  createUserOfferOffersPost
 } from '~/client'
 import DebugPanel from "~/components/DebugPanel.vue"
 

@@ -2,7 +2,7 @@
   <UContainer>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Left: Offer Details -->
-      <div>
+      <div v-if="offer?.raw_data">
         <h2 class="flex items-center text-2xl font-bold mb-4 gap-4">
           <UButton icon="i-lucide-arrow-left" to="/raw">wróć</UButton>
           <span class="flex-1">Dane oferty</span>
@@ -774,6 +774,8 @@ const populateFormWithOfferData = (offerData) => {
   offerStatus.value = offerData.status
 
   if (offerData.place) {
+    // --- Court branch ---
+    formData.value.placeCategory = 'court'
     formData.value.facility = {
       label: offerData.place.name,
       value: offerData.place.uuid
@@ -784,6 +786,19 @@ const populateFormWithOfferData = (offerData) => {
     if (placeName.includes('rejonowy')) formData.value.placeType = 'SR'
     else if (placeName.includes('apelacyjny')) formData.value.placeType = 'SA'
     else if (placeName.includes('okręgowy')) formData.value.placeType = 'SO'
+  } else if (offerData.city) {
+    // --- Other branch ---
+    formData.value.placeCategory = 'other'
+
+    if (offerData.place_name) {
+      formData.value.place = offerData.place_name
+    }
+
+    formData.value.city = {
+      label: offerData.city.name,
+      value: offerData.city.uuid
+    }
+    citySearch.value = offerData.city.name
   }
 
   if (offerData.legal_roles?.length) {
