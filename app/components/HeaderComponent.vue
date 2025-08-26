@@ -1,10 +1,25 @@
 <template>
-  <header class="flex items-center justify-between px-4 py-2 shadow-md">
+  <header class="flex items-center justify-between px-6 py-3 shadow-md">
     <!-- Navigation Links -->
     <nav>
-      <ul class="flex gap-4">
+      <ul class="flex gap-3">
         <li>
-          <NuxtLink to="/" active-class="text-primary" class="hover:text-primary">START</NuxtLink>
+          <NuxtLink
+              to="/"
+              class="icon-link p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              active-class="text-primary"
+          >
+            <Icon name="i-lucide-home" class="w-6 h-6" />
+          </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink
+              to="/substytucje-procesowe/add"
+              class="px-4 py-2 rounded-lg font-medium bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+              active-class="bg-primary text-white hover:bg-primary/90"
+          >
+            Dodaj ogłoszenie
+          </NuxtLink>
         </li>
       </ul>
     </nav>
@@ -14,7 +29,7 @@
       <UButton
           :icon="colorMode.preference === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
           :aria-label="`Switch to ${colorMode.preference === 'dark' ? 'light' : 'dark'} mode`"
-          class="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-700 dark:hover:bg-gray-100"
+          class="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           @click="toggleDarkMode"
       />
     </div>
@@ -32,7 +47,6 @@ const toggleDarkMode = () => {
 
 <style scoped>
 header {
-  background-color: var(--ui-background);
   color: var(--ui-text);
   padding: 1rem;
   margin-bottom: 3rem;
@@ -53,11 +67,13 @@ a {
   color: inherit;
 }
 
-a:hover {
+/* only text links get underline */
+nav a:hover {
   text-decoration: underline;
 }
 
-.text-primary {
-  color: var(--ui-primary);
+/* disable underline for icon-only link */
+.icon-link:hover {
+  text-decoration: none;
 }
 </style>

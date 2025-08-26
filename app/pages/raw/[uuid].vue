@@ -2,10 +2,11 @@
   <UContainer>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Left: Offer Details -->
-      <div>
-        <h2 class="text-2xl font-bold mb-4">
-          <UButton icon="i-lucide-arrow-left" class="mr-4" to="/raw">wróć</UButton>
-          Dane oferty
+      <div v-if="offer?.raw_data">
+        <h2 class="flex items-center text-2xl font-bold mb-4 gap-4">
+          <UButton icon="i-lucide-arrow-left" to="/raw">wróć</UButton>
+          <span class="flex-1">Dane oferty</span>
+          <UBadge size="lg" color="neutral" variant="soft">{{ offerStatus }}</UBadge>
         </h2>
 
         <USkeleton v-if="isLoading" class="h-32 w-full"/>
@@ -237,6 +238,9 @@
                   icon="i-lucide-building"
                   searchable
                   class="w-full"
+                  :highlight="!!formData.facility"
+                  color="primary"
+                  :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
               />
             </UFormField>
           </template>
@@ -267,6 +271,9 @@
                   icon="i-lucide-map-pin"
                   searchable
                   class="w-full"
+                  :highlight="!!formData.city"
+                  color="primary"
+                  :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
               />
             </UFormField>
           </template>
@@ -366,6 +373,13 @@
             </UFormField>
           </div>
 
+          <UFormField label="Faktura:" name="invoiceRequired">
+            <UCheckbox
+                v-model="formData.invoiceRequired"
+                label="Wymagana faktura"
+            />
+          </UFormField>
+
           <!-- Submit Buttons -->
           <div class="flex gap-2">
             <UButton type="submit" :loading="isSubmitting">
@@ -374,22 +388,22 @@
             <UButton variant="outline" type="button" @click="resetForm">
               Wyczyść formularz
             </UButton>
-            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer"/>
-            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer"/>
+            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer">
+              Postpone
+            </UButton>
+            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer">Reject
+            </UButton>
 
           </div>
 
         </UForm>
       </div>
     </div>
-    <div v-if="isDevelopment" class="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-      <h3 class="font-semibold mb-2">Debug Info:</h3>
-      <pre class="text-xs">{{
-          JSON.stringify({
-            formData,
-          }, null, 2)
-        }}</pre>
-    </div>
+    <!-- Debug Info -->
+    <DebugPanel
+        v-if="isDevelopment"
+        :form-data="formData"
+    />
   </UContainer>
 </template>
 
@@ -405,6 +419,7 @@ import {
   parseRawOffersParseOfferUuidGet,
   updateOfferOffersOfferUuidPatch
 } from '~/client'
+import DebugPanel from "~/components/DebugPanel.vue";
 
 // ====================
 // CONSTANTS & SETUP
@@ -427,11 +442,12 @@ const validationSchema = computed(() => {
   const baseSchema = {
     placeCategory: yup.string().required('Wybierz kategorię').oneOf(['court', 'other']),
     author: yup.string(),
-    description: yup.string(),
+    description: yup.string().required(),
     email: yup.string().email('Nieprawidłowy format email').nullable(),
     roles: yup.array().of(yup.string()),
     date: yup.string().nullable(),
-    hour: yup.string().nullable()
+    hour: yup.string().nullable(),
+    invoiceRequired: yup.boolean()
   }
 
   if (formData.value.placeCategory === 'court') {
@@ -478,7 +494,8 @@ const formData = ref({
   email: null,
   roles: [],
   date: null,
-  hour: null
+  hour: null,
+  invoiceRequired: false
 })
 
 // Search states
@@ -493,6 +510,8 @@ const isLoadingCities = ref(false)
 const legalRoles = ref([])
 const isLoadingRoles = ref(false)
 
+
+const offerStatus = ref('')
 // ====================
 // FORM METHODS
 // ====================
@@ -535,7 +554,8 @@ const resetForm = () => {
     email: null,
     roles: [],
     date: null,
-    hour: null
+    hour: null,
+    invoiceRequired: false
   }
   facilitySearch.value = ''
   citySearch.value = ''
@@ -723,7 +743,8 @@ const buildUpdatePayload = (data) => {
     email: data.email,
     roles: data.roles || [],
     date: data.date,
-    hour: data.hour
+    hour: data.hour,
+    invoice: data.invoiceRequired
   }
 
   if (data.placeCategory === 'court' && data.facility) {
@@ -749,8 +770,12 @@ const populateFormWithOfferData = (offerData) => {
   if (offerData.email) formData.value.email = offerData.email
   if (offerData.date) formData.value.date = offerData.date
   if (offerData.hour) formData.value.hour = offerData.hour
+  formData.value.invoiceRequired = offerData.invoice === true
+  offerStatus.value = offerData.status
 
   if (offerData.place) {
+    // --- Court branch ---
+    formData.value.placeCategory = 'court'
     formData.value.facility = {
       label: offerData.place.name,
       value: offerData.place.uuid
@@ -761,6 +786,19 @@ const populateFormWithOfferData = (offerData) => {
     if (placeName.includes('rejonowy')) formData.value.placeType = 'SR'
     else if (placeName.includes('apelacyjny')) formData.value.placeType = 'SA'
     else if (placeName.includes('okręgowy')) formData.value.placeType = 'SO'
+  } else if (offerData.city) {
+    // --- Other branch ---
+    formData.value.placeCategory = 'other'
+
+    if (offerData.place_name) {
+      formData.value.place = offerData.place_name
+    }
+
+    formData.value.city = {
+      label: offerData.city.name,
+      value: offerData.city.uuid
+    }
+    citySearch.value = offerData.city.name
   }
 
   if (offerData.legal_roles?.length) {
@@ -795,7 +833,18 @@ const copyField = (fieldName, value) => {
       }
     },
     time: () => formData.value.hour = value.replace('.', ':'),
-    email: () => formData.value.email = value
+    email: () => formData.value.email = value,
+    legal_roles: () => {
+      // Split the comma-separated role names
+      const roleNames = value.split(',').map(role => role.trim())
+
+      console.log(roleNames)
+
+      console.log(legalRoles.value)
+      formData.value.roles = legalRoles.value
+          .filter(role => roleNames.includes(role.label.toLowerCase()))
+          .map(role => role.value)
+    }
   }
 
   fieldMappings[fieldName]?.()
