@@ -1,6 +1,6 @@
 <template>
   <UContainer>
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
         <h1 class="flex items-center text-3xl font-bold mb-2 gap-4">
@@ -10,295 +10,303 @@
         <p class="text-gray-600 dark:text-gray-400">Wypełnij formularz aby dodać nową ofertę do systemu</p>
       </div>
 
-      <!-- Main Form -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm mt-6 mb-6 px-6 py-4">
-
-        <UForm
-            ref="formRef"
-            :schema="validationSchema"
-            :state="formData"
-            class="space-y-6"
-            @submit="handleSubmit"
-            @error="handleFormError"
-        >
-          <!-- Category Selection -->
-          <UFormField
-              label="Kategoria:"
-              name="placeCategory"
-          >
-            <UButtonGroup>
-              <UButton
-                  :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="setPlaceCategory('court')"
-              >
-                Sąd
-              </UButton>
-              <UButton
-                  :variant="formData.placeCategory === 'other' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="setPlaceCategory('other')"
-              >
-                Inne
-              </UButton>
-            </UButtonGroup>
-          </UFormField>
-
-          <!-- Court Fields -->
-          <template v-if="formData.placeCategory === 'court'">
-            <UFormField
-                label="Typ sądu:"
-                name="placeType"
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column - Form -->
+        <div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-6 py-4">
+            <UForm
+                ref="formRef"
+                :schema="validationSchema"
+                :state="formData"
+                class="space-y-6"
+                @submit="handleSubmit"
+                @error="handleFormError"
             >
-              <UButtonGroup>
-                <UButton
-                    v-for="type in courtTypes"
-                    :key="type.value"
-                    :variant="formData.placeType === type.value ? 'solid' : 'outline'"
-                    color="primary"
-                    type="button"
-                    @click="setPlaceType(type.value)"
+              <!-- Category Selection -->
+              <UFormField
+                  label="Kategoria:"
+                  name="placeCategory"
+              >
+                <UButtonGroup>
+                  <UButton
+                      :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
+                      color="primary"
+                      type="button"
+                      @click="setPlaceCategory('court')"
+                  >
+                    Sąd
+                  </UButton>
+                  <UButton
+                      :variant="formData.placeCategory === 'other' ? 'solid' : 'outline'"
+                      color="primary"
+                      type="button"
+                      @click="setPlaceCategory('other')"
+                  >
+                    Inne
+                  </UButton>
+                </UButtonGroup>
+              </UFormField>
+
+              <!-- Court Fields -->
+              <template v-if="formData.placeCategory === 'court'">
+                <UFormField
+                    label="Typ sądu:"
+                    name="placeType"
                 >
-                  {{ type.label }}
+                  <UButtonGroup>
+                    <UButton
+                        v-for="type in courtTypes"
+                        :key="type.value"
+                        :variant="formData.placeType === type.value ? 'solid' : 'outline'"
+                        color="primary"
+                        type="button"
+                        @click="setPlaceType(type.value)"
+                    >
+                      {{ type.label }}
+                    </UButton>
+                  </UButtonGroup>
+                </UFormField>
+
+                <UFormField
+                    label="Placówka:"
+                    name="facility"
+                >
+                  <USelectMenu
+                      v-model="formData.facility"
+                      v-model:search-term="facilitySearch"
+                      :items="facilities"
+                      :loading="isLoadingFacilities"
+                      placeholder="Wyszukaj placówkę"
+                      icon="i-lucide-building"
+                      searchable
+                      class="w-full"
+                      :highlight="!!formData.facility"
+                      color="primary"
+                      :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
+                  />
+                </UFormField>
+              </template>
+
+              <!-- Other Fields -->
+              <template v-else-if="formData.placeCategory === 'other'">
+                <UFormField
+                    label="Miejsce:"
+                    name="place"
+                >
+                  <UInput
+                      v-model="formData.place"
+                      placeholder="Podaj nazwę miejsca"
+                      class="w-full"
+                  />
+                </UFormField>
+
+                <UFormField
+                    label="Miasto:"
+                    name="city"
+                >
+                  <USelectMenu
+                      v-model="formData.city"
+                      v-model:search-term="citySearch"
+                      :items="cities"
+                      :loading="isLoadingCities"
+                      placeholder="Wyszukaj miasto"
+                      icon="i-lucide-map-pin"
+                      searchable
+                      class="w-full"
+                      :highlight="!!formData.city"
+                      color="primary"
+                      :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
+                  />
+                </UFormField>
+              </template>
+
+              <!-- Description -->
+              <UFormField label="Opis:" name="description">
+                <UTextarea
+                    v-model="formData.description"
+                    placeholder="Wprowadź opis oferty"
+                    :rows="4"
+                    class="w-full"
+                />
+              </UFormField>
+
+              <!-- Author and Email -->
+              <div class="space-y-4">
+                <UFormField label="Autor:" name="author">
+                  <UInput
+                      v-model="formData.author"
+                      placeholder="Wprowadź autora oferty"
+                      class="w-full"
+                  />
+                </UFormField>
+
+                <UFormField label="Email:" name="email">
+                  <UInput
+                      v-model="formData.email"
+                      type="email"
+                      placeholder="email@example.com"
+                      class="w-full"
+                      :ui="{ trailing: 'pe-1' }"
+                  >
+                    <template #trailing>
+                      <UButton
+                          color="neutral"
+                          variant="link"
+                          size="sm"
+                          icon="i-lucide-circle-x"
+                          @click="formData.email = null"
+                      />
+                    </template>
+                  </UInput>
+                </UFormField>
+              </div>
+
+              <!-- Legal Roles -->
+              <UFormField label="Role prawne:" name="roles">
+                <UButtonGroup size="sm" class="flex-wrap">
+                  <UButton
+                      v-for="role in legalRoles"
+                      :key="role.value"
+                      :variant="formData.roles.includes(role.value) ? 'solid' : 'outline'"
+                      color="primary"
+                      type="button"
+                      class="mb-2"
+                      @click="toggleRole(role.value)"
+                  >
+                    {{ role.label }}
+                  </UButton>
+                </UButtonGroup>
+              </UFormField>
+
+              <!-- Date and Time -->
+              <div class="space-y-4">
+                <UFormField label="Data:" name="date">
+                  <UInput
+                      v-model="formData.date"
+                      type="date"
+                      placeholder="Wybierz datę"
+                      class="w-full"
+                      :ui="{ trailing: 'pe-1' }"
+                  >
+                    <template #trailing>
+                      <UButton
+                          color="neutral"
+                          variant="link"
+                          size="sm"
+                          icon="i-lucide-circle-x"
+                          @click="formData.date = null"
+                      />
+                    </template>
+                  </UInput>
+                </UFormField>
+
+                <UFormField label="Godzina:" name="hour">
+                  <UInput
+                      v-model="formData.hour"
+                      type="time"
+                      placeholder="Wybierz godzinę"
+                      class="w-full"
+                      :ui="{ trailing: 'pe-1' }"
+                  >
+                    <template #trailing>
+                      <UButton
+                          color="neutral"
+                          variant="link"
+                          size="sm"
+                          icon="i-lucide-circle-x"
+                          @click="formData.hour = null"
+                      />
+                    </template>
+                  </UInput>
+                </UFormField>
+              </div>
+
+              <!-- Invoice Checkbox -->
+              <UFormField label="Faktura:" name="invoiceRequired">
+                <UCheckbox
+                    v-model="formData.invoiceRequired"
+                    label="Wymagana faktura"
+                />
+              </UFormField>
+
+              <!-- Submit Buttons -->
+              <div class="flex flex-col gap-3 pt-4">
+                <UButton
+                    type="submit"
+                    :loading="isSubmitting"
+                    size="lg"
+                    icon="i-lucide-plus"
+                    class="w-full"
+                >
+                  {{ isSubmitting ? 'Dodawanie...' : 'Dodaj ofertę' }}
                 </UButton>
-              </UButtonGroup>
-            </UFormField>
 
-            <UFormField
-                label="Placówka:"
-                name="facility"
-            >
-              <USelectMenu
-                  v-model="formData.facility"
-                  v-model:search-term="facilitySearch"
-                  :items="facilities"
-                  :loading="isLoadingFacilities"
-                  placeholder="Wyszukaj placówkę"
-                  icon="i-lucide-building"
-                  searchable
-                  class="w-full"
-                  :highlight="!!formData.facility"
-                  color="primary"
-                  :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
-              />
-            </UFormField>
-          </template>
-
-          <!-- Other Fields -->
-          <template v-else-if="formData.placeCategory === 'other'">
-            <UFormField
-                label="Miejsce:"
-                name="place"
-            >
-              <UInput
-                  v-model="formData.place"
-                  placeholder="Podaj nazwę miejsca"
-                  class="w-full"
-              />
-            </UFormField>
-
-            <UFormField
-                label="Miasto:"
-                name="city"
-            >
-              <USelectMenu
-                  v-model="formData.city"
-                  v-model:search-term="citySearch"
-                  :items="cities"
-                  :loading="isLoadingCities"
-                  placeholder="Wyszukaj miasto"
-                  icon="i-lucide-map-pin"
-                  searchable
-                  class="w-full"
-                  :highlight="!!formData.city"
-                  color="primary"
-                  :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
-              />
-            </UFormField>
-          </template>
-
-          <!-- Description -->
-          <UFormField label="Opis:" name="description">
-            <UTextarea
-                v-model="formData.description"
-                placeholder="Wprowadź opis oferty"
-                :rows="4"
-                class="w-full"
-            />
-          </UFormField>
-
-          <!-- Author and Email -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <UFormField label="Autor:" name="author">
-              <UInput
-                  v-model="formData.author"
-                  placeholder="Wprowadź autora oferty"
-                  class="w-full"
-              />
-            </UFormField>
-
-            <UFormField label="Email:" name="email">
-              <UInput
-                  v-model="formData.email"
-                  type="email"
-                  placeholder="email@example.com"
-                  class="w-full"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.email = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
+                <UButton
+                    variant="outline"
+                    type="button"
+                    size="lg"
+                    icon="i-lucide-refresh-cw"
+                    class="w-full"
+                    @click="resetForm"
+                >
+                  Wyczyść formularz
+                </UButton>
+              </div>
+            </UForm>
           </div>
 
-          <!-- Legal Roles -->
-          <UFormField label="Role prawne:" name="roles">
-            <UButtonGroup size="lg" class="flex-wrap">
+          <!-- Success Message -->
+          <div
+              v-if="showSuccessMessage"
+              class="bg-green-50 border border-green-200 rounded-lg p-4 mt-6"
+          >
+            <div class="flex items-center">
+              <UIcon name="i-lucide-check-circle" class="text-green-600 mr-3" size="20"/>
+              <div>
+                <h3 class="font-semibold text-green-800">Oferta została dodana pomyślnie!</h3>
+                <p class="text-green-700 text-sm mt-1">Możesz dodać kolejną ofertę lub wrócić do listy.</p>
+              </div>
+            </div>
+            <div class="mt-3 flex gap-2">
               <UButton
-                  v-for="role in legalRoles"
-                  :key="role.value"
-                  :variant="formData.roles.includes(role.value) ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  class="mb-2"
-                  @click="toggleRole(role.value)"
+                  size="sm"
+                  color="green"
+                  variant="outline"
+                  icon="i-lucide-plus"
+                  @click="resetForm"
               >
-                {{ role.label }}
+                Dodaj kolejną
               </UButton>
-            </UButtonGroup>
-          </UFormField>
-
-          <!-- Date and Time -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <UFormField label="Data:" name="date">
-              <UInput
-                  v-model="formData.date"
-                  type="date"
-                  placeholder="Wybierz datę"
-                  class="w-full"
-                  :ui="{ trailing: 'pe-1' }"
+              <UButton
+                  size="sm"
+                  color="green"
+                  variant="outline"
+                  to="/raw"
+                  icon="i-lucide-list"
               >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.date = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
-
-            <UFormField label="Godzina:" name="hour">
-              <UInput
-                  v-model="formData.hour"
-                  type="time"
-                  placeholder="Wybierz godzinę"
-                  class="w-full"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.hour = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
-          </div>
-
-          <!-- Invoice Checkbox -->
-          <UFormField label="Faktura:" name="invoiceRequired">
-            <UCheckbox
-                v-model="formData.invoiceRequired"
-                label="Wymagana faktura"
-            />
-          </UFormField>
-
-          <!-- Submit Buttons -->
-          <div class="flex gap-3 pt-4">
-            <UButton
-                type="submit"
-                :loading="isSubmitting"
-                size="lg"
-                icon="i-lucide-plus"
-            >
-              {{ isSubmitting ? 'Dodawanie...' : 'Dodaj ofertę' }}
-            </UButton>
-
-            <UButton
-                variant="outline"
-                type="button"
-                size="lg"
-                icon="i-lucide-refresh-cw"
-                @click="resetForm"
-            >
-              Wyczyść formularz
-            </UButton>
-          </div>
-        </UForm>
-      </div>
-
-      <!-- Success Message -->
-      <div
-          v-if="showSuccessMessage"
-          class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
-      >
-        <div class="flex items-center">
-          <UIcon name="i-lucide-check-circle" class="text-green-600 mr-3" size="20"/>
-          <div>
-            <h3 class="font-semibold text-green-800">Oferta została dodana pomyślnie!</h3>
-            <p class="text-green-700 text-sm mt-1">Możesz dodać kolejną ofertę lub wrócić do listy.</p>
+                Powrót do listy
+              </UButton>
+            </div>
           </div>
         </div>
-        <div class="mt-3 flex gap-2">
-          <UButton
-              size="sm"
-              color="green"
-              variant="outline"
-              icon="i-lucide-plus"
-              @click="resetForm"
-          >
-            Dodaj kolejną
-          </UButton>
-          <UButton
-              size="sm"
-              color="green"
-              variant="outline"
-              to="/raw"
-              icon="i-lucide-list"
-          >
-            Powrót do listy
-          </UButton>
+
+        <!-- Right Column - Preview -->
+        <div class="lg:sticky lg:top-4 lg:self-start">
+          <SubstitutionOfferGenerator
+              :form-data="formData"
+              :additional-data="{
+                legalRoles,
+                facilitySearch,
+                citySearch,
+                isLoadingFacilities,
+                isLoadingCities,
+                isSubmitting,
+                facilities
+              }"
+          />
         </div>
       </div>
     </div>
-
-    <!-- Debug Panel -->
-    <SubstitutionOfferGenerator
-        :form-data="formData"
-        :additional-data="{
-      legalRoles,
-      facilitySearch,
-      citySearch,
-      isLoadingFacilities,
-      isLoadingCities,
-      isSubmitting
-    }"
-    />
   </UContainer>
 </template>
 
@@ -311,13 +319,11 @@ import {
   getLegalRolesOffersLegalRolesGet,
   createUserOfferOffersPost
 } from '~/client'
-import DebugPanel from "~/components/DebugPanel.vue"
 
 // ====================
 // CONSTANTS & SETUP
 // ====================
 const toast = useToast()
-const isDevelopment = process.env.NODE_ENV === 'development'
 
 const courtTypes = [
   {value: 'SR', label: 'Rejonowy'},
@@ -469,7 +475,8 @@ const searchFacilities = async (searchTerm, placeType) => {
 
     facilities.value = (response.data || []).map(facility => ({
       label: facility.name,
-      value: facility.uuid
+      value: facility.uuid,
+      city: facility.city
     }))
   } catch (error) {
     console.error('Error searching facilities:', error)
