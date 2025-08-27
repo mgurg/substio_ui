@@ -727,6 +727,7 @@ const handleSubmit = async (event) => {
   } finally {
     isSubmitting.value = false
   }
+  await fetchOffer()
 }
 
 const handleFormError = (event) => {

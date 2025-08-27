@@ -18,7 +18,7 @@
       v-for="offer in offers" 
       :key="offer.uuid" 
       :offer="offer"
-      :detailed="false"
+      :detailed="true"
     />
 
 <div class="flex justify-center">
