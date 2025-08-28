@@ -70,6 +70,7 @@
                 <UFormField
                     label="Placówka:"
                     name="facility"
+                    required
                 >
                   <USelectMenu
                       v-model="formData.facility"
@@ -92,6 +93,7 @@
                 <UFormField
                     label="Miejsce:"
                     name="place"
+                    required
                 >
                   <UInput
                       v-model="formData.place"
@@ -103,6 +105,7 @@
                 <UFormField
                     label="Miasto:"
                     name="city"
+                    required
                 >
                   <USelectMenu
                       v-model="formData.city"
@@ -121,7 +124,7 @@
               </template>
 
               <!-- Description -->
-              <UFormField label="Opis:" name="description">
+              <UFormField label="Opis:" name="description" required>
                 <UTextarea
                     v-model="formData.description"
                     placeholder="Wprowadź opis oferty"
@@ -132,7 +135,7 @@
 
               <!-- Author and Email -->
               <div class="space-y-4">
-                <UFormField label="Autor:" name="author">
+                <UFormField label="Autor:" name="author" required>
                   <UInput
                       v-model="formData.author"
                       placeholder="Wprowadź autora oferty"
@@ -140,7 +143,7 @@
                   />
                 </UFormField>
 
-                <UFormField label="Email:" name="email">
+                <UFormField label="Email:" name="email" required>
                   <UInput
                       v-model="formData.email"
                       type="email"
@@ -180,7 +183,7 @@
 
               <!-- Date and Time -->
               <div class="space-y-4">
-                <UFormField label="Data:" name="date">
+                <UFormField label="Data:" name="date" description="Oferty bez podanej daty są ważne 7 dni">
                   <UInput
                       v-model="formData.date"
                       type="date"

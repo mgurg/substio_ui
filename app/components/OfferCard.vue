@@ -124,8 +124,8 @@ const isUrgent = computed(() => {
 })
 
 const sendEmail = (email, offer) => {
-  const subject = `Zastępstwo procesowe w ${offer.place?.name ?? ''}`
-  const body = `Dzień dobry,\n\nPiszę w sprawie oferty dotyczącej ${offer.place?.name ?? ''}.\n\n`
+  const subject = `Zastępstwo procesowe ${offer.place_name ?? ''}`
+  const body = `Dzień dobry,\n\nPiszę w sprawie zastępstwa ${offer.place_name ?? ''}.\n\n`
 
   const encodedSubject = encodeURIComponent(subject)
   const encodedBody = encodeURIComponent(body)

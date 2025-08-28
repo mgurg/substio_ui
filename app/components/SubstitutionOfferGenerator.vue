@@ -123,7 +123,7 @@ const generatePost = computed(() => {
 
   // Description
   if (props.formData.description?.trim()) {
-    parts.push(`📝 **Opis**: ${props.formData.description.trim()}`)
+    parts.push(`📝 **Opis**: \n\n ${props.formData.description.trim()}`)
   }
 
   // Invoice requirement
@@ -148,7 +148,7 @@ const generatePost = computed(() => {
   // Add separator and call to action
   if (parts.length > 1) {
     parts.push('---')
-    parts.push('💬 *Zainteresowani proszę o kontakt w komentarzu lub wiadomość prywatną*')
+    parts.push('💬 *Zainteresowanych proszę o kontakt w komentarzu, lub wiadomość prywatną*')
   }
 
   return parts.join('\n\n')

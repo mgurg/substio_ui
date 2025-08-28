@@ -65,8 +65,8 @@
           </div>
           <div>
             <h4 class="font-semibold">Jak dodać ogłoszenie?</h4>
-            <p class="mt-1">🚧 Dodanie ogłoszenia jest proste – wystarczy wypełnić formularz, podać miasto,
-              termin, stawkę i krótki opis sprawy.</p>
+            <p class="mt-1">Dodanie ogłoszenia jest proste – wystarczy wypełnić formularz, podać miasto,
+              termin i krótki opis sprawy.</p>
           </div>
           <div>
             <h4 class="font-semibold">Czy korzystanie z katalogu jest płatne?</h4>
