@@ -411,14 +411,18 @@ const isLoadingRoles = ref(false)
 // ====================
 const setPlaceCategory = (category) => {
   formData.value.placeCategory = category
-  // Reset category-specific fields
   if (category === 'court') {
     formData.value.place = ''
     formData.value.city = null
-  } else {
+    citySearch.value = ''
+    cities.value = []
+  } else if (category === 'other') {
     formData.value.placeType = null
     formData.value.facility = null
+    facilitySearch.value = ''
+    facilities.value = []
   }
+
   showSuccessMessage.value = false
 }
 

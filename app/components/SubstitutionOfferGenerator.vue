@@ -59,7 +59,7 @@ const getLocationText = computed(() => {
       return `#${props.formData.facility.city} - ${props.formData.facility.label}`
     }
   } else if (props.formData.placeCategory === 'other') {
-    return `#${props.formData.city.label} ${props.formData.place}`
+    return `#${props.formData.city?.label  || 'nie wybrano'} ${props.formData.place}`
   }
   return 'Miejsce'
 })
