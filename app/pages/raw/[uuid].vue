@@ -279,8 +279,6 @@
           </template>
 
           <!-- Common Fields -->
-
-
           <UFormField label="Opis:" name="description">
             <UTextarea
                 v-model="formData.description"
@@ -380,6 +378,26 @@
             />
           </UFormField>
 
+          <!-- Status Selection Bar -->
+          <UFormField label="Status:" name="status">
+            <div class="flex gap-2 flex-wrap">
+              <UButton
+                  v-for="status in statusOptions"
+                  :key="status.value"
+                  :icon="status.icon"
+                  :variant="formData.status === status.value ? 'solid' : 'outline'"
+                  :color="status.color"
+                  type="button"
+                  size="md"
+                  :title="status.label"
+                  @click="setStatus(status.value)"
+              />
+            </div>
+            <div class="text-sm text-gray-500 mt-1">
+              Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
+            </div>
+          </UFormField>
+
           <!-- Submit Buttons -->
           <div class="flex gap-2">
             <UButton type="submit" :loading="isSubmitting">
@@ -388,12 +406,6 @@
             <UButton variant="outline" type="button" @click="resetForm">
               Wyczyść formularz
             </UButton>
-            <UButton icon="i-lucide-clock-plus" color="warning" variant="outline" type="button" @click="postponeOffer">
-              Postpone
-            </UButton>
-            <UButton icon="i-lucide-ban" color="error" variant="outline" type="button" @click="rejectOffer">Reject
-            </UButton>
-
           </div>
 
         </UForm>
@@ -435,11 +447,23 @@ const courtTypes = [
   {value: 'SO', label: 'Okręgowy'}
 ]
 
+const statusOptions = [
+  {value: 'imported', label: 'Imported', icon: 'i-lucide-download', color: 'neutral'},
+  {value: 'new', label: 'New', icon: 'i-lucide-plus-circle', color: 'neutral'},
+  {value: 'draft', label: 'Draft', icon: 'i-lucide-file-text', color: 'neutral'},
+  {value: 'spam', label: 'Spam', icon: 'i-lucide-shield-x', color: 'warning'},
+  {value: 'postponed', label: 'Postponed', icon: 'i-lucide-clock', color: 'neutral'},
+  {value: 'accepted', label: 'Accepted', icon: 'i-lucide-check-circle', color: 'green'},
+  {value: 'rejected', label: 'Rejected', icon: 'i-lucide-x-circle', color: 'error'},
+  {value: 'active', label: 'Active', icon: 'i-lucide-play-circle', color: 'primary'}
+]
+
 // ====================
 // VALIDATION SCHEMA
 // ====================
 const validationSchema = computed(() => {
   const baseSchema = {
+    status: yup.string().required('Wybierz status').oneOf(['imported', 'new', 'draft', 'spam', 'postponed', 'accepted', 'rejected', 'active']),
     placeCategory: yup.string().required('Wybierz kategorię').oneOf(['court', 'other']),
     author: yup.string(),
     description: yup.string().required(),
@@ -484,6 +508,7 @@ const isSubmitting = ref(false)
 
 // Form data with proper initial values
 const formData = ref({
+  status: 'new',
   placeCategory: 'court',
   placeType: null,
   facility: null,
@@ -512,9 +537,18 @@ const isLoadingRoles = ref(false)
 
 
 const offerStatus = ref('')
+
 // ====================
 // FORM METHODS
 // ====================
+const setStatus = (status) => {
+  formData.value.status = status
+}
+
+const getStatusLabel = (statusValue) => {
+  return statusOptions.find(status => status.value === statusValue)?.label || statusValue
+}
+
 const setPlaceCategory = (category) => {
   formData.value.placeCategory = category
   // Reset category-specific fields
@@ -544,6 +578,7 @@ const toggleRole = (roleValue) => {
 
 const resetForm = () => {
   formData.value = {
+    status: 'new',
     placeCategory: 'court',
     placeType: null,
     facility: null,
@@ -738,7 +773,7 @@ const handleFormError = (event) => {
 
 const buildUpdatePayload = (data) => {
   const payload = {
-    status: 'accepted',
+    status: data.status,
     description: data.description || null,
     author: data.author || null,
     email: data.email,
@@ -766,6 +801,7 @@ const buildUpdatePayload = (data) => {
 // UTILITY METHODS
 // ====================
 const populateFormWithOfferData = (offerData) => {
+  if (offerData.status) formData.value.status = offerData.status
   if (offerData.author) formData.value.author = offerData.author
   if (offerData.description) formData.value.description = offerData.description
   if (offerData.email) formData.value.email = offerData.email
