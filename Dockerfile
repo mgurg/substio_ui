@@ -1,6 +1,12 @@
 # Stage 1: Build the application using Bun
 FROM oven/bun:1.2-slim AS build-stage
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
 # Set working directory
 WORKDIR /app
 

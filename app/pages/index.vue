@@ -74,6 +74,7 @@
           </div>
         </div>
       </section>
+      <UButton id="errorBtn" @click="triggerError">Trigger Error</UButton>
     </UCard>
   </UContainer>
 </template>
@@ -83,6 +84,10 @@ import {useI18n} from '#imports'
 import {getAllOffersOffersGet} from"@/client/index.ts";
 
 const {t} = useI18n()
+
+const triggerError = () => {
+  throw new Error("Nuxt Button Error");
+};
 
 const offers = ref()
 const count = ref(0)
