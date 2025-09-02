@@ -240,7 +240,7 @@ const searchCities = async (searchTerm) => {
     })
 
     cities.value = (response.data || []).map(city => ({
-      label: city.name,
+      label: city.name + " (" + city.voivodeship_name + ")",
       value: city.uuid,
       ...city // Keep all city data for saving
     }))

@@ -506,7 +506,7 @@ const searchCities = async (searchTerm) => {
     })
 
     cities.value = (response.data || []).map(city => ({
-      label: city.name,
+      label: city.name + " (" + city.voivodeship_name + ")",
       value: city.uuid
     }))
   } catch (error) {
@@ -603,7 +603,7 @@ const buildCreatePayload = (data) => {
   } else if (data.placeCategory === 'other') {
     payload.place_name = data.place
     if (data.city) {
-      payload.city_name = data.city.label
+      payload.city_name = data.city.cityName
       payload.city_uuid = data.city.value
     }
   }

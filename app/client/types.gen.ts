@@ -21,35 +21,35 @@ export type CityAdd = {
     /**
      * Lat
      */
-    lat: number | string | null;
+    lat: number | string;
     /**
      * Lon
      */
-    lon: number | string | null;
+    lon: number | string;
     /**
      * Lat Min
      */
-    lat_min: number | string | null;
+    lat_min?: number | string | null;
     /**
      * Lat Max
      */
-    lat_max: number | string | null;
+    lat_max?: number | string | null;
     /**
      * Lon Min
      */
-    lon_min: number | string | null;
+    lon_min?: number | string | null;
     /**
      * Lon Max
      */
-    lon_max: number | string | null;
+    lon_max?: number | string | null;
     /**
      * Population
      */
-    population: number | null;
+    population?: number | null;
     /**
      * Importance
      */
-    importance: number | null;
+    importance?: number | null;
     /**
      * Category
      */
@@ -57,7 +57,19 @@ export type CityAdd = {
     /**
      * State
      */
-    state: string | null;
+    state?: string | null;
+    /**
+     * Voivodeship Name
+     */
+    voivodeship_name: string;
+    /**
+     * Voivodeship Iso
+     */
+    voivodeship_iso: string;
+    /**
+     * Teryt Simc
+     */
+    teryt_simc: string;
 };
 
 /**
@@ -80,6 +92,10 @@ export type CityIndexResponse = {
      * Lon
      */
     lon: string | null;
+    /**
+     * Voivodeship Name
+     */
+    voivodeship_name: string;
 };
 
 /**
@@ -294,7 +310,7 @@ export type OfferRawAdd = {
 /**
  * OfferStatus
  */
-export type OfferStatus = 'new' | 'draft' | 'postponed' | 'accepted' | 'rejected' | 'active';
+export type OfferStatus = 'imported' | 'new' | 'draft' | 'spam' | 'postponed' | 'accepted' | 'rejected' | 'active';
 
 /**
  * OfferUpdate
@@ -881,7 +897,7 @@ export type GetAllOffersOffersGetData = {
         /**
          * Field
          */
-        field?: 'name' | 'created_at';
+        field?: 'valid_to' | 'created_at';
         /**
          * Order
          */
@@ -1086,6 +1102,36 @@ export type GetFacilitiesPlacesFacilityPlaceNameGetResponses = {
 };
 
 export type GetFacilitiesPlacesFacilityPlaceNameGetResponse = GetFacilitiesPlacesFacilityPlaceNameGetResponses[keyof GetFacilitiesPlacesFacilityPlaceNameGetResponses];
+
+export type GetCitiesPlacesCityUuidCityUuidGetData = {
+    body?: never;
+    path: {
+        /**
+         * City Uuid
+         */
+        city_uuid: string;
+    };
+    query?: never;
+    url: '/places/city/uuid/{city_uuid}';
+};
+
+export type GetCitiesPlacesCityUuidCityUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCitiesPlacesCityUuidCityUuidGetError = GetCitiesPlacesCityUuidCityUuidGetErrors[keyof GetCitiesPlacesCityUuidCityUuidGetErrors];
+
+export type GetCitiesPlacesCityUuidCityUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CityIndexResponse;
+};
+
+export type GetCitiesPlacesCityUuidCityUuidGetResponse = GetCitiesPlacesCityUuidCityUuidGetResponses[keyof GetCitiesPlacesCityUuidCityUuidGetResponses];
 
 export type GetCitiesPlacesCityCityNameGetData = {
     body?: never;

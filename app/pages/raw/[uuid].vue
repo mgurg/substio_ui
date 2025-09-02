@@ -424,7 +424,7 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
-  getCitiesPlacesCityCityNameGet,
+  getCitiesPlacesCityCityNameGet, getCitiesPlacesCityUuidCityUuidGet,
   getFacilitiesPlacesFacilityPlaceNameGet,
   getLegalRolesOffersLegalRolesGet,
   getRawOfferOffersRawOfferUuidGet,
@@ -682,6 +682,18 @@ const searchFacilities = async (searchTerm, placeType) => {
   }
 }
 
+const getCityByUuid = async (cityUuid) => {
+  try {
+    const response = await getCitiesPlacesCityUuidCityUuidGet({
+      path: { city_uuid: cityUuid }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching city by UUID:', error)
+    return null
+  }
+}
+
 const searchCities = async (searchTerm) => {
   if (!searchTerm || searchTerm.length < 2) return
 
@@ -692,9 +704,12 @@ const searchCities = async (searchTerm) => {
     })
 
     cities.value = (response.data || []).map(city => ({
-      label: city.name,
-      value: city.uuid
+      label: city.name + " (" + city.voivodeship_name + ")",
+      value: city.uuid,
+      cityName: city.name,
+      voivodeshipName: city.voivodeship_name
     }))
+
   } catch (error) {
     console.error('Error searching cities:', error)
   } finally {
@@ -719,19 +734,19 @@ const fetchLegalRoles = async () => {
   }
 }
 
-const postponeOffer = async () => {
-  await updateOfferOffersOfferUuidPatch({
-    path: {offer_uuid: uuid},
-    body: {status: 'postponed'}
-  })
-}
-
-const rejectOffer = async () => {
-  await updateOfferOffersOfferUuidPatch({
-    path: {offer_uuid: uuid},
-    body: {status: 'rejected'}
-  })
-}
+// const postponeOffer = async () => {
+//   await updateOfferOffersOfferUuidPatch({
+//     path: {offer_uuid: uuid},
+//     body: {status: 'postponed'}
+//   })
+// }
+//
+// const rejectOffer = async () => {
+//   await updateOfferOffersOfferUuidPatch({
+//     path: {offer_uuid: uuid},
+//     body: {status: 'rejected'}
+//   })
+// }
 
 // ====================
 // FORM HANDLERS
@@ -789,7 +804,7 @@ const buildUpdatePayload = (data) => {
   } else if (data.placeCategory === 'other') {
     payload.place_name = data.place
     if (data.city) {
-      payload.city_name = data.city.label
+      payload.city_name = data.city.cityName
       payload.city_uuid = data.city.value
     }
   }
@@ -800,7 +815,7 @@ const buildUpdatePayload = (data) => {
 // ====================
 // UTILITY METHODS
 // ====================
-const populateFormWithOfferData = (offerData) => {
+const populateFormWithOfferData = async (offerData) => {
   if (offerData.status) formData.value.status = offerData.status
   if (offerData.author) formData.value.author = offerData.author
   if (offerData.description) formData.value.description = offerData.description
@@ -831,11 +846,26 @@ const populateFormWithOfferData = (offerData) => {
       formData.value.place = offerData.place_name
     }
 
-    formData.value.city = {
-      label: offerData.city.name,
-      value: offerData.city.uuid
+    let cityData = offerData.city
+
+    if (!cityData.voivodeship_name && cityData.uuid) {
+      const completeCityData = await getCityByUuid(cityData.uuid)
+      if (completeCityData) {
+        cityData = completeCityData
+      }
     }
-    citySearch.value = offerData.city.name
+
+    const cityLabel = cityData.voivodeship_name
+        ? `${cityData.name} (${cityData.voivodeship_name})`
+        : cityData.name
+
+    formData.value.city = {
+      label: cityLabel,
+      value: cityData.uuid,
+      cityName: cityData.name,
+      voivodeshipName: cityData.voivodeship_name
+    }
+    citySearch.value = cityData.name
   }
 
   if (offerData.legal_roles?.length) {
