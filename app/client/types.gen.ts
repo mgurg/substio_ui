@@ -425,11 +425,19 @@ export type PlaceAdd = {
     /**
      * Name
      */
-    name?: string | null;
+    name: string;
     /**
      * Street
      */
     street?: string | null;
+    /**
+     * Street Name
+     */
+    street_name?: string | null;
+    /**
+     * Street Number
+     */
+    street_number?: string | null;
     /**
      * Postal Code
      */
@@ -490,6 +498,10 @@ export type PlaceIndexResponse = {
      * Street Name
      */
     street_name?: string | null;
+    /**
+     * Street Number
+     */
+    street_number?: string | null;
     /**
      * Postal Code
      */
@@ -1102,6 +1114,36 @@ export type GetFacilitiesPlacesFacilityPlaceNameGetResponses = {
 };
 
 export type GetFacilitiesPlacesFacilityPlaceNameGetResponse = GetFacilitiesPlacesFacilityPlaceNameGetResponses[keyof GetFacilitiesPlacesFacilityPlaceNameGetResponses];
+
+export type GetCitiesPlacesFacilityUuidPlaceUuidGetData = {
+    body?: never;
+    path: {
+        /**
+         * Place Uuid
+         */
+        place_uuid: string;
+    };
+    query?: never;
+    url: '/places/facility/uuid/{place_uuid}';
+};
+
+export type GetCitiesPlacesFacilityUuidPlaceUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCitiesPlacesFacilityUuidPlaceUuidGetError = GetCitiesPlacesFacilityUuidPlaceUuidGetErrors[keyof GetCitiesPlacesFacilityUuidPlaceUuidGetErrors];
+
+export type GetCitiesPlacesFacilityUuidPlaceUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: PlaceIndexResponse;
+};
+
+export type GetCitiesPlacesFacilityUuidPlaceUuidGetResponse = GetCitiesPlacesFacilityUuidPlaceUuidGetResponses[keyof GetCitiesPlacesFacilityUuidPlaceUuidGetResponses];
 
 export type GetCitiesPlacesCityUuidCityUuidGetData = {
     body?: never;

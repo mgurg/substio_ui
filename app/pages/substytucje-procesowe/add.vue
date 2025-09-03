@@ -50,24 +50,6 @@
               <!-- Court Fields -->
               <template v-if="formData.placeCategory === 'court'">
                 <UFormField
-                    label="Typ sądu:"
-                    name="placeType"
-                >
-                  <UButtonGroup>
-                    <UButton
-                        v-for="type in courtTypes"
-                        :key="type.value"
-                        :variant="formData.placeType === type.value ? 'solid' : 'outline'"
-                        color="primary"
-                        type="button"
-                        @click="setPlaceType(type.value)"
-                    >
-                      {{ type.label }}
-                    </UButton>
-                  </UButtonGroup>
-                </UFormField>
-
-                <UFormField
                     label="Placówka:"
                     name="facility"
                     required
@@ -328,12 +310,6 @@ import {
 // ====================
 const toast = useToast()
 
-const courtTypes = [
-  {value: 'SR', label: 'Rejonowy'},
-  {value: 'SA', label: 'Apelacyjny'},
-  {value: 'SO', label: 'Okręgowy'}
-]
-
 // ====================
 // VALIDATION SCHEMA
 // ====================
@@ -352,7 +328,6 @@ const validationSchema = computed(() => {
   if (formData.value.placeCategory === 'court') {
     return yup.object({
       ...baseSchema,
-      placeType: yup.string().oneOf(['SR', 'SA', 'SO']).nullable(),
       facility: yup.object({
         label: yup.string().required(),
         value: yup.string().required()
@@ -381,7 +356,6 @@ const showSuccessMessage = ref(false)
 // Form data with proper initial values
 const formData = ref({
   placeCategory: 'court',
-  placeType: null,
   facility: null,
   place: '',
   city: null,
@@ -426,12 +400,6 @@ const setPlaceCategory = (category) => {
   showSuccessMessage.value = false
 }
 
-const setPlaceType = (type) => {
-  formData.value.placeType = formData.value.placeType === type ? null : type
-  formData.value.facility = null
-  facilitySearch.value = ''
-}
-
 const toggleRole = (roleValue) => {
   const currentRoles = formData.value.roles
   if (currentRoles.includes(roleValue)) {
@@ -444,7 +412,6 @@ const toggleRole = (roleValue) => {
 const resetForm = () => {
   formData.value = {
     placeCategory: 'court',
-    placeType: null,
     facility: null,
     place: '',
     city: null,
@@ -481,9 +448,10 @@ const searchFacilities = async (searchTerm, placeType) => {
     })
 
     facilities.value = (response.data || []).map(facility => ({
-      label: facility.name,
+      label: `${facility.name} (${facility.street_name} ${facility.street_number})`,
       value: facility.uuid,
-      city: facility.city
+      city: facility.city,
+      name: facility.name,
     }))
   } catch (error) {
     console.error('Error searching facilities:', error)
@@ -548,7 +516,6 @@ const handleSubmit = async (event) => {
 
   try {
     const createData = buildCreatePayload(event.data)
-
     await createUserOfferOffersPost({
       body: createData
     })
@@ -598,7 +565,7 @@ const buildCreatePayload = (data) => {
   }
 
   if (data.placeCategory === 'court' && data.facility) {
-    payload.place_name = data.facility.label
+    payload.place_name = data.facility.name
     payload.facility_uuid = data.facility.value
   } else if (data.placeCategory === 'other') {
     payload.place_name = data.place
