@@ -808,7 +808,7 @@ const buildUpdatePayload = (data) => {
   }
 
   if (data.placeCategory === 'court' && data.facility) {
-    payload.place_name = data.facility.label
+    payload.place_name = data.facility.name
     payload.facility_uuid = data.facility.value
   } else if (data.placeCategory === 'other') {
     payload.place_name = data.place
