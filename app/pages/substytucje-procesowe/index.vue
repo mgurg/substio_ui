@@ -197,7 +197,6 @@
 import { useI18n } from '#imports'
 import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet, getLegalRolesOffersLegalRolesGet } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
-import { debounce } from 'lodash-es'
 
 const { t } = useI18n()
 
