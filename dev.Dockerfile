@@ -1,5 +1,5 @@
 # Stage 1: Build the application using Bun
-FROM oven/bun:1.2-slim AS build-stage
+FROM oven/bun:1.1.45-slim AS build-stage
 
 # Set working directory
 WORKDIR /app
@@ -29,7 +29,7 @@ ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
 RUN bun run build
 
 # Stage 2: Serve the application using Bun
-FROM oven/bun:1.2-slim AS production-stage
+FROM oven/bun:1.1.45-slim AS production-stage
 
 # Install curl for health checks in a single layer
 RUN apt-get update && \
