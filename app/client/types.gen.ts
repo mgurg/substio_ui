@@ -1115,7 +1115,7 @@ export type GetFacilitiesPlacesFacilityPlaceNameGetResponses = {
 
 export type GetFacilitiesPlacesFacilityPlaceNameGetResponse = GetFacilitiesPlacesFacilityPlaceNameGetResponses[keyof GetFacilitiesPlacesFacilityPlaceNameGetResponses];
 
-export type GetCitiesPlacesFacilityUuidPlaceUuidGetData = {
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetData = {
     body?: never;
     path: {
         /**
@@ -1127,25 +1127,25 @@ export type GetCitiesPlacesFacilityUuidPlaceUuidGetData = {
     url: '/places/facility/uuid/{place_uuid}';
 };
 
-export type GetCitiesPlacesFacilityUuidPlaceUuidGetErrors = {
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetCitiesPlacesFacilityUuidPlaceUuidGetError = GetCitiesPlacesFacilityUuidPlaceUuidGetErrors[keyof GetCitiesPlacesFacilityUuidPlaceUuidGetErrors];
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetError = GetFacilityPlacesFacilityUuidPlaceUuidGetErrors[keyof GetFacilityPlacesFacilityUuidPlaceUuidGetErrors];
 
-export type GetCitiesPlacesFacilityUuidPlaceUuidGetResponses = {
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetResponses = {
     /**
      * Successful Response
      */
     200: PlaceIndexResponse;
 };
 
-export type GetCitiesPlacesFacilityUuidPlaceUuidGetResponse = GetCitiesPlacesFacilityUuidPlaceUuidGetResponses[keyof GetCitiesPlacesFacilityUuidPlaceUuidGetResponses];
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetResponse = GetFacilityPlacesFacilityUuidPlaceUuidGetResponses[keyof GetFacilityPlacesFacilityUuidPlaceUuidGetResponses];
 
-export type GetCitiesPlacesCityUuidCityUuidGetData = {
+export type GetCityPlacesCityUuidCityUuidGetData = {
     body?: never;
     path: {
         /**
@@ -1157,23 +1157,23 @@ export type GetCitiesPlacesCityUuidCityUuidGetData = {
     url: '/places/city/uuid/{city_uuid}';
 };
 
-export type GetCitiesPlacesCityUuidCityUuidGetErrors = {
+export type GetCityPlacesCityUuidCityUuidGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetCitiesPlacesCityUuidCityUuidGetError = GetCitiesPlacesCityUuidCityUuidGetErrors[keyof GetCitiesPlacesCityUuidCityUuidGetErrors];
+export type GetCityPlacesCityUuidCityUuidGetError = GetCityPlacesCityUuidCityUuidGetErrors[keyof GetCityPlacesCityUuidCityUuidGetErrors];
 
-export type GetCitiesPlacesCityUuidCityUuidGetResponses = {
+export type GetCityPlacesCityUuidCityUuidGetResponses = {
     /**
      * Successful Response
      */
     200: CityIndexResponse;
 };
 
-export type GetCitiesPlacesCityUuidCityUuidGetResponse = GetCitiesPlacesCityUuidCityUuidGetResponses[keyof GetCitiesPlacesCityUuidCityUuidGetResponses];
+export type GetCityPlacesCityUuidCityUuidGetResponse = GetCityPlacesCityUuidCityUuidGetResponses[keyof GetCityPlacesCityUuidCityUuidGetResponses];
 
 export type GetCitiesPlacesCityCityNameGetData = {
     body?: never;

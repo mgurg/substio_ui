@@ -424,8 +424,10 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
-  getCitiesPlacesCityCityNameGet, getCitiesPlacesCityUuidCityUuidGet,
+  getCitiesPlacesCityCityNameGet,
+  getCityPlacesCityUuidCityUuidGet,
   getFacilitiesPlacesFacilityPlaceNameGet,
+  getFacilityPlacesFacilityUuidPlaceUuidGet,
   getLegalRolesOffersLegalRolesGet,
   getRawOfferOffersRawOfferUuidGet,
   parseRawOffersParseOfferUuidGet,
@@ -671,10 +673,19 @@ const searchFacilities = async (searchTerm, placeType) => {
       query: queryParams
     })
 
-    facilities.value = (response.data || []).map(facility => ({
-      label: facility.name,
-      value: facility.uuid
-    }))
+    facilities.value = (response.data || []).map(facility => {
+      const street = `${facility.street_name || ""} ${facility.street_number || ""}`.trim();
+
+      return {
+        label: `${facility.name}${street ? ` (${street})` : ""}`,
+        value: facility.uuid,
+        city: facility.city,
+        name: facility.name,
+        street_name: facility.street_name,
+        street_number: facility.street_number,
+      };
+    });
+
   } catch (error) {
     console.error('Error searching facilities:', error)
   } finally {
@@ -684,12 +695,24 @@ const searchFacilities = async (searchTerm, placeType) => {
 
 const getCityByUuid = async (cityUuid) => {
   try {
-    const response = await getCitiesPlacesCityUuidCityUuidGet({
-      path: { city_uuid: cityUuid }
+    const response = await getCityPlacesCityUuidCityUuidGet({
+      path: {city_uuid: cityUuid}
     })
     return response.data
   } catch (error) {
     console.error('Error fetching city by UUID:', error)
+    return null
+  }
+}
+
+const getPlaceByUuid = async (placeUuid) => {
+  try {
+    const response = await getFacilityPlacesFacilityUuidPlaceUuidGet({
+      path: {place_uuid: placeUuid}
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching place by UUID:', error)
     return null
   }
 }
@@ -733,20 +756,6 @@ const fetchLegalRoles = async () => {
     isLoadingRoles.value = false
   }
 }
-
-// const postponeOffer = async () => {
-//   await updateOfferOffersOfferUuidPatch({
-//     path: {offer_uuid: uuid},
-//     body: {status: 'postponed'}
-//   })
-// }
-//
-// const rejectOffer = async () => {
-//   await updateOfferOffersOfferUuidPatch({
-//     path: {offer_uuid: uuid},
-//     body: {status: 'rejected'}
-//   })
-// }
 
 // ====================
 // FORM HANDLERS
@@ -845,8 +854,30 @@ const populateFormWithOfferData = async (offerData) => {
     if (offerData.place_name) {
       formData.value.place = offerData.place_name
     }
+    let facilityData = offerData.facility
+
+    if (!facilityData.street_name && facilityData.uuid) {
+      const completeFacilityData = await getPlaceByUuid(facilityData.uuid)
+      if (completeFacilityData) {
+        facilityData = completeFacilityData
+      }
+    }
+
+    const facilityLabel = facilityData.street_name
+        ? `${facilityData.name} (${facilityData.street_name})`
+        : facilityData.name
+
+    formData.value.facility = {
+      label: facilityLabel,
+      value: facilityData.uuid,
+      city: facilityData.city,
+      name: facilityData.name,
+      street_name: facilityData.street_name,
+      street_number: facilityData.street_number,
+    }
 
     let cityData = offerData.city
+
 
     if (!cityData.voivodeship_name && cityData.uuid) {
       const completeCityData = await getCityByUuid(cityData.uuid)

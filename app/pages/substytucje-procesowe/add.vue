@@ -447,12 +447,17 @@ const searchFacilities = async (searchTerm, placeType) => {
       query: queryParams
     })
 
-    facilities.value = (response.data || []).map(facility => ({
-      label: `${facility.name} (${facility.street_name} ${facility.street_number})`,
-      value: facility.uuid,
-      city: facility.city,
-      name: facility.name,
-    }))
+    facilities.value = (response.data || []).map(facility => {
+      const street = `${facility.street_name || ""} ${facility.street_number || ""}`.trim();
+
+      return {
+        label: `${facility.name}${street ? ` (${street})` : ""}`,
+        value: facility.uuid,
+        city: facility.city,
+        name: facility.name,
+      };
+    });
+
   } catch (error) {
     console.error('Error searching facilities:', error)
     facilities.value = []
