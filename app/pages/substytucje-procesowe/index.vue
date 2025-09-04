@@ -197,9 +197,16 @@
 import { useI18n } from '#imports'
 import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet, getLegalRolesOffersLegalRolesGet } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
-import { debounce } from 'lodash-es'
 
 const { t } = useI18n()
+
+const debounce = (func, delay) => {
+  let timeoutId
+  return (...args) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func.apply(this, args), delay)
+  }
+}
 
 // Reactive data
 const offers = ref([])
