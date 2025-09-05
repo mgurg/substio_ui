@@ -27,7 +27,7 @@
                   label="Kategoria:"
                   name="placeCategory"
               >
-                <UButtonGroup>
+                <UFieldGroup>
                   <UButton
                       :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
                       color="primary"
@@ -44,7 +44,7 @@
                   >
                     Inne
                   </UButton>
-                </UButtonGroup>
+                </UFieldGroup>
               </UFormField>
 
               <!-- Court Fields -->
@@ -148,7 +148,7 @@
 
               <!-- Legal Roles -->
               <UFormField label="Role prawne:" name="roles">
-                <UButtonGroup size="sm" class="flex-wrap">
+                <UFieldGroup size="sm" class="flex-wrap">
                   <UButton
                       v-for="role in legalRoles"
                       :key="role.value"
@@ -160,7 +160,7 @@
                   >
                     {{ role.label }}
                   </UButton>
-                </UButtonGroup>
+                </UFieldGroup>
               </UFormField>
 
               <!-- Date and Time -->

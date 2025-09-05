@@ -185,7 +185,7 @@
               label="Kategoria:"
               name="placeCategory"
           >
-            <UButtonGroup>
+            <UFieldGroup>
               <UButton
                   :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
                   color="primary"
@@ -202,7 +202,7 @@
               >
                 Inne
               </UButton>
-            </UButtonGroup>
+            </UFieldGroup>
           </UFormField>
 
           <!-- Court Fields -->
@@ -211,7 +211,7 @@
                 label="Typ sądu:"
                 name="placeType"
             >
-              <UButtonGroup>
+              <UFieldGroup>
                 <UButton
                     v-for="type in courtTypes"
                     :key="type.value"
@@ -222,7 +222,7 @@
                 >
                   {{ type.label }}
                 </UButton>
-              </UButtonGroup>
+              </UFieldGroup>
             </UFormField>
 
             <UFormField
@@ -314,7 +314,7 @@
             </UFormField>
           </div>
           <UFormField label="Role prawne:" name="roles">
-            <UButtonGroup size="lg">
+            <UFieldGroup size="lg">
               <UButton
                   v-for="role in legalRoles"
                   :key="role.value"
@@ -325,7 +325,7 @@
               >
                 {{ role.label }}
               </UButton>
-            </UButtonGroup>
+            </UFieldGroup>
           </UFormField>
 
           <!-- Date and Time -->

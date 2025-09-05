@@ -19,7 +19,7 @@
             name="placeType"
             :error="errors.placeType"
         >
-          <UButtonGroup>
+          <UFieldGroup>
             <UButton
                 :variant="formData.placeType === 'SR' ? 'solid' : 'outline'"
                 color="primary"
@@ -44,7 +44,7 @@
             >
               Okręgowy
             </UButton>
-          </UButtonGroup>
+          </UFieldGroup>
         </UFormField>
 
         <!-- Facility Search -->
@@ -98,7 +98,7 @@
             name="roles"
             :error="errors.roles"
         >
-          <UButtonGroup>
+          <UFieldGroup>
             <UButton
                 v-for="role in legalRoles"
                 :key="role.value"
@@ -109,7 +109,7 @@
             >
               {{ role.label }}
             </UButton>
-          </UButtonGroup>
+          </UFieldGroup>
         </UFormField>
 
         <!-- Date -->
