@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: {enabled: true},
-  modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami'],
+  modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami','@sentry/nuxt/module'],
   css: ['~/assets/css/main.css'],
 
   app: {
@@ -58,14 +58,14 @@ export default defineNuxtConfig({
   future: {
       compatibilityVersion: 4,
   },
-  // sentry: {
-  //   sourceMapsUploadOptions: {
-  //     org: 'subaro',
-  //     project: 'javascript-nuxt',
-  //   },
-  // },
-  //
-  // sourcemap: {
-  //   client: 'hidden',
-  // },
+  sentry: {
+    sourceMapsUploadOptions: {
+      org: 'subaro',
+      project: 'javascript-nuxt',
+    },
+  },
+
+  sourcemap: {
+    client: 'hidden',
+  },
 })
