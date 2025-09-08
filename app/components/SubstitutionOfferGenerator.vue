@@ -26,8 +26,8 @@
     </div>
 
     <div class="mt-3 text-xs text-gray-600 dark:text-gray-400 flex items-center gap-4">
-      <span>📘 Facebook markdown: **pogrubienie**, *kursywa*</span>
-      <span>•</span>
+<!--      <span>📘 Facebook markdown: pogrubienie, *kursywa*</span>-->
+<!--      <span>•</span>-->
       <span>Kliknij "Kopiuj" aby skopiować</span>
     </div>
   </div>
@@ -81,12 +81,12 @@ const generatePost = computed(() => {
   const parts = []
 
   // Title
-  parts.push('🏛️ **ZASTĘPSTWO PROCESOWE**')
+  parts.push('🏛️ ZASTĘPSTWO PROCESOWE')
 
   // Location with city info
   const location = getLocationText.value
   if (location && location !== 'Miejsce') {
-    parts.push(`📍 **Miejsce**: ${location}`)
+    parts.push(`📍 Miejsce: ${location}`)
   }
 
   // Date and time
@@ -99,7 +99,7 @@ const generatePost = computed(() => {
       dateTime.push(`godz. ${props.formData.hour}`)
     }
     if (dateTime.length > 0) {
-      parts.push(`🗓️ **Termin**: ${dateTime.join(' ')}`)
+      parts.push(`🗓️ Termin: ${dateTime.join(' ')}`)
     }
   }
 
@@ -109,7 +109,7 @@ const generatePost = computed(() => {
         .map(roleValue => props.additionalData.legalRoles?.find(r => r.value === roleValue)?.label)
         .filter(Boolean)
     if (roleLabels.length) {
-      parts.push(`⚖️ **Dla**: ${roleLabels.sort((a, b) => a.localeCompare(b)).join(', ')}`);
+      parts.push(`⚖️ Dla: ${roleLabels.sort((a, b) => a.localeCompare(b)).join(', ')}`);
     }
   }
 
@@ -117,18 +117,18 @@ const generatePost = computed(() => {
   // if (props.formData.placeCategory === 'court' && props.formData.placeType) {
   //   const courtType = props.additionalData.courtTypes?.find(t => t.value === props.formData.placeType)?.label
   //   if (courtType) {
-  //     parts.push(`🏛️ **Typ sądu**: ${courtType}`)
+  //     parts.push(`🏛️ Typ sądu: ${courtType}`)
   //   }
   // }
 
   // Description
   if (props.formData.description?.trim()) {
-    parts.push(`📝 **Opis**: \n\n ${props.formData.description.trim()}`)
+    parts.push(`📝 Opis: \n\n ${props.formData.description.trim()}`)
   }
 
   // Invoice requirement
   if (props.formData.invoiceRequired) {
-    parts.push(`🧾 **Faktura**: Wymagana`)
+    parts.push(`🧾 Faktura: Wymagana`)
   }
 
   // Contact information
@@ -141,14 +141,14 @@ const generatePost = computed(() => {
       contact.push(`${props.formData.email.trim()}`)
     }
     if (contact.length > 0) {
-      parts.push(`👤 **Kontakt**: ${contact.join(' • ')}`)
+      parts.push(`👤 Kontakt: ${contact.join(' • ')}`)
     }
   }
 
   // Add separator and call to action
   if (parts.length > 1) {
     parts.push('---')
-    parts.push('💬 *Zainteresowanych proszę o kontakt w komentarzu, lub wiadomość prywatną*')
+    parts.push('💬 Zainteresowanych proszę o kontakt w komentarzu, lub wiadomość prywatną')
   }
 
   return parts.join('\n\n')
