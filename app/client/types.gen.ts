@@ -739,6 +739,23 @@ export type ValidationError = {
     type: string;
 };
 
+export type GetLegalRolesOffersLegalRolesGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/offers/legal_roles';
+};
+
+export type GetLegalRolesOffersLegalRolesGetResponses = {
+    /**
+     * Response Get Legal Roles Offers Legal Roles Get
+     * Successful Response
+     */
+    200: Array<LegalRoleIndexResponse>;
+};
+
+export type GetLegalRolesOffersLegalRolesGetResponse = GetLegalRolesOffersLegalRolesGetResponses[keyof GetLegalRolesOffersLegalRolesGetResponses];
+
 export type CreateUserOfferOffersPostData = {
     body: OfferAdd;
     path?: never;
@@ -1016,6 +1033,34 @@ export type GetRawOfferOffersRawOfferUuidGetResponses = {
 
 export type GetRawOfferOffersRawOfferUuidGetResponse = GetRawOfferOffersRawOfferUuidGetResponses[keyof GetRawOfferOffersRawOfferUuidGetResponses];
 
+export type AcceptOfferOffersAcceptOfferUuidPatchData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/accept/{offer_uuid}';
+};
+
+export type AcceptOfferOffersAcceptOfferUuidPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AcceptOfferOffersAcceptOfferUuidPatchError = AcceptOfferOffersAcceptOfferUuidPatchErrors[keyof AcceptOfferOffersAcceptOfferUuidPatchErrors];
+
+export type AcceptOfferOffersAcceptOfferUuidPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type RejectOfferOffersRejectOfferUuidPatchData = {
     body?: never;
     path: {
@@ -1043,23 +1088,6 @@ export type RejectOfferOffersRejectOfferUuidPatchResponses = {
      */
     200: unknown;
 };
-
-export type GetLegalRolesOffersLegalRolesGetData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/offers/legal_roles';
-};
-
-export type GetLegalRolesOffersLegalRolesGetResponses = {
-    /**
-     * Response Get Legal Roles Offers Legal Roles Get
-     * Successful Response
-     */
-    200: Array<LegalRoleIndexResponse>;
-};
-
-export type GetLegalRolesOffersLegalRolesGetResponse = GetLegalRolesOffersLegalRolesGetResponses[keyof GetLegalRolesOffersLegalRolesGetResponses];
 
 export type ParseRawOffersParseOfferUuidGetData = {
     body?: never;

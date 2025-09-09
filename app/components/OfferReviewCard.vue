@@ -108,12 +108,12 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['reject'])
+const emit = defineEmits(['reject', 'accept'])
 
 const router = useRouter()
 
 const approveOffer = () => {
-  router.push('/substytucje-procesowe')
+  emit('accept', props.offer)
 }
 
 const formatDate = (dateString) => {

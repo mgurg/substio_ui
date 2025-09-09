@@ -6,16 +6,18 @@
         v-else-if="offer"
         :offer="offer"
         @reject="handleReject"
+        @accept="handleAccept"
     />
-<!--    <div v-else class="text-center text-gray-500 mt-10">-->
-<!--      Nie znaleziono oferty-->
-<!--    </div>-->
   </UContainer>
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { getReviewOfferOffersOfferUuidGet, rejectOfferOffersRejectOfferUuidPatch } from "~/client"
+import {
+  acceptOfferOffersAcceptOfferUuidPatch,
+  getReviewOfferOffersOfferUuidGet,
+  rejectOfferOffersRejectOfferUuidPatch
+} from "~/client"
 import { onMounted, ref } from "vue"
 
 const route = useRoute()
@@ -64,6 +66,33 @@ const handleReject = async () => {
     toast.add({
       title: "Błąd",
       description: "Nie udało się odrzucić oferty",
+      color: "error"
+    })
+  } finally {
+    isLoading.value = false
+  }
+}
+
+
+const handleAccept = async () => {
+  isLoading.value = true
+  try {
+    await acceptOfferOffersAcceptOfferUuidPatch({
+      path: { offer_uuid: uuid }
+    })
+
+    toast.add({
+      title: "Sukces",
+      description: "Oferta została zaakceptowana",
+      color: "success"
+    })
+
+    await router.push("/substytucje-procesowe")
+  } catch (error) {
+    console.error("Error rejecting offer:", error)
+    toast.add({
+      title: "Błąd",
+      description: "Nie udało się zaakceptować oferty",
       color: "error"
     })
   } finally {
