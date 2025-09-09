@@ -247,7 +247,7 @@ export type OfferIndexResponse = {
     /**
      * Place Name
      */
-    place_name: string;
+    place_name?: string | null;
     /**
      * Description
      */
@@ -860,6 +860,36 @@ export type ImportRawOffersOffersImportPostResponses = {
 
 export type ImportRawOffersOffersImportPostResponse = ImportRawOffersOffersImportPostResponses[keyof ImportRawOffersOffersImportPostResponses];
 
+export type GetReviewOfferOffersOfferUuidGetData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/{offer_uuid}';
+};
+
+export type GetReviewOfferOffersOfferUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetReviewOfferOffersOfferUuidGetError = GetReviewOfferOffersOfferUuidGetErrors[keyof GetReviewOfferOffersOfferUuidGetErrors];
+
+export type GetReviewOfferOffersOfferUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: OfferIndexResponse;
+};
+
+export type GetReviewOfferOffersOfferUuidGetResponse = GetReviewOfferOffersOfferUuidGetResponses[keyof GetReviewOfferOffersOfferUuidGetResponses];
+
 export type UpdateOfferOffersOfferUuidPatchData = {
     body: OfferUpdate;
     path: {
@@ -985,6 +1015,34 @@ export type GetRawOfferOffersRawOfferUuidGetResponses = {
 };
 
 export type GetRawOfferOffersRawOfferUuidGetResponse = GetRawOfferOffersRawOfferUuidGetResponses[keyof GetRawOfferOffersRawOfferUuidGetResponses];
+
+export type RejectOfferOffersRejectOfferUuidPatchData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/reject/{offer_uuid}';
+};
+
+export type RejectOfferOffersRejectOfferUuidPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RejectOfferOffersRejectOfferUuidPatchError = RejectOfferOffersRejectOfferUuidPatchErrors[keyof RejectOfferOffersRejectOfferUuidPatchErrors];
+
+export type RejectOfferOffersRejectOfferUuidPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetLegalRolesOffersLegalRolesGetData = {
     body?: never;
