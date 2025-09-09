@@ -197,9 +197,16 @@
 import { useI18n } from '#imports'
 import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet, getLegalRolesOffersLegalRolesGet } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
-import { debounce } from 'lodash-es'
 
 const { t } = useI18n()
+
+const debounce = (func, delay) => {
+  let timeoutId
+  return (...args) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func.apply(this, args), delay)
+  }
+}
 
 // Reactive data
 const offers = ref([])
@@ -240,7 +247,7 @@ const searchCities = async (searchTerm) => {
     })
 
     cities.value = (response.data || []).map(city => ({
-      label: city.name,
+      label: city.name + " (" + city.voivodeship_name + ")",
       value: city.uuid,
       ...city // Keep all city data for saving
     }))

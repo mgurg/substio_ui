@@ -1,6 +1,6 @@
 services:
   nuxt-app:
-    image: oven/bun:1.2
+    image: oven/bun:1.2-slim
     container_name: substio_ui-dev
     working_dir: /app
     volumes:

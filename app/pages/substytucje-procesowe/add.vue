@@ -27,7 +27,7 @@
                   label="Kategoria:"
                   name="placeCategory"
               >
-                <UButtonGroup>
+                <UFieldGroup>
                   <UButton
                       :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
                       color="primary"
@@ -44,32 +44,15 @@
                   >
                     Inne
                   </UButton>
-                </UButtonGroup>
+                </UFieldGroup>
               </UFormField>
 
               <!-- Court Fields -->
               <template v-if="formData.placeCategory === 'court'">
                 <UFormField
-                    label="Typ sądu:"
-                    name="placeType"
-                >
-                  <UButtonGroup>
-                    <UButton
-                        v-for="type in courtTypes"
-                        :key="type.value"
-                        :variant="formData.placeType === type.value ? 'solid' : 'outline'"
-                        color="primary"
-                        type="button"
-                        @click="setPlaceType(type.value)"
-                    >
-                      {{ type.label }}
-                    </UButton>
-                  </UButtonGroup>
-                </UFormField>
-
-                <UFormField
                     label="Placówka:"
                     name="facility"
+                    required
                 >
                   <USelectMenu
                       v-model="formData.facility"
@@ -92,6 +75,7 @@
                 <UFormField
                     label="Miejsce:"
                     name="place"
+                    required
                 >
                   <UInput
                       v-model="formData.place"
@@ -103,6 +87,7 @@
                 <UFormField
                     label="Miasto:"
                     name="city"
+                    required
                 >
                   <USelectMenu
                       v-model="formData.city"
@@ -121,7 +106,7 @@
               </template>
 
               <!-- Description -->
-              <UFormField label="Opis:" name="description">
+              <UFormField label="Opis:" name="description" required>
                 <UTextarea
                     v-model="formData.description"
                     placeholder="Wprowadź opis oferty"
@@ -132,7 +117,7 @@
 
               <!-- Author and Email -->
               <div class="space-y-4">
-                <UFormField label="Autor:" name="author">
+                <UFormField label="Autor:" name="author" required>
                   <UInput
                       v-model="formData.author"
                       placeholder="Wprowadź autora oferty"
@@ -140,7 +125,7 @@
                   />
                 </UFormField>
 
-                <UFormField label="Email:" name="email">
+                <UFormField label="Email:" name="email" required>
                   <UInput
                       v-model="formData.email"
                       type="email"
@@ -163,7 +148,7 @@
 
               <!-- Legal Roles -->
               <UFormField label="Role prawne:" name="roles">
-                <UButtonGroup size="sm" class="flex-wrap">
+                <UFieldGroup size="sm" class="flex-wrap">
                   <UButton
                       v-for="role in legalRoles"
                       :key="role.value"
@@ -175,12 +160,12 @@
                   >
                     {{ role.label }}
                   </UButton>
-                </UButtonGroup>
+                </UFieldGroup>
               </UFormField>
 
               <!-- Date and Time -->
               <div class="space-y-4">
-                <UFormField label="Data:" name="date">
+                <UFormField label="Data:" name="date" description="Oferty bez podanej daty są ważne 7 dni">
                   <UInput
                       v-model="formData.date"
                       type="date"
@@ -325,12 +310,6 @@ import {
 // ====================
 const toast = useToast()
 
-const courtTypes = [
-  {value: 'SR', label: 'Rejonowy'},
-  {value: 'SA', label: 'Apelacyjny'},
-  {value: 'SO', label: 'Okręgowy'}
-]
-
 // ====================
 // VALIDATION SCHEMA
 // ====================
@@ -349,7 +328,6 @@ const validationSchema = computed(() => {
   if (formData.value.placeCategory === 'court') {
     return yup.object({
       ...baseSchema,
-      placeType: yup.string().oneOf(['SR', 'SA', 'SO']).nullable(),
       facility: yup.object({
         label: yup.string().required(),
         value: yup.string().required()
@@ -378,7 +356,6 @@ const showSuccessMessage = ref(false)
 // Form data with proper initial values
 const formData = ref({
   placeCategory: 'court',
-  placeType: null,
   facility: null,
   place: '',
   city: null,
@@ -408,21 +385,19 @@ const isLoadingRoles = ref(false)
 // ====================
 const setPlaceCategory = (category) => {
   formData.value.placeCategory = category
-  // Reset category-specific fields
   if (category === 'court') {
     formData.value.place = ''
     formData.value.city = null
-  } else {
+    citySearch.value = ''
+    cities.value = []
+  } else if (category === 'other') {
     formData.value.placeType = null
     formData.value.facility = null
+    facilitySearch.value = ''
+    facilities.value = []
   }
-  showSuccessMessage.value = false
-}
 
-const setPlaceType = (type) => {
-  formData.value.placeType = formData.value.placeType === type ? null : type
-  formData.value.facility = null
-  facilitySearch.value = ''
+  showSuccessMessage.value = false
 }
 
 const toggleRole = (roleValue) => {
@@ -437,7 +412,6 @@ const toggleRole = (roleValue) => {
 const resetForm = () => {
   formData.value = {
     placeCategory: 'court',
-    placeType: null,
     facility: null,
     place: '',
     city: null,
@@ -473,11 +447,17 @@ const searchFacilities = async (searchTerm, placeType) => {
       query: queryParams
     })
 
-    facilities.value = (response.data || []).map(facility => ({
-      label: facility.name,
-      value: facility.uuid,
-      city: facility.city
-    }))
+    facilities.value = (response.data || []).map(facility => {
+      const street = `${facility.street_name || ""} ${facility.street_number || ""}`.trim();
+
+      return {
+        label: `${facility.name}${street ? ` (${street})` : ""}`,
+        value: facility.uuid,
+        city: facility.city,
+        name: facility.name,
+      };
+    });
+
   } catch (error) {
     console.error('Error searching facilities:', error)
     facilities.value = []
@@ -499,7 +479,7 @@ const searchCities = async (searchTerm) => {
     })
 
     cities.value = (response.data || []).map(city => ({
-      label: city.name,
+      label: city.name + " (" + city.voivodeship_name + ")",
       value: city.uuid
     }))
   } catch (error) {
@@ -541,7 +521,6 @@ const handleSubmit = async (event) => {
 
   try {
     const createData = buildCreatePayload(event.data)
-
     await createUserOfferOffersPost({
       body: createData
     })
@@ -591,12 +570,12 @@ const buildCreatePayload = (data) => {
   }
 
   if (data.placeCategory === 'court' && data.facility) {
-    payload.place_name = data.facility.label
+    payload.place_name = data.facility.name
     payload.facility_uuid = data.facility.value
   } else if (data.placeCategory === 'other') {
     payload.place_name = data.place
     if (data.city) {
-      payload.city_name = data.city.label
+      payload.city_name = data.city.cityName
       payload.city_uuid = data.city.value
     }
   }

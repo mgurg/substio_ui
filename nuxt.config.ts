@@ -2,13 +2,15 @@
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
-    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami'],
+    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module'],
     css: ['~/assets/css/main.css'],
+
     app: {
         head: {
             title: 'Substytucje procesowe — najnowsze oferty | Katalog substytucji', // default fallback title
         }
     },
+
     i18n: {
         strategy: 'prefix_except_default',
         locales: [
@@ -19,12 +21,14 @@ export default defineNuxtConfig({
         langDir: 'locales',
         vueI18n: './i18n.config.ts'
     },
+
     router: {
         options: {
             linkActiveClass: "active",
             linkExactActiveClass: "exact-active"
         }
     },
+
     umami: {
         id: 'my-w3b517e-id',
         host: 'https://cloud.umami.is',
@@ -38,6 +42,7 @@ export default defineNuxtConfig({
         // enabled: false,
         // logErrors: true,
     },
+
     runtimeConfig: {
         // Private keys are only available on the server
         // apiSecret: '123'
@@ -49,7 +54,20 @@ export default defineNuxtConfig({
             apiBaseUrl: process.env.NUXT_BACKEND_API,
         }
     },
+
     future: {
         compatibilityVersion: 4,
+    },
+    sentry: {
+        sourceMapsUploadOptions: {
+            org: 'subaro',
+            project: 'javascript-nuxt',
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            telemetry: false
+        },
+    },
+
+    sourcemap: {
+        client: 'hidden',
     },
 })

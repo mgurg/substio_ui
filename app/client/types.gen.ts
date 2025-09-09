@@ -21,35 +21,35 @@ export type CityAdd = {
     /**
      * Lat
      */
-    lat: number | string | null;
+    lat: number | string;
     /**
      * Lon
      */
-    lon: number | string | null;
+    lon: number | string;
     /**
      * Lat Min
      */
-    lat_min: number | string | null;
+    lat_min?: number | string | null;
     /**
      * Lat Max
      */
-    lat_max: number | string | null;
+    lat_max?: number | string | null;
     /**
      * Lon Min
      */
-    lon_min: number | string | null;
+    lon_min?: number | string | null;
     /**
      * Lon Max
      */
-    lon_max: number | string | null;
+    lon_max?: number | string | null;
     /**
      * Population
      */
-    population: number | null;
+    population?: number | null;
     /**
      * Importance
      */
-    importance: number | null;
+    importance?: number | null;
     /**
      * Category
      */
@@ -57,7 +57,19 @@ export type CityAdd = {
     /**
      * State
      */
-    state: string | null;
+    state?: string | null;
+    /**
+     * Voivodeship Name
+     */
+    voivodeship_name: string;
+    /**
+     * Voivodeship Iso
+     */
+    voivodeship_iso: string;
+    /**
+     * Teryt Simc
+     */
+    teryt_simc: string;
 };
 
 /**
@@ -80,6 +92,10 @@ export type CityIndexResponse = {
      * Lon
      */
     lon: string | null;
+    /**
+     * Voivodeship Name
+     */
+    voivodeship_name: string;
 };
 
 /**
@@ -231,7 +247,7 @@ export type OfferIndexResponse = {
     /**
      * Place Name
      */
-    place_name: string;
+    place_name?: string | null;
     /**
      * Description
      */
@@ -294,7 +310,7 @@ export type OfferRawAdd = {
 /**
  * OfferStatus
  */
-export type OfferStatus = 'new' | 'draft' | 'postponed' | 'accepted' | 'rejected' | 'active';
+export type OfferStatus = 'imported' | 'new' | 'draft' | 'spam' | 'postponed' | 'accepted' | 'rejected' | 'active';
 
 /**
  * OfferUpdate
@@ -409,11 +425,19 @@ export type PlaceAdd = {
     /**
      * Name
      */
-    name?: string | null;
+    name: string;
     /**
      * Street
      */
     street?: string | null;
+    /**
+     * Street Name
+     */
+    street_name?: string | null;
+    /**
+     * Street Number
+     */
+    street_number?: string | null;
     /**
      * Postal Code
      */
@@ -474,6 +498,10 @@ export type PlaceIndexResponse = {
      * Street Name
      */
     street_name?: string | null;
+    /**
+     * Street Number
+     */
+    street_number?: string | null;
     /**
      * Postal Code
      */
@@ -711,6 +739,23 @@ export type ValidationError = {
     type: string;
 };
 
+export type GetLegalRolesOffersLegalRolesGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/offers/legal_roles';
+};
+
+export type GetLegalRolesOffersLegalRolesGetResponses = {
+    /**
+     * Response Get Legal Roles Offers Legal Roles Get
+     * Successful Response
+     */
+    200: Array<LegalRoleIndexResponse>;
+};
+
+export type GetLegalRolesOffersLegalRolesGetResponse = GetLegalRolesOffersLegalRolesGetResponses[keyof GetLegalRolesOffersLegalRolesGetResponses];
+
 export type CreateUserOfferOffersPostData = {
     body: OfferAdd;
     path?: never;
@@ -832,6 +877,36 @@ export type ImportRawOffersOffersImportPostResponses = {
 
 export type ImportRawOffersOffersImportPostResponse = ImportRawOffersOffersImportPostResponses[keyof ImportRawOffersOffersImportPostResponses];
 
+export type GetReviewOfferOffersOfferUuidGetData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/{offer_uuid}';
+};
+
+export type GetReviewOfferOffersOfferUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetReviewOfferOffersOfferUuidGetError = GetReviewOfferOffersOfferUuidGetErrors[keyof GetReviewOfferOffersOfferUuidGetErrors];
+
+export type GetReviewOfferOffersOfferUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: OfferIndexResponse;
+};
+
+export type GetReviewOfferOffersOfferUuidGetResponse = GetReviewOfferOffersOfferUuidGetResponses[keyof GetReviewOfferOffersOfferUuidGetResponses];
+
 export type UpdateOfferOffersOfferUuidPatchData = {
     body: OfferUpdate;
     path: {
@@ -881,7 +956,7 @@ export type GetAllOffersOffersGetData = {
         /**
          * Field
          */
-        field?: 'name' | 'created_at';
+        field?: 'valid_to' | 'created_at';
         /**
          * Order
          */
@@ -958,22 +1033,61 @@ export type GetRawOfferOffersRawOfferUuidGetResponses = {
 
 export type GetRawOfferOffersRawOfferUuidGetResponse = GetRawOfferOffersRawOfferUuidGetResponses[keyof GetRawOfferOffersRawOfferUuidGetResponses];
 
-export type GetLegalRolesOffersLegalRolesGetData = {
+export type AcceptOfferOffersAcceptOfferUuidPatchData = {
     body?: never;
-    path?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
     query?: never;
-    url: '/offers/legal_roles';
+    url: '/offers/accept/{offer_uuid}';
 };
 
-export type GetLegalRolesOffersLegalRolesGetResponses = {
+export type AcceptOfferOffersAcceptOfferUuidPatchErrors = {
     /**
-     * Response Get Legal Roles Offers Legal Roles Get
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AcceptOfferOffersAcceptOfferUuidPatchError = AcceptOfferOffersAcceptOfferUuidPatchErrors[keyof AcceptOfferOffersAcceptOfferUuidPatchErrors];
+
+export type AcceptOfferOffersAcceptOfferUuidPatchResponses = {
+    /**
      * Successful Response
      */
-    200: Array<LegalRoleIndexResponse>;
+    200: unknown;
 };
 
-export type GetLegalRolesOffersLegalRolesGetResponse = GetLegalRolesOffersLegalRolesGetResponses[keyof GetLegalRolesOffersLegalRolesGetResponses];
+export type RejectOfferOffersRejectOfferUuidPatchData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/reject/{offer_uuid}';
+};
+
+export type RejectOfferOffersRejectOfferUuidPatchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RejectOfferOffersRejectOfferUuidPatchError = RejectOfferOffersRejectOfferUuidPatchErrors[keyof RejectOfferOffersRejectOfferUuidPatchErrors];
+
+export type RejectOfferOffersRejectOfferUuidPatchResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type ParseRawOffersParseOfferUuidGetData = {
     body?: never;
@@ -1086,6 +1200,66 @@ export type GetFacilitiesPlacesFacilityPlaceNameGetResponses = {
 };
 
 export type GetFacilitiesPlacesFacilityPlaceNameGetResponse = GetFacilitiesPlacesFacilityPlaceNameGetResponses[keyof GetFacilitiesPlacesFacilityPlaceNameGetResponses];
+
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetData = {
+    body?: never;
+    path: {
+        /**
+         * Place Uuid
+         */
+        place_uuid: string;
+    };
+    query?: never;
+    url: '/places/facility/uuid/{place_uuid}';
+};
+
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetError = GetFacilityPlacesFacilityUuidPlaceUuidGetErrors[keyof GetFacilityPlacesFacilityUuidPlaceUuidGetErrors];
+
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: PlaceIndexResponse;
+};
+
+export type GetFacilityPlacesFacilityUuidPlaceUuidGetResponse = GetFacilityPlacesFacilityUuidPlaceUuidGetResponses[keyof GetFacilityPlacesFacilityUuidPlaceUuidGetResponses];
+
+export type GetCityPlacesCityUuidCityUuidGetData = {
+    body?: never;
+    path: {
+        /**
+         * City Uuid
+         */
+        city_uuid: string;
+    };
+    query?: never;
+    url: '/places/city/uuid/{city_uuid}';
+};
+
+export type GetCityPlacesCityUuidCityUuidGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCityPlacesCityUuidCityUuidGetError = GetCityPlacesCityUuidCityUuidGetErrors[keyof GetCityPlacesCityUuidCityUuidGetErrors];
+
+export type GetCityPlacesCityUuidCityUuidGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CityIndexResponse;
+};
+
+export type GetCityPlacesCityUuidCityUuidGetResponse = GetCityPlacesCityUuidCityUuidGetResponses[keyof GetCityPlacesCityUuidCityUuidGetResponses];
 
 export type GetCitiesPlacesCityCityNameGetData = {
     body?: never;

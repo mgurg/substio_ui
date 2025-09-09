@@ -24,10 +24,11 @@
           v-for="offer in offers"
           :key="offer.uuid"
           :offer="offer"
+          @offer-updated="fetchOffers"
       />
     </div>
 
-    <div class="flex justify-center mt-6 mb-10 pb-10">
+    <div v-if="count > 0 && pageCount > 1" class="flex justify-center mt-6 mb-10 pb-10">
       <UPagination
           v-model:page="currentPage"
           :page-count="pageCount"
@@ -81,7 +82,6 @@ const fetchOffers = async (): Promise<void> => {
     },
   })
 
-  console.log(response.data)
   if (response.data) {
     offers.value = response.data.data
     count.value = response.data.count

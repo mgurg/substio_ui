@@ -68,6 +68,7 @@
           target="_blank"
           size="md"
           variant="outline"
+          ico="i-lucide-link"
       >
         Zobacz ofertę
       </UButton>
@@ -79,7 +80,8 @@
       >
         Kontakt
       </UButton>
-      <UButton :to="`/raw/${offer.uuid}`">Edytuj</UButton>
+      <UButton icon="i-lucide-trash-2" color="error" @click="rejectOffer(offer.uuid)">Odrzuć</UButton>
+      <UButton icon="i-lucide-pencil" :to="`/raw/${offer.uuid}`">Edytuj</UButton>
     </div>
 
     <!-- Metadata -->
@@ -91,15 +93,19 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import {updateOfferOffersOfferUuidPatch} from "~/client";
 
 const props = defineProps<{
   offer: any
 }>()
 
+const emit = defineEmits<{
+  offerUpdated: []
+}>()
+
 const hasEmailInRaw = computed(() =>
     /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(props.offer.raw_data ?? "")
 )
-
 
 const statusColor = computed(() => {
   switch (props.offer.status) {
@@ -111,5 +117,19 @@ const statusColor = computed(() => {
 
 function truncate(text: string, length: number) {
   return text && text.length > length ? text.substring(0, length) + '…' : text
+}
+
+const rejectOffer = async (uuid: string) => {
+  try {
+    await updateOfferOffersOfferUuidPatch({
+      path: {offer_uuid: uuid},
+      body: {status: 'rejected'}
+    })
+
+    // Emit event to parent to refresh the list
+    emit('offerUpdated')
+  } catch (error) {
+    console.error('Error rejecting offer:', error)
+  }
 }
 </script>

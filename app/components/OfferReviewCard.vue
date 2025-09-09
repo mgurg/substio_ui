@@ -1,6 +1,6 @@
 <template>
-  <UCard class="mt-5 hover:shadow-lg transition-shadow duration-200">
-    <!-- Header with Place and Contact -->
+  <UCard class="mt-5">
+    <!-- Header -->
     <template #header>
       <div class="flex justify-between items-start gap-4">
         <div class="flex-1 min-w-0">
@@ -17,31 +17,10 @@
 
             <UIcon v-if="offer.hour" name="i-lucide-clock" class="h-4 w-4 mr-1 text-gray-500 flex-shrink-0" />
             <span v-if="offer.hour" class="text-gray-900 dark:text-white">{{ offer.hour }}</span>
-
-            <!-- Urgent Badge Inline -->
-            <UBadge v-if="isUrgent" color="warning" variant="solid" size="md" class="ml-2">
-              <UIcon name="i-lucide-zap" class="h-3 w-3 mr-1" />
-              Pilne
-            </UBadge>
           </div>
         </div>
 
-        <!-- Contact Button - Always Visible -->
-        <div class="flex-shrink-0">
-          <UButton
-              v-if="offer.email"
-              color="primary"
-              icon="i-lucide-mail"
-              size="md"
-              class="font-medium"
-              @click="sendEmail(offer.email, offer.place_name)"
-          >
-            <span class="hidden sm:inline">Kontakt</span>
-          </UButton>
-          <UBadge v-else variant="soft" icon="i-lucide-lock" color="gray" size="lg" class="px-3 py-1">
-            <span class="hidden sm:inline">Kontakt dla zalogowanych</span>
-          </UBadge>
-        </div>
+
       </div>
     </template>
 
@@ -52,11 +31,9 @@
       </p>
     </div>
 
-    <!-- Key Information -->
+    <!-- Key Info -->
     <div class="mb-4">
-      <!-- Time and Legal Roles in one line on desktop -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <!-- Legal Roles - More prominent -->
         <div v-if="offer.legal_roles && offer.legal_roles.length > 0" class="flex items-center gap-2">
           <UIcon name="i-lucide-briefcase" class="h-4 w-4 text-blue-600 flex-shrink-0" />
           <div class="flex flex-wrap gap-2">
@@ -73,10 +50,17 @@
           </div>
         </div>
       </div>
+      <!-- Email always visible -->
+      <div class="flex-shrink-0">
+        <UBadge variant="soft" color="blue" size="lg" class="px-3 py-1">
+          <UIcon name="i-lucide-mail" class="h-3 w-3 mr-1" />
+          {{ offer.email }}
+        </UBadge>
+      </div>
     </div>
 
-    <!-- Footer with Additional Info -->
-    <div v-if="detailed && (offer.valid_to || offer.url || offer.author)" class="border-t border-gray-200 dark:border-gray-700 pt-3 mt-4">
+    <!-- Detailed Info -->
+    <div v-if="offer.valid_to || offer.url || offer.author" class="pt-3 mt-4">
       <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500">
         <!-- Author -->
         <div v-if="offer.author" class="flex items-center">
@@ -89,54 +73,51 @@
           <UIcon name="i-lucide-calendar-x" class="h-3 w-3 mr-1" />
           <span>Ważne do: {{ formatDate(offer.valid_to) }}</span>
         </div>
-
-        <!-- External Link -->
-<!--        <div v-if="offer.url" class="flex items-center">-->
-<!--          <UIcon name="i-lucide-external-link" class="h-3 w-3 mr-1" />-->
-<!--          <a :href="offer.url" target="_blank" class="text-blue-600 hover:underline">-->
-<!--            Link zewnętrzny-->
-<!--          </a>-->
-<!--        </div>-->
       </div>
+    </div>
+
+    <!-- Footer with Actions -->
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-3 mt-4 flex justify-end gap-2">
+      <UButton
+          color="error"
+          variant="soft"
+          icon="i-lucide-x"
+          @click="$emit('reject', offer)"
+      >
+        Odrzuć
+      </UButton>
+      <UButton
+          color="success"
+          variant="solid"
+          icon="i-lucide-check"
+          @click="approveOffer"
+      >
+        Zatwierdź
+      </UButton>
     </div>
   </UCard>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
 const props = defineProps({
   offer: {
     type: Object,
     required: true
-  },
-  detailed: {
-    type: Boolean,
-    default: false
   }
 })
 
-// Check if the offer is urgent based on description keywords
-const isUrgent = computed(() => {
-  if (!props.offer.description) return false
-  const urgentKeywords = ['pilne', 'natychmiast', 'jak najszybciej']
-  return urgentKeywords.some(keyword =>
-      props.offer.description.toLowerCase().includes(keyword.toLowerCase())
-  )
-})
+const emit = defineEmits(['reject', 'accept'])
 
-const sendEmail = (email, offer) => {
-  const subject = `Zastępstwo procesowe ${offer.place_name ?? ''}`
-  const body = `Dzień dobry,\n\nPiszę w sprawie zastępstwa ${offer.place_name ?? ''}.\n\n`
+const router = useRouter()
 
-  const encodedSubject = encodeURIComponent(subject)
-  const encodedBody = encodeURIComponent(body)
-
-  window.location.href = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`
+const approveOffer = () => {
+  emit('accept', props.offer)
 }
-
 
 const formatDate = (dateString) => {
   if (!dateString) return ''
-
   try {
     const date = new Date(dateString)
     return date.toLocaleDateString('pl-PL', {
@@ -151,13 +132,3 @@ const formatDate = (dateString) => {
   }
 }
 </script>
-
-<style scoped>
-.card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-2px);
-}
-</style>
