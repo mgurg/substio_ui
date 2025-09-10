@@ -397,6 +397,12 @@
               Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
             </div>
           </UFormField>
+          <UFormField label="Powiadomienie:" name="submitEmail">
+            <UCheckbox
+                v-model="formData.submitEmail"
+                label="Wyślij mail"
+            />
+          </UFormField>
 
           <!-- Submit Buttons -->
           <div class="flex gap-2">
@@ -473,7 +479,8 @@ const validationSchema = computed(() => {
     roles: yup.array().of(yup.string()),
     date: yup.string().nullable(),
     hour: yup.string().nullable(),
-    invoiceRequired: yup.boolean()
+    invoiceRequired: yup.boolean(),
+    submitEmail: yup.boolean()
   }
 
   if (formData.value.placeCategory === 'court') {
@@ -522,7 +529,8 @@ const formData = ref({
   roles: [],
   date: null,
   hour: null,
-  invoiceRequired: false
+  invoiceRequired: false,
+  submitEmail: true
 })
 
 // Search states
@@ -592,7 +600,8 @@ const resetForm = () => {
     roles: [],
     date: null,
     hour: null,
-    invoiceRequired: false
+    invoiceRequired: false,
+    submitEmail: true
   }
   facilitySearch.value = ''
   citySearch.value = ''
