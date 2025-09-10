@@ -785,7 +785,7 @@ const buildUpdatePayload = (data) => {
     date: data.date,
     hour: data.hour,
     invoice: data.invoiceRequired,
-    email_notification: data.submitEmail,
+    submit_email: data.submitEmail,
   }
 
   if (data.placeCategory === 'court' && data.facility) {
