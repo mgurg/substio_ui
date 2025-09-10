@@ -208,24 +208,6 @@
           <!-- Court Fields -->
           <template v-if="formData.placeCategory === 'court'">
             <UFormField
-                label="Typ sądu:"
-                name="placeType"
-            >
-              <UFieldGroup>
-                <UButton
-                    v-for="type in courtTypes"
-                    :key="type.value"
-                    :variant="formData.placeType === type.value ? 'solid' : 'outline'"
-                    color="primary"
-                    type="button"
-                    @click="setPlaceType(type.value)"
-                >
-                  {{ type.label }}
-                </UButton>
-              </UFieldGroup>
-            </UFormField>
-
-            <UFormField
                 label="Placówka:"
                 name="facility"
             >
@@ -449,11 +431,6 @@ const toast = useToast()
 const uuid = route.params.uuid
 const isDevelopment = process.env.NODE_ENV === 'development'
 
-const courtTypes = [
-  {value: 'SR', label: 'Rejonowy'},
-  {value: 'SA', label: 'Apelacyjny'},
-  {value: 'SO', label: 'Okręgowy'}
-]
 
 const statusOptions = [
   {value: 'imported', label: 'Imported', icon: 'i-lucide-download', color: 'neutral'},
@@ -571,12 +548,6 @@ const setPlaceCategory = (category) => {
   }
 }
 
-const setPlaceType = (type) => {
-  formData.value.placeType = formData.value.placeType === type ? null : type
-  formData.value.facility = null
-  facilitySearch.value = ''
-}
-
 const toggleRole = (roleValue) => {
   const currentRoles = formData.value.roles
   if (currentRoles.includes(roleValue)) {
@@ -621,7 +592,7 @@ const fetchOffer = async () => {
 
     if (response.data) {
       offer.value = response.data
-      populateFormWithOfferData(response.data)
+      await populateFormWithOfferData(response.data)
     }
   } catch (error) {
     console.error('Error fetching offer:', error)
@@ -813,7 +784,8 @@ const buildUpdatePayload = (data) => {
     roles: data.roles || [],
     date: data.date,
     hour: data.hour,
-    invoice: data.invoiceRequired
+    invoice: data.invoiceRequired,
+    email_notification: data.submitEmail,
   }
 
   if (data.placeCategory === 'court' && data.facility) {
