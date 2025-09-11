@@ -42,10 +42,8 @@
 </template>
 
 <script setup>
-import {useI18n} from '#imports'
 import {getAllOffersOffersGet} from "@/client/index.ts";
 
-const {t} = useI18n()
 
 const offers = ref()
 const count = ref(0)

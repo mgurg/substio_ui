@@ -420,7 +420,7 @@ import {
   getRawOfferOffersRawOfferUuidGet,
   parseRawOffersParseOfferUuidGet,
   updateOfferOffersOfferUuidPatch
-} from '~/client'
+} from "@/client/index.ts"
 import DebugPanel from "~/components/DebugPanel.vue";
 
 // ====================

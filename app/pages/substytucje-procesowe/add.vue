@@ -303,7 +303,7 @@ import {
   getFacilitiesPlacesFacilityPlaceNameGet,
   getLegalRolesOffersLegalRolesGet,
   createUserOfferOffersPost
-} from '~/client'
+} from "@/client/index.ts"
 
 // ====================
 // CONSTANTS & SETUP

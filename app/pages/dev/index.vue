@@ -182,7 +182,7 @@ import {
   getFacilitiesPlacesFacilityPlaceNameGet,
   getLegalRolesOffersLegalRolesGet,
   updateOfferOffersOfferUuidPatch
-} from '~/client'
+} from "@/client/index.ts"
 
 // Validation Schema
 const schema = yup.object({

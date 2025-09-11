@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {getAllRawOffersOffersRawGet} from '~/client'
+import {getAllRawOffersOffersRawGet} from "@/client/index.ts"
 import type {OfferStatus, RawOfferIndexResponse} from '@/client/types.gen.ts'
 
 const route = useRoute()
