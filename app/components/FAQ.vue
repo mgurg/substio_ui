@@ -6,7 +6,7 @@ const expandedItems = ref(['dla-kogo-0'])
 
 const items = [
   {
-    label: 'Dla kogo jest Subaro?',
+    label: 'Dla kogo jest ten katalog?',
     key: 'dla-kogo',
     questions: [
       {

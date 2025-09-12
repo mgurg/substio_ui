@@ -25,7 +25,7 @@
 
     <UPageSection
         title="Zapomnij o grupach na Facebooku"
-        description="Dlaczego subaro jest lepszy od zamkniętych grup na Facebooku?"
+        description="Dlaczego ta tablica ogłoszeń o zastępstwach procesowych jest lepszy od zamkniętych grup na Facebooku?"
     >
       <UPageGrid>
         <UPageCard
