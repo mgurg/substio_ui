@@ -74,6 +74,15 @@ export GITHUB_TOKEN="ghp_xxx..."   # Personal Access Token (classic) with write:
 
 ```
 
+or `.env`:
+
+```bash
+set -a
+source .env
+set +a
+
+```
+
 ```bash
 echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
 ```
