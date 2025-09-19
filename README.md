@@ -70,7 +70,7 @@ docker compose build --build-arg NUXT_BACKEND_API=https://your-api-url
 
 ```bash
 export GITHUB_USERNAME="login"
-export GITHUB_TOKEN="ghp_xxx..."   # PAT with write:packages
+export GITHUB_TOKEN="ghp_xxx..."   # Personal Access Token (classic) with write:packages
 
 ```
 
