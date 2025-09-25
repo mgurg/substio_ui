@@ -373,6 +373,10 @@ export type OfferUpdate = {
      * Roles
      */
     roles?: Array<string> | null;
+    /**
+     * Email Notification
+     */
+    email_notification?: boolean | null;
 };
 
 /**
@@ -672,7 +676,7 @@ export type SubstitutionOffer = {
     /**
      * Location
      */
-    location?: ('sąd' | 'policja' | 'prokuratura') | null;
+    location?: 'sąd' | 'policja' | 'prokuratura' | null;
     /**
      * Location Full Name
      */
@@ -755,6 +759,72 @@ export type GetLegalRolesOffersLegalRolesGetResponses = {
 };
 
 export type GetLegalRolesOffersLegalRolesGetResponse = GetLegalRolesOffersLegalRolesGetResponses[keyof GetLegalRolesOffersLegalRolesGetResponses];
+
+export type GetAllOffersOffersGetData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search
+         */
+        search?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
+        /**
+         * Field
+         */
+        field?: 'valid_to' | 'created_at';
+        /**
+         * Order
+         */
+        order?: 'asc' | 'desc';
+        /**
+         * Lat
+         */
+        lat?: number | null;
+        /**
+         * Lon
+         */
+        lon?: number | null;
+        /**
+         * Distance Km
+         */
+        distance_km?: number | null;
+        /**
+         * Legal Role Uuids
+         */
+        legal_role_uuids?: Array<string> | null;
+        /**
+         * Invoice
+         */
+        invoice?: boolean | null;
+    };
+    url: '/offers';
+};
+
+export type GetAllOffersOffersGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetAllOffersOffersGetError = GetAllOffersOffersGetErrors[keyof GetAllOffersOffersGetErrors];
+
+export type GetAllOffersOffersGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: OffersPaginated;
+};
+
+export type GetAllOffersOffersGetResponse = GetAllOffersOffersGetResponses[keyof GetAllOffersOffersGetResponses];
 
 export type CreateUserOfferOffersPostData = {
     body: OfferAdd;
@@ -937,72 +1007,6 @@ export type UpdateOfferOffersOfferUuidPatchResponses = {
 
 export type UpdateOfferOffersOfferUuidPatchResponse = UpdateOfferOffersOfferUuidPatchResponses[keyof UpdateOfferOffersOfferUuidPatchResponses];
 
-export type GetAllOffersOffersGetData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Search
-         */
-        search?: string | null;
-        /**
-         * Limit
-         */
-        limit?: number;
-        /**
-         * Offset
-         */
-        offset?: number;
-        /**
-         * Field
-         */
-        field?: 'valid_to' | 'created_at';
-        /**
-         * Order
-         */
-        order?: 'asc' | 'desc';
-        /**
-         * Lat
-         */
-        lat?: number | null;
-        /**
-         * Lon
-         */
-        lon?: number | null;
-        /**
-         * Distance Km
-         */
-        distance_km?: number | null;
-        /**
-         * Legal Role Uuids
-         */
-        legal_role_uuids?: Array<string> | null;
-        /**
-         * Invoice
-         */
-        invoice?: boolean | null;
-    };
-    url: '/offers/';
-};
-
-export type GetAllOffersOffersGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type GetAllOffersOffersGetError = GetAllOffersOffersGetErrors[keyof GetAllOffersOffersGetErrors];
-
-export type GetAllOffersOffersGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: OffersPaginated;
-};
-
-export type GetAllOffersOffersGetResponse = GetAllOffersOffersGetResponses[keyof GetAllOffersOffersGetResponses];
-
 export type GetRawOfferOffersRawOfferUuidGetData = {
     body?: never;
     path: {
@@ -1058,8 +1062,10 @@ export type AcceptOfferOffersAcceptOfferUuidPatchResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    204: void;
 };
+
+export type AcceptOfferOffersAcceptOfferUuidPatchResponse = AcceptOfferOffersAcceptOfferUuidPatchResponses[keyof AcceptOfferOffersAcceptOfferUuidPatchResponses];
 
 export type RejectOfferOffersRejectOfferUuidPatchData = {
     body?: never;
@@ -1086,8 +1092,10 @@ export type RejectOfferOffersRejectOfferUuidPatchResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    204: void;
 };
+
+export type RejectOfferOffersRejectOfferUuidPatchResponse = RejectOfferOffersRejectOfferUuidPatchResponses[keyof RejectOfferOffersRejectOfferUuidPatchResponses];
 
 export type ParseRawOffersParseOfferUuidGetData = {
     body?: never;
