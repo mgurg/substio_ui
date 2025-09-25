@@ -299,10 +299,10 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
-  getCitiesPlacesCityCityNameGet,
-  getFacilitiesPlacesFacilityPlaceNameGet,
-  getLegalRolesOffersLegalRolesGet,
-  createUserOfferOffersPost
+  placeGetCities,
+  placeGetFacilities,
+  offerGetLegalRoles,
+  offerCreateUserOffer
 } from "@/client/index.ts"
 
 // ====================
@@ -442,7 +442,7 @@ const searchFacilities = async (searchTerm, placeType) => {
   isLoadingFacilities.value = true
   try {
     const queryParams = placeType ? {place_type: placeType} : {}
-    const response = await getFacilitiesPlacesFacilityPlaceNameGet({
+    const response = await placeGetFacilities({
       path: {place_name: searchTerm},
       query: queryParams
     })
@@ -474,7 +474,7 @@ const searchCities = async (searchTerm) => {
 
   isLoadingCities.value = true
   try {
-    const response = await getCitiesPlacesCityCityNameGet({
+    const response = await placeGetCities({
       path: {city_name: searchTerm}
     })
 
@@ -493,7 +493,7 @@ const searchCities = async (searchTerm) => {
 const fetchLegalRoles = async () => {
   isLoadingRoles.value = true
   try {
-    const {data} = await getLegalRolesOffersLegalRolesGet()
+    const {data} = await offerGetLegalRoles()
     if (data) {
       legalRoles.value = data.map(role => ({
         label: role.name,
@@ -521,7 +521,7 @@ const handleSubmit = async (event) => {
 
   try {
     const createData = buildCreatePayload(event.data)
-    await createUserOfferOffersPost({
+    await offerCreateUserOffer({
       body: createData
     })
 

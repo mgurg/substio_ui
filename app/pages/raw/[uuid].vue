@@ -412,14 +412,14 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
-  getCitiesPlacesCityCityNameGet,
-  getCityPlacesCityUuidCityUuidGet,
-  getFacilitiesPlacesFacilityPlaceNameGet,
-  getFacilityPlacesFacilityUuidPlaceUuidGet,
-  getLegalRolesOffersLegalRolesGet,
-  getRawOfferOffersRawOfferUuidGet,
-  parseRawOffersParseOfferUuidGet,
-  updateOfferOffersOfferUuidPatch
+  placeGetCities,
+  placeGetCity,
+  placeGetFacilities,
+  placeGetFacility,
+  offerGetLegalRoles,
+  offerGetRawOffer,
+  offerParseRaw,
+  offerUpdateOffer
 } from "@/client/index.ts"
 import DebugPanel from "~/components/DebugPanel.vue";
 
@@ -586,7 +586,7 @@ const resetForm = () => {
 const fetchOffer = async () => {
   isLoading.value = true
   try {
-    const response = await getRawOfferOffersRawOfferUuidGet({
+    const response = await offerGetRawOffer({
       path: {offer_uuid: uuid}
     })
 
@@ -609,7 +609,7 @@ const fetchOffer = async () => {
 const generateData = async () => {
   isGenerating.value = true
   try {
-    const response = await parseRawOffersParseOfferUuidGet({
+    const response = await offerParseRaw({
       path: {offer_uuid: uuid}
     })
 
@@ -648,7 +648,7 @@ const searchFacilities = async (searchTerm, placeType) => {
   isLoadingFacilities.value = true
   try {
     const queryParams = placeType ? {place_type: placeType} : {}
-    const response = await getFacilitiesPlacesFacilityPlaceNameGet({
+    const response = await placeGetFacilities({
       path: {place_name: searchTerm},
       query: queryParams
     })
@@ -675,7 +675,7 @@ const searchFacilities = async (searchTerm, placeType) => {
 
 const getCityByUuid = async (cityUuid) => {
   try {
-    const response = await getCityPlacesCityUuidCityUuidGet({
+    const response = await placeGetCity({
       path: {city_uuid: cityUuid}
     })
     return response.data
@@ -687,7 +687,7 @@ const getCityByUuid = async (cityUuid) => {
 
 const getPlaceByUuid = async (placeUuid) => {
   try {
-    const response = await getFacilityPlacesFacilityUuidPlaceUuidGet({
+    const response = await placeGetFacility({
       path: {place_uuid: placeUuid}
     })
     return response.data
@@ -702,7 +702,7 @@ const searchCities = async (searchTerm) => {
 
   isLoadingCities.value = true
   try {
-    const response = await getCitiesPlacesCityCityNameGet({
+    const response = await placeGetCities({
       path: {city_name: searchTerm}
     })
 
@@ -723,7 +723,7 @@ const searchCities = async (searchTerm) => {
 const fetchLegalRoles = async () => {
   isLoadingRoles.value = true
   try {
-    const {data} = await getLegalRolesOffersLegalRolesGet()
+    const {data} = await offerGetLegalRoles()
     if (data) {
       legalRoles.value = data.map(role => ({
         label: role.name,
@@ -746,7 +746,7 @@ const handleSubmit = async (event) => {
   try {
     const updateData = buildUpdatePayload(event.data)
 
-    await updateOfferOffersOfferUuidPatch({
+    await offerUpdateOffer({
       path: {offer_uuid: uuid},
       body: updateData
     })

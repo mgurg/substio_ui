@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import {getAllOffersOffersGet} from "@/client/index.ts";
+import {offerGetAllOffers} from "@/client/index.ts";
 
 
 const offers = ref()
@@ -99,7 +99,7 @@ const links = ref([
 ])
 
 const fetchOffers = async () => {
-  const response = await getAllOffersOffersGet({
+  const response = await offerGetAllOffers({
     query: {offset: 0, limit: 3},
   });
 

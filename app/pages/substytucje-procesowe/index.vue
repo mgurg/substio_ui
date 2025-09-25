@@ -195,7 +195,7 @@
 
 <script setup>
 import { useI18n } from '#imports'
-import { getAllOffersOffersGet, getCitiesPlacesCityCityNameGet, getLegalRolesOffersLegalRolesGet } from "@/client/index.ts"
+import { offerGetAllOffers, placeGetCities, offerGetLegalRoles } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
 
 const { t } = useI18n()
@@ -242,7 +242,7 @@ const searchCities = async (searchTerm) => {
 
   isLoadingCities.value = true
   try {
-    const response = await getCitiesPlacesCityCityNameGet({
+    const response = await placeGetCities({
       path: { city_name: searchTerm }
     })
 
@@ -298,7 +298,7 @@ const fetchOffers = async () => {
   try {
     const queryParams = buildQueryParams()
 
-    const response = await getAllOffersOffersGet({
+    const response = await offerGetAllOffers({
       query: queryParams
     })
 
@@ -319,7 +319,7 @@ const fetchOffers = async () => {
 const fetchLegalRoles = async () => {
   isLoadingRoles.value = true
   try {
-    const { data } = await getLegalRolesOffersLegalRolesGet()
+    const { data } = await offerGetLegalRoles()
     if (data) {
       legalRoles.value = data.map((role) => ({
         label: role.name,
