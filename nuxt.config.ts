@@ -7,7 +7,10 @@ export default defineNuxtConfig({
 
     app: {
         head: {
-            title: 'Substytucje procesowe — najnowsze oferty | Katalog substytucji', // default fallback title
+            title: 'Substytucje procesowe – publikuj i przeglądaj ogłoszenia',
+            meta: [
+                { name: 'description', content: 'Publikuj ogłoszenia o substytucjach procesowych i znajdź zastępstwo w minutę – szybko i wygodnie.' },
+            ]
         }
     },
 

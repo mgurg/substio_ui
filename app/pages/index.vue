@@ -2,7 +2,8 @@
   <UContainer>
     <UPageHero
         title="Substytucje procesowe"
-        description="Otwarty katalog, który łączy zlecających z prawnikami, aplikantami i kancelariami. Wyszukuj substytucje adwokackie, substytucje radców prawnych oraz jednorazowe zastępstwa procesowe. Wygodniej niż zamknięte grupy na Facebooku — bez potrzeby dołączania, bez zbędnego szumu."
+        description="Otwarty katalog, który łączy adwokatów, radców prawnych i aplikantów z osobami szukającymi zastępstwa w sądzie czy prokuraturze. Wygodniejszy niż grupy na Facebooku — bez barier, bez chaosu. Konkretne i szybkie substytucje wtedy, gdy naprawdę ich potrzebujesz."
+        headline="Znajdź zastępstwo szybciej"
         :links="links"
     />
 
