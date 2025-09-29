@@ -179,10 +179,10 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
-  getFacilitiesPlacesFacilityPlaceNameGet,
-  getLegalRolesOffersLegalRolesGet,
-  updateOfferOffersOfferUuidPatch
-} from '~/client'
+  placeGetFacilities,
+  offerGetLegalRoles,
+  offerUpdateOffer
+} from "@/client/index.ts"
 
 // Validation Schema
 const schema = yup.object({
@@ -322,7 +322,7 @@ const searchFacilities = async (searchTerm, placeType) => {
       queryParams.place_type = placeType
     }
 
-    const response = await getFacilitiesPlacesFacilityPlaceNameGet({
+    const response = await placeGetFacilities({
       path: {place_name: searchTerm},
       query: queryParams
     })
@@ -344,7 +344,7 @@ const searchFacilities = async (searchTerm, placeType) => {
 const fetchLegalRoles = async () => {
   isLoadingRoles.value = true
   try {
-    const {data} = await getLegalRolesOffersLegalRolesGet()
+    const {data} = await offerGetLegalRoles()
     if (data) {
       legalRoles.value = data.map((role) => ({
         label: role.name,
@@ -361,7 +361,7 @@ const fetchLegalRoles = async () => {
 
 const updateOffer = async (validatedData) => {
   try {
-    await updateOfferOffersOfferUuidPatch({
+    await offerUpdateOffer({
       path: {offer_uuid: OFFER_UUID},
       body: {
         description: validatedData.description,

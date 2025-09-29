@@ -66,6 +66,39 @@ docker compose -f compose.dev.yaml up
 docker compose build --build-arg NUXT_BACKEND_API=https://your-api-url
 ```
 
+## GHCR
+
+```bash
+export GITHUB_USERNAME="login"
+export GITHUB_TOKEN="ghp_xxx..."   # Personal Access Token (classic) with write:packages
+
+```
+
+or `.env`:
+
+```bash
+set -a
+source .env
+set +a
+
+```
+
+```bash
+echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
+```
+
+```bash
+docker build \
+  --build-arg NUXT_PUBLIC_DOMAIN=https://twojadomena.pl \
+  --build-arg NUXT_BACKEND_API=https://api.twojadomena.pl \
+  -t ghcr.io/USERNAME/REPO:latest .
+
+```
+
+```bash
+docker push ghcr.io/USERNAME/REPO:latest
+```
+
 ## Updates
 
 Update all dependencies to latest version

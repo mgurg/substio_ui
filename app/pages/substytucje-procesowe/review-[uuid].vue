@@ -14,9 +14,9 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
 import {
-  acceptOfferOffersAcceptOfferUuidPatch,
-  getReviewOfferOffersOfferUuidGet,
-  rejectOfferOffersRejectOfferUuidPatch
+  offerAcceptOffer,
+  offerGetReviewOffer,
+  offerRejectOffer
 } from "~/client"
 import { onMounted, ref } from "vue"
 
@@ -31,7 +31,7 @@ const isLoading = ref(false)
 const fetchOffer = async (uuid: string) => {
   isLoading.value = true
   try {
-    const { data } = await getReviewOfferOffersOfferUuidGet({
+    const { data } = await offerGetReviewOffer({
       path: { offer_uuid: uuid }
     })
     offer.value = data ?? null
@@ -50,7 +50,7 @@ const fetchOffer = async (uuid: string) => {
 const handleReject = async () => {
   isLoading.value = true
   try {
-    await rejectOfferOffersRejectOfferUuidPatch({
+    await offerRejectOffer({
       path: { offer_uuid: uuid }
     })
 
@@ -77,7 +77,7 @@ const handleReject = async () => {
 const handleAccept = async () => {
   isLoading.value = true
   try {
-    await acceptOfferOffersAcceptOfferUuidPatch({
+    await offerAcceptOffer({
       path: { offer_uuid: uuid }
     })
 

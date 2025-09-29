@@ -208,24 +208,6 @@
           <!-- Court Fields -->
           <template v-if="formData.placeCategory === 'court'">
             <UFormField
-                label="Typ sądu:"
-                name="placeType"
-            >
-              <UFieldGroup>
-                <UButton
-                    v-for="type in courtTypes"
-                    :key="type.value"
-                    :variant="formData.placeType === type.value ? 'solid' : 'outline'"
-                    color="primary"
-                    type="button"
-                    @click="setPlaceType(type.value)"
-                >
-                  {{ type.label }}
-                </UButton>
-              </UFieldGroup>
-            </UFormField>
-
-            <UFormField
                 label="Placówka:"
                 name="facility"
             >
@@ -397,6 +379,12 @@
               Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
             </div>
           </UFormField>
+          <UFormField label="Powiadomienie:" name="submitEmail">
+            <UCheckbox
+                v-model="formData.submitEmail"
+                label="Wyślij mail"
+            />
+          </UFormField>
 
           <!-- Submit Buttons -->
           <div class="flex gap-2">
@@ -424,15 +412,15 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {
-  getCitiesPlacesCityCityNameGet,
-  getCityPlacesCityUuidCityUuidGet,
-  getFacilitiesPlacesFacilityPlaceNameGet,
-  getFacilityPlacesFacilityUuidPlaceUuidGet,
-  getLegalRolesOffersLegalRolesGet,
-  getRawOfferOffersRawOfferUuidGet,
-  parseRawOffersParseOfferUuidGet,
-  updateOfferOffersOfferUuidPatch
-} from '~/client'
+  placeGetCities,
+  placeGetCity,
+  placeGetFacilities,
+  placeGetFacility,
+  offerGetLegalRoles,
+  offerGetRawOffer,
+  offerParseRaw,
+  offerUpdateOffer
+} from "@/client/index.ts"
 import DebugPanel from "~/components/DebugPanel.vue";
 
 // ====================
@@ -443,11 +431,6 @@ const toast = useToast()
 const uuid = route.params.uuid
 const isDevelopment = process.env.NODE_ENV === 'development'
 
-const courtTypes = [
-  {value: 'SR', label: 'Rejonowy'},
-  {value: 'SA', label: 'Apelacyjny'},
-  {value: 'SO', label: 'Okręgowy'}
-]
 
 const statusOptions = [
   {value: 'imported', label: 'Imported', icon: 'i-lucide-download', color: 'neutral'},
@@ -473,7 +456,8 @@ const validationSchema = computed(() => {
     roles: yup.array().of(yup.string()),
     date: yup.string().nullable(),
     hour: yup.string().nullable(),
-    invoiceRequired: yup.boolean()
+    invoiceRequired: yup.boolean(),
+    submitEmail: yup.boolean()
   }
 
   if (formData.value.placeCategory === 'court') {
@@ -522,7 +506,8 @@ const formData = ref({
   roles: [],
   date: null,
   hour: null,
-  invoiceRequired: false
+  invoiceRequired: false,
+  submitEmail: true
 })
 
 // Search states
@@ -563,12 +548,6 @@ const setPlaceCategory = (category) => {
   }
 }
 
-const setPlaceType = (type) => {
-  formData.value.placeType = formData.value.placeType === type ? null : type
-  formData.value.facility = null
-  facilitySearch.value = ''
-}
-
 const toggleRole = (roleValue) => {
   const currentRoles = formData.value.roles
   if (currentRoles.includes(roleValue)) {
@@ -592,7 +571,8 @@ const resetForm = () => {
     roles: [],
     date: null,
     hour: null,
-    invoiceRequired: false
+    invoiceRequired: false,
+    submitEmail: true
   }
   facilitySearch.value = ''
   citySearch.value = ''
@@ -606,13 +586,13 @@ const resetForm = () => {
 const fetchOffer = async () => {
   isLoading.value = true
   try {
-    const response = await getRawOfferOffersRawOfferUuidGet({
+    const response = await offerGetRawOffer({
       path: {offer_uuid: uuid}
     })
 
     if (response.data) {
       offer.value = response.data
-      populateFormWithOfferData(response.data)
+      await populateFormWithOfferData(response.data)
     }
   } catch (error) {
     console.error('Error fetching offer:', error)
@@ -629,7 +609,7 @@ const fetchOffer = async () => {
 const generateData = async () => {
   isGenerating.value = true
   try {
-    const response = await parseRawOffersParseOfferUuidGet({
+    const response = await offerParseRaw({
       path: {offer_uuid: uuid}
     })
 
@@ -668,7 +648,7 @@ const searchFacilities = async (searchTerm, placeType) => {
   isLoadingFacilities.value = true
   try {
     const queryParams = placeType ? {place_type: placeType} : {}
-    const response = await getFacilitiesPlacesFacilityPlaceNameGet({
+    const response = await placeGetFacilities({
       path: {place_name: searchTerm},
       query: queryParams
     })
@@ -695,7 +675,7 @@ const searchFacilities = async (searchTerm, placeType) => {
 
 const getCityByUuid = async (cityUuid) => {
   try {
-    const response = await getCityPlacesCityUuidCityUuidGet({
+    const response = await placeGetCity({
       path: {city_uuid: cityUuid}
     })
     return response.data
@@ -707,7 +687,7 @@ const getCityByUuid = async (cityUuid) => {
 
 const getPlaceByUuid = async (placeUuid) => {
   try {
-    const response = await getFacilityPlacesFacilityUuidPlaceUuidGet({
+    const response = await placeGetFacility({
       path: {place_uuid: placeUuid}
     })
     return response.data
@@ -722,7 +702,7 @@ const searchCities = async (searchTerm) => {
 
   isLoadingCities.value = true
   try {
-    const response = await getCitiesPlacesCityCityNameGet({
+    const response = await placeGetCities({
       path: {city_name: searchTerm}
     })
 
@@ -743,7 +723,7 @@ const searchCities = async (searchTerm) => {
 const fetchLegalRoles = async () => {
   isLoadingRoles.value = true
   try {
-    const {data} = await getLegalRolesOffersLegalRolesGet()
+    const {data} = await offerGetLegalRoles()
     if (data) {
       legalRoles.value = data.map(role => ({
         label: role.name,
@@ -766,7 +746,7 @@ const handleSubmit = async (event) => {
   try {
     const updateData = buildUpdatePayload(event.data)
 
-    await updateOfferOffersOfferUuidPatch({
+    await offerUpdateOffer({
       path: {offer_uuid: uuid},
       body: updateData
     })
@@ -804,7 +784,8 @@ const buildUpdatePayload = (data) => {
     roles: data.roles || [],
     date: data.date,
     hour: data.hour,
-    invoice: data.invoiceRequired
+    invoice: data.invoiceRequired,
+    submit_email: data.submitEmail,
   }
 
   if (data.placeCategory === 'court' && data.facility) {

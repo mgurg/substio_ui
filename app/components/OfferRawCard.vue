@@ -93,7 +93,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import {updateOfferOffersOfferUuidPatch} from "~/client";
+import {offerUpdateOffer} from "~/client";
 
 const props = defineProps<{
   offer: any
@@ -121,7 +121,7 @@ function truncate(text: string, length: number) {
 
 const rejectOffer = async (uuid: string) => {
   try {
-    await updateOfferOffersOfferUuidPatch({
+    await offerUpdateOffer({
       path: {offer_uuid: uuid},
       body: {status: 'rejected'}
     })
