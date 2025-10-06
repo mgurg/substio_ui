@@ -302,7 +302,7 @@ import {
   placeGetCities,
   placeGetFacilities,
   offerGetLegalRoles,
-  offerCreateUserOffer
+  offerCreateOffer
 } from "@/client/index.ts"
 
 // ====================
@@ -521,7 +521,7 @@ const handleSubmit = async (event) => {
 
   try {
     const createData = buildCreatePayload(event.data)
-    await offerCreateUserOffer({
+    await offerCreateOffer({
       body: createData
     })
 

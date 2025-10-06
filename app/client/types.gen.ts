@@ -374,9 +374,9 @@ export type OfferUpdate = {
      */
     roles?: Array<string> | null;
     /**
-     * Email Notification
+     * Submit Email
      */
-    email_notification?: boolean | null;
+    submit_email?: boolean | null;
 };
 
 /**
@@ -665,6 +665,29 @@ export type RolesResponse = {
 };
 
 /**
+ * SimilarOfferIndexResponse
+ */
+export type SimilarOfferIndexResponse = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Place Name
+     */
+    place_name?: string | null;
+    status: OfferStatus;
+    /**
+     * Valid To
+     */
+    valid_to: string;
+};
+
+/**
  * SourceType
  */
 export type SourceType = 'bot' | 'user';
@@ -708,13 +731,13 @@ export type SubstitutionOffer = {
  */
 export type UsageDetails = {
     /**
-     * Prompt Tokens
+     * Input Tokens
      */
-    prompt_tokens: number;
+    input_tokens: number;
     /**
-     * Completion Tokens
+     * Output Tokens
      */
-    completion_tokens: number;
+    output_tokens: number;
     /**
      * Total Tokens
      */
@@ -760,7 +783,7 @@ export type OfferGetLegalRolesResponses = {
 
 export type OfferGetLegalRolesResponse = OfferGetLegalRolesResponses[keyof OfferGetLegalRolesResponses];
 
-export type OfferGetAllOffersData = {
+export type OfferListOffersData = {
     body?: never;
     path?: never;
     query?: {
@@ -808,146 +831,48 @@ export type OfferGetAllOffersData = {
     url: '/offers';
 };
 
-export type OfferGetAllOffersErrors = {
+export type OfferListOffersErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type OfferGetAllOffersError = OfferGetAllOffersErrors[keyof OfferGetAllOffersErrors];
+export type OfferListOffersError = OfferListOffersErrors[keyof OfferListOffersErrors];
 
-export type OfferGetAllOffersResponses = {
+export type OfferListOffersResponses = {
     /**
      * Successful Response
      */
     200: OffersPaginated;
 };
 
-export type OfferGetAllOffersResponse = OfferGetAllOffersResponses[keyof OfferGetAllOffersResponses];
+export type OfferListOffersResponse = OfferListOffersResponses[keyof OfferListOffersResponses];
 
-export type OfferCreateUserOfferData = {
+export type OfferCreateOfferData = {
     body: OfferAdd;
     path?: never;
     query?: never;
     url: '/offers';
 };
 
-export type OfferCreateUserOfferErrors = {
+export type OfferCreateOfferErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type OfferCreateUserOfferError = OfferCreateUserOfferErrors[keyof OfferCreateUserOfferErrors];
+export type OfferCreateOfferError = OfferCreateOfferErrors[keyof OfferCreateOfferErrors];
 
-export type OfferCreateUserOfferResponses = {
+export type OfferCreateOfferResponses = {
     /**
      * Successful Response
      */
     201: unknown;
 };
 
-export type OfferGetAllRawOffersData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Search
-         */
-        search?: string | null;
-        /**
-         * Limit
-         */
-        limit?: number;
-        /**
-         * Offset
-         */
-        offset?: number;
-        /**
-         * Status
-         */
-        status?: OfferStatus | null;
-        /**
-         * Field
-         */
-        field?: 'name' | 'created_at';
-        /**
-         * Order
-         */
-        order?: 'asc' | 'desc';
-    };
-    url: '/offers/raw';
-};
-
-export type OfferGetAllRawOffersErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type OfferGetAllRawOffersError = OfferGetAllRawOffersErrors[keyof OfferGetAllRawOffersErrors];
-
-export type OfferGetAllRawOffersResponses = {
-    /**
-     * Successful Response
-     */
-    200: RawOffersPaginated;
-};
-
-export type OfferGetAllRawOffersResponse = OfferGetAllRawOffersResponses[keyof OfferGetAllRawOffersResponses];
-
-export type OfferCreateRawOfferData = {
-    body: OfferRawAdd;
-    path?: never;
-    query?: never;
-    url: '/offers/raw';
-};
-
-export type OfferCreateRawOfferErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type OfferCreateRawOfferError = OfferCreateRawOfferErrors[keyof OfferCreateRawOfferErrors];
-
-export type OfferCreateRawOfferResponses = {
-    /**
-     * Successful Response
-     */
-    201: unknown;
-};
-
-export type OfferImportRawOffersData = {
-    body: BodyOfferImportRawOffers;
-    path?: never;
-    query?: never;
-    url: '/offers/import';
-};
-
-export type OfferImportRawOffersErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type OfferImportRawOffersError = OfferImportRawOffersErrors[keyof OfferImportRawOffersErrors];
-
-export type OfferImportRawOffersResponses = {
-    /**
-     * Successful Response
-     */
-    200: ImportResult;
-};
-
-export type OfferImportRawOffersResponse = OfferImportRawOffersResponses[keyof OfferImportRawOffersResponses];
-
-export type OfferGetReviewOfferData = {
+export type OfferGetOfferByIdData = {
     body?: never;
     path: {
         /**
@@ -959,23 +884,23 @@ export type OfferGetReviewOfferData = {
     url: '/offers/{offer_uuid}';
 };
 
-export type OfferGetReviewOfferErrors = {
+export type OfferGetOfferByIdErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type OfferGetReviewOfferError = OfferGetReviewOfferErrors[keyof OfferGetReviewOfferErrors];
+export type OfferGetOfferByIdError = OfferGetOfferByIdErrors[keyof OfferGetOfferByIdErrors];
 
-export type OfferGetReviewOfferResponses = {
+export type OfferGetOfferByIdResponses = {
     /**
      * Successful Response
      */
     200: OfferIndexResponse;
 };
 
-export type OfferGetReviewOfferResponse = OfferGetReviewOfferResponses[keyof OfferGetReviewOfferResponses];
+export type OfferGetOfferByIdResponse = OfferGetOfferByIdResponses[keyof OfferGetOfferByIdResponses];
 
 export type OfferUpdateOfferData = {
     body: OfferUpdate;
@@ -1007,6 +932,135 @@ export type OfferUpdateOfferResponses = {
 
 export type OfferUpdateOfferResponse = OfferUpdateOfferResponses[keyof OfferUpdateOfferResponses];
 
+export type OfferGetSimilarOffersByUserData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/{offer_uuid}/similar';
+};
+
+export type OfferGetSimilarOffersByUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferGetSimilarOffersByUserError = OfferGetSimilarOffersByUserErrors[keyof OfferGetSimilarOffersByUserErrors];
+
+export type OfferGetSimilarOffersByUserResponses = {
+    /**
+     * Response Offer-Get Similar Offers By User
+     * Successful Response
+     */
+    200: Array<SimilarOfferIndexResponse>;
+};
+
+export type OfferGetSimilarOffersByUserResponse = OfferGetSimilarOffersByUserResponses[keyof OfferGetSimilarOffersByUserResponses];
+
+export type OfferListRawOffersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search
+         */
+        search?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
+        /**
+         * Status
+         */
+        status?: OfferStatus | null;
+        /**
+         * Field
+         */
+        field?: 'name' | 'created_at';
+        /**
+         * Order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/offers/raw';
+};
+
+export type OfferListRawOffersErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferListRawOffersError = OfferListRawOffersErrors[keyof OfferListRawOffersErrors];
+
+export type OfferListRawOffersResponses = {
+    /**
+     * Successful Response
+     */
+    200: RawOffersPaginated;
+};
+
+export type OfferListRawOffersResponse = OfferListRawOffersResponses[keyof OfferListRawOffersResponses];
+
+export type OfferCreateRawOfferData = {
+    body: OfferRawAdd;
+    path?: never;
+    query?: never;
+    url: '/offers/raw';
+};
+
+export type OfferCreateRawOfferErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferCreateRawOfferError = OfferCreateRawOfferErrors[keyof OfferCreateRawOfferErrors];
+
+export type OfferCreateRawOfferResponses = {
+    /**
+     * Successful Response
+     */
+    201: unknown;
+};
+
+export type OfferImportRawOffersData = {
+    body: BodyOfferImportRawOffers;
+    path?: never;
+    query?: never;
+    url: '/offers/raw/import';
+};
+
+export type OfferImportRawOffersErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferImportRawOffersError = OfferImportRawOffersErrors[keyof OfferImportRawOffersErrors];
+
+export type OfferImportRawOffersResponses = {
+    /**
+     * Successful Response
+     */
+    200: ImportResult;
+};
+
+export type OfferImportRawOffersResponse = OfferImportRawOffersResponses[keyof OfferImportRawOffersResponses];
+
 export type OfferGetRawOfferData = {
     body?: never;
     path: {
@@ -1037,6 +1091,36 @@ export type OfferGetRawOfferResponses = {
 
 export type OfferGetRawOfferResponse = OfferGetRawOfferResponses[keyof OfferGetRawOfferResponses];
 
+export type OfferParseRawOfferData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/raw/{offer_uuid}/parse';
+};
+
+export type OfferParseRawOfferErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferParseRawOfferError = OfferParseRawOfferErrors[keyof OfferParseRawOfferErrors];
+
+export type OfferParseRawOfferResponses = {
+    /**
+     * Successful Response
+     */
+    200: ParseResponse;
+};
+
+export type OfferParseRawOfferResponse = OfferParseRawOfferResponses[keyof OfferParseRawOfferResponses];
+
 export type OfferAcceptOfferData = {
     body?: never;
     path: {
@@ -1046,7 +1130,7 @@ export type OfferAcceptOfferData = {
         offer_uuid: string;
     };
     query?: never;
-    url: '/offers/accept/{offer_uuid}';
+    url: '/offers/raw/{offer_uuid}/accept';
 };
 
 export type OfferAcceptOfferErrors = {
@@ -1076,7 +1160,7 @@ export type OfferRejectOfferData = {
         offer_uuid: string;
     };
     query?: never;
-    url: '/offers/reject/{offer_uuid}';
+    url: '/offers/raw/{offer_uuid}/reject';
 };
 
 export type OfferRejectOfferErrors = {
@@ -1096,36 +1180,6 @@ export type OfferRejectOfferResponses = {
 };
 
 export type OfferRejectOfferResponse = OfferRejectOfferResponses[keyof OfferRejectOfferResponses];
-
-export type OfferParseRawData = {
-    body?: never;
-    path: {
-        /**
-         * Offer Uuid
-         */
-        offer_uuid: string;
-    };
-    query?: never;
-    url: '/offers/parse/{offer_uuid}';
-};
-
-export type OfferParseRawErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type OfferParseRawError = OfferParseRawErrors[keyof OfferParseRawErrors];
-
-export type OfferParseRawResponses = {
-    /**
-     * Successful Response
-     */
-    200: ParseResponse;
-};
-
-export type OfferParseRawResponse = OfferParseRawResponses[keyof OfferParseRawResponses];
 
 export type PlaceCreatePlaceData = {
     body: PlaceAdd;
@@ -1308,6 +1362,20 @@ export type DefaultReadRootData = {
 };
 
 export type DefaultReadRootResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type DefaultSreadRootData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/s';
+};
+
+export type DefaultSreadRootResponses = {
     /**
      * Successful Response
      */
