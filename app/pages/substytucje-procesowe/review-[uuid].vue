@@ -1,7 +1,7 @@
 <template>
   <UContainer>
     <!-- Skeleton while loading -->
-    <USkeleton v-if="isLoading" class="w-full h-64 mt-5 rounded-xl" />
+    <USkeleton v-if="isLoading" class="w-full h-64 mt-5 rounded-xl"/>
     <OfferReviewCard
         v-else-if="offer"
         :offer="offer"
@@ -12,13 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import {
-  offerAcceptOffer,
-  offerGetReviewOffer,
-  offerRejectOffer
-} from "~/client"
-import { onMounted, ref } from "vue"
+import {useRoute, useRouter} from 'vue-router'
+import {offerAcceptOffer, offerGetOfferById, offerRejectOffer} from "~/client"
+import {onMounted, ref} from "vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -31,8 +27,8 @@ const isLoading = ref(false)
 const fetchOffer = async (uuid: string) => {
   isLoading.value = true
   try {
-    const { data } = await offerGetReviewOffer({
-      path: { offer_uuid: uuid }
+    const {data} = await offerGetOfferById({
+      path: {offer_uuid: uuid}
     })
     offer.value = data ?? null
   } catch (error) {
@@ -51,7 +47,7 @@ const handleReject = async () => {
   isLoading.value = true
   try {
     await offerRejectOffer({
-      path: { offer_uuid: uuid }
+      path: {offer_uuid: uuid}
     })
 
     toast.add({
@@ -78,7 +74,7 @@ const handleAccept = async () => {
   isLoading.value = true
   try {
     await offerAcceptOffer({
-      path: { offer_uuid: uuid }
+      path: {offer_uuid: uuid}
     })
 
     toast.add({

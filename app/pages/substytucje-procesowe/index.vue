@@ -195,7 +195,7 @@
 
 <script setup>
 import { useI18n } from '#imports'
-import { offerGetAllOffers, placeGetCities, offerGetLegalRoles } from "@/client/index.ts"
+import { offerListOffers, placeGetCities, offerGetLegalRoles } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
 
 const { t } = useI18n()
@@ -298,7 +298,7 @@ const fetchOffers = async () => {
   try {
     const queryParams = buildQueryParams()
 
-    const response = await offerGetAllOffers({
+    const response = await offerListOffers({
       query: queryParams
     })
 

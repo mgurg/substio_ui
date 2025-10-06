@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {offerGetAllRawOffers} from "@/client"
+import {offerListRawOffers} from "@/client"
 import type {OfferStatus, RawOfferIndexResponse} from '@/client/types.gen.ts'
 
 const route = useRoute()
@@ -74,7 +74,7 @@ const fetchOffers = async (): Promise<void> => {
   isLoading.value = true
   const offset = (currentPage.value - 1) * limit.value
 
-  const response = await offerGetAllRawOffers({
+  const response = await offerListRawOffers({
     query: {
       offset,
       limit: limit.value,

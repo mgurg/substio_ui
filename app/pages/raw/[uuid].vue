@@ -411,17 +411,17 @@
 import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
+import DebugPanel from "~/components/DebugPanel.vue";
 import {
+  offerGetLegalRoles,
+  offerGetRawOffer,
+  offerParseRawOffer,
+  offerUpdateOffer,
   placeGetCities,
   placeGetCity,
   placeGetFacilities,
-  placeGetFacility,
-  offerGetLegalRoles,
-  offerGetRawOffer,
-  offerParseRaw,
-  offerUpdateOffer
+  placeGetFacility
 } from "@/client/index.ts"
-import DebugPanel from "~/components/DebugPanel.vue";
 
 // ====================
 // CONSTANTS & SETUP
@@ -609,7 +609,7 @@ const fetchOffer = async () => {
 const generateData = async () => {
   isGenerating.value = true
   try {
-    const response = await offerParseRaw({
+    const response = await offerParseRawOffer({
       path: {offer_uuid: uuid}
     })
 
