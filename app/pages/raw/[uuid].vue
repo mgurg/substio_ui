@@ -17,6 +17,33 @@
           <p><strong>Raw Data:</strong></p>
           <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded">{{ offer?.raw_data }}</p>
 
+
+          <!-- Similar Offers -->
+          <div v-if="similarOffers?.length" class="mt-4 space-y-1">
+            <h3 class="text-base font-semibold mb-2">Podobne oferty</h3>
+            <div
+                v-for="offer in similarOffers"
+                :key="offer.uuid"
+                class="text-sm text-gray-800 dark:text-gray-200 flex items-center justify-between"
+            >
+              <div class="truncate w-full">
+                <span class="font-medium mr-2">{{ offer.place_name || 'Brak miejsca' }}:</span>
+                <span>
+        {{ (offer.description ?? '...').slice(0, 60) }}
+        <span v-if="(offer.description ?? '').length > 60">…</span>
+      </span>
+              </div>
+              <ULink
+                  :to="`/raw/${offer.uuid}`"
+                  target="_blank"
+                  class="ml-2 text-primary-600 hover:text-primary-700"
+              >
+                <UIcon name="i-lucide-external-link" class="w-4 h-4" />
+              </ULink>
+            </div>
+          </div>
+
+
           <UButton
               icon="i-lucide-rocket"
               class="mt-6"
@@ -26,6 +53,8 @@
             Generuj
           </UButton>
         </div>
+
+
 
         <!-- Generated Data Section -->
         <div class="mt-8">
@@ -415,6 +444,7 @@ import DebugPanel from "~/components/DebugPanel.vue";
 import {
   offerGetLegalRoles,
   offerGetRawOffer,
+    offerGetSimilarOffersByUser,
   offerParseRawOffer,
   offerUpdateOffer,
   placeGetCities,
@@ -488,6 +518,9 @@ const validationSchema = computed(() => {
 // ====================
 const offer = ref(null)
 const isLoading = ref(false)
+const isLoadingSimilar = ref(false)
+const similarOffers = ref([])
+
 const isGenerating = ref(false)
 const generatedData = ref(null)
 const isSubmitting = ref(false)
@@ -603,6 +636,24 @@ const fetchOffer = async () => {
     })
   } finally {
     isLoading.value = false
+  }
+}
+
+
+const fetchSimilarOffers = async () => {
+  isLoadingSimilar.value = true
+  try {
+    const response = await offerGetSimilarOffersByUser({
+      path: {offer_uuid: uuid}
+    })
+
+    if (response.data) {
+      similarOffers.value = response.data
+    }
+  } catch (error) {
+    console.error('Error fetching similar offers:', error)
+  } finally {
+    isLoadingSimilar.value = false
   }
 }
 
@@ -950,5 +1001,6 @@ watch(() => formData.value.placeType, () => {
 onMounted(() => {
   fetchLegalRoles()
   fetchOffer()
+  fetchSimilarOffers()
 })
 </script>
