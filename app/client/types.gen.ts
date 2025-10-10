@@ -380,6 +380,16 @@ export type OfferUpdate = {
 };
 
 /**
+ * OffersCount
+ */
+export type OffersCount = {
+    /**
+     * Count
+     */
+    count: number;
+};
+
+/**
  * OffersPaginated
  */
 export type OffersPaginated = {
@@ -783,6 +793,22 @@ export type OfferGetLegalRolesResponses = {
 
 export type OfferGetLegalRolesResponse = OfferGetLegalRolesResponses[keyof OfferGetLegalRolesResponses];
 
+export type OfferOffersCountData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/offers/count';
+};
+
+export type OfferOffersCountResponses = {
+    /**
+     * Successful Response
+     */
+    200: OffersCount;
+};
+
+export type OfferOffersCountResponse = OfferOffersCountResponses[keyof OfferOffersCountResponses];
+
 export type OfferListOffersData = {
     body?: never;
     path?: never;
@@ -932,37 +958,6 @@ export type OfferUpdateOfferResponses = {
 
 export type OfferUpdateOfferResponse = OfferUpdateOfferResponses[keyof OfferUpdateOfferResponses];
 
-export type OfferGetSimilarOffersByUserData = {
-    body?: never;
-    path: {
-        /**
-         * Offer Uuid
-         */
-        offer_uuid: string;
-    };
-    query?: never;
-    url: '/offers/{offer_uuid}/similar';
-};
-
-export type OfferGetSimilarOffersByUserErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type OfferGetSimilarOffersByUserError = OfferGetSimilarOffersByUserErrors[keyof OfferGetSimilarOffersByUserErrors];
-
-export type OfferGetSimilarOffersByUserResponses = {
-    /**
-     * Response Offer-Get Similar Offers By User
-     * Successful Response
-     */
-    200: Array<SimilarOfferIndexResponse>;
-};
-
-export type OfferGetSimilarOffersByUserResponse = OfferGetSimilarOffersByUserResponses[keyof OfferGetSimilarOffersByUserResponses];
-
 export type OfferListRawOffersData = {
     body?: never;
     path?: never;
@@ -1035,6 +1030,37 @@ export type OfferCreateRawOfferResponses = {
      */
     201: unknown;
 };
+
+export type OfferGetSimilarOffersByUserData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/{offer_uuid}/similar';
+};
+
+export type OfferGetSimilarOffersByUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferGetSimilarOffersByUserError = OfferGetSimilarOffersByUserErrors[keyof OfferGetSimilarOffersByUserErrors];
+
+export type OfferGetSimilarOffersByUserResponses = {
+    /**
+     * Response Offer-Get Similar Offers By User
+     * Successful Response
+     */
+    200: Array<SimilarOfferIndexResponse>;
+};
+
+export type OfferGetSimilarOffersByUserResponse = OfferGetSimilarOffersByUserResponses[keyof OfferGetSimilarOffersByUserResponses];
 
 export type OfferImportRawOffersData = {
     body: BodyOfferImportRawOffers;
@@ -1362,20 +1388,6 @@ export type DefaultReadRootData = {
 };
 
 export type DefaultReadRootResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
-export type DefaultSreadRootData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/s';
-};
-
-export type DefaultSreadRootResponses = {
     /**
      * Successful Response
      */
