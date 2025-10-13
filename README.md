@@ -108,6 +108,10 @@ bun outdated
 ```
 
 ```bash
+bun update --interactive
+```
+
+```bash
 bun update -f
 ```
 
