@@ -39,6 +39,22 @@
     </UPageSection>
 
     <FAQ/>
+
+    <UPageSection
+        title="Substytucje procesowe — szybkie i skuteczne zastępstwo w sądzie"
+    >
+      <p class="prose prose-gray max-w-5xl mx-auto">
+        Potrzebujesz zastępstwa procesowego w ostatniej chwili? A może jesteś aplikantem, adwokatem lub radcą prawnym i chcesz przyjąć substytucję? Nasza tablica ogłoszeń to nowoczesna alternatywa dla grup na Facebooku i tradycyjnych metod szukania substytutów. Znajdziesz tu ogłoszenia substytucji z całej Polski — szybko, przejrzyście i bez barier.
+        <br><br>
+        Zamiast dzwonić do znajomych lub przeszukiwać chaotyczne posty w mediach społecznościowych, skorzystaj z naszej platformy. Dodaj własne ogłoszenie lub odpowiedz na istniejące — niezależnie czy szukasz zastępstwa przed sądem cywilnym, karnym czy administracyjnym.
+        <br><br>
+        Nasz portal łączy kancelarie prawne, radców prawnych, adwokatów oraz aplikantów szukających realnych, konkretnych zleceń. Oprócz substytucji procesowych znajdziesz tu również oferty związane z wykonaniem fotokopii akt i innymi usługami prawnymi.
+        <br><br>
+        Dołącz do rosnącej społeczności prawników, którzy cenią sobie wygodę, czas i skuteczność. Wystaw ogłoszenie, znajdź zastępstwo i skoncentruj się na swojej pracy — my zajmiemy się resztą.
+      </p>
+    </UPageSection>
+
+
   </UContainer>
 </template>
 

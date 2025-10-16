@@ -1,10 +1,10 @@
 <template>
-  <UCard class="mt-5">
+  <UCard>
     <!-- Header -->
     <template #header>
       <div class="flex justify-between items-start gap-4">
         <div class="flex-1 min-w-0">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate">
+          <h2 class="text-xl font-bold  mb-1 truncate">
             {{ offer.place_name }}
           </h2>
           <div v-if="offer.date || offer.hour" class="flex items-center text-sm text-gray-600 dark:text-gray-400">
@@ -16,7 +16,7 @@
             </template>
 
             <UIcon v-if="offer.hour" name="i-lucide-clock" class="h-4 w-4 mr-1 text-gray-500 flex-shrink-0" />
-            <span v-if="offer.hour" class="text-gray-900 dark:text-white">{{ offer.hour }}</span>
+            <span v-if="offer.hour">{{ offer.hour }}</span>
           </div>
         </div>
 

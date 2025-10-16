@@ -1,13 +1,40 @@
 <template>
   <UContainer>
     <!-- Skeleton while loading -->
-    <USkeleton v-if="isLoading" class="w-full h-64 mt-5 rounded-xl"/>
-    <OfferReviewCard
-        v-else-if="offer"
-        :offer="offer"
-        @reject="handleReject"
-        @accept="handleAccept"
-    />
+    <div>
+      <UPageHeader          title="Zatwierdź lub odrzuć"      />
+
+      <USkeleton v-if="isLoading" class="w-full h-64 mt-5"/>
+      <OfferReviewCard
+          v-else-if="offer"
+          :offer="offer"
+          @reject="handleReject"
+          @accept="handleAccept"
+      />
+
+    </div>
+
+    <div class="flex justify-center">
+      <UButton class="my-6" size="xl" trailing-icon="i-lucide-arrow-right" to="/substytucje-procesowe">
+        Zobacz wszystkie oferty
+      </UButton>
+    </div>
+
+    <div>
+      <UPageHeader
+          title="Wszystkie substytucje procesowe w jednym miejscu"
+          description="Największy otwarty katalog zastępstw procesowych w Polsce"
+      />
+
+      <UPageGrid>
+        <UPageCard
+            v-for="(item, index) in features"
+            :key="index"
+            v-bind="item"
+            spotlight
+        />
+      </UPageGrid>
+    </div>
   </UContainer>
 </template>
 
@@ -95,6 +122,40 @@ const handleAccept = async () => {
     isLoading.value = false
   }
 }
+
+const features = [
+  {
+    title: "Otwarty dla każdego",
+    description: "bez konieczności proszenia o dołączenie do grupy",
+    icon: "i-lucide-users",
+  },
+  {
+    title: "Wygodne filtrowanie ogłoszeń",
+    description: "wyszukuj po mieście, terminie rozprawy, czy rodzaju sprawy.",
+    icon: "i-lucide-filter",
+  },
+  {
+    title: "Tylko aktualne oferty",
+    description: "ogłoszenia publikowane na bieżąco",
+    icon: "i-lucide-clock",
+  },
+  {
+    title: "Bez zbędnego szumu",
+    description: "tylko oferty substytucji, bez reklam i postów niezwiązanych z tematem.",
+    icon: "i-lucide-ban",
+  },
+  {
+    title: "Powiadomienia o nowych ofertach",
+    description: "🚧 otrzymuj natychmiastowe informacje o nowych ogłoszeniach w interesującym Cię regionie",
+    icon: "i-lucide-bell",
+  },
+  {
+    title: "Łatwe nawiązywanie kontaktu",
+    description: "bezpośrednie wiadomości do ogłaszającego – bez pośredników i zbędnych formalności",
+    icon: "i-lucide-message-circle",
+  }
+];
+
 
 onMounted(() => {
   fetchOffer(uuid)
