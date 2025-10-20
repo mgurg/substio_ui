@@ -34,7 +34,7 @@
               icon="i-lucide-mail"
               size="md"
               class="font-medium"
-              @click="sendEmail(offer.email, offer.place_name)"
+              @click="sendEmail(offer)"
           >
             <span class="hidden sm:inline">Kontakt</span>
           </UButton>
@@ -123,14 +123,14 @@ const isUrgent = computed(() => {
   )
 })
 
-const sendEmail = (email, offer) => {
+const sendEmail = (offer) => {
   const subject = `Zastępstwo procesowe ${offer.place_name ?? ''}`
   const body = `Dzień dobry,\n\nPiszę w sprawie zastępstwa ${offer.place_name ?? ''}.\n\n`
 
   const encodedSubject = encodeURIComponent(subject)
   const encodedBody = encodeURIComponent(body)
 
-  window.location.href = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`
+  window.location.href = `mailto:${offer.email}?subject=${encodedSubject}&body=${encodedBody}`
 }
 
 
