@@ -453,6 +453,16 @@ onMounted(() => {
   fetchOffers()
   fetchLegalRoles()
 })
+
+definePageMeta({
+  title: 'Oferty substytucji'
+})
+
+useSeoMeta({
+  title: 'Znajdź substytucję procesową – przeglądaj aktualne oferty',
+  description: 'Przeglądaj aktualne ogłoszenia o substytucjach procesowych. Wyszukuj wg lokalizacji, specjalizacji i terminów – znajdź odpowiednie zastępstwo w kilka chwil.',
+})
+
 </script>
 
 <style scoped>
