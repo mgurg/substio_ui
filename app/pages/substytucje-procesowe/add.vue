@@ -298,12 +298,7 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
-import {
-  placeGetCities,
-  placeGetFacilities,
-  offerGetLegalRoles,
-  offerCreateOffer
-} from "@/client/index.ts"
+import {offerCreateOffer, offerGetLegalRoles, placeGetCities, placeGetFacilities} from "@/client/index.ts"
 
 // ====================
 // CONSTANTS & SETUP
@@ -613,7 +608,7 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Dodaj nową ofertę',
-  description: 'Formularz dodawania nowej oferty do systemu'
+  title: 'Dodaj ogłoszenie – substytucje + post na Facebooka',
+  description: 'Opublikuj ogłoszenie o substytucji procesowej i automatycznie wygeneruj post na Facebooka. Szybko, skutecznie, bez formalności.'
 })
 </script>

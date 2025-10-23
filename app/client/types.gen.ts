@@ -101,7 +101,29 @@ export type CityIndexResponse = {
 /**
  * CityResponse
  */
-export type CityResponse = {
+export type CityResponseInput = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Lat
+     */
+    lat: number | string | null;
+    /**
+     * Lon
+     */
+    lon: number | string | null;
+};
+
+/**
+ * CityResponse
+ */
+export type CityResponseOutput = {
     /**
      * Uuid
      */
@@ -233,6 +255,16 @@ export type OfferAdd = {
 };
 
 /**
+ * OfferEmail
+ */
+export type OfferEmail = {
+    /**
+     * Email
+     */
+    email: string;
+};
+
+/**
  * OfferIndexResponse
  */
 export type OfferIndexResponse = {
@@ -260,8 +292,8 @@ export type OfferIndexResponse = {
      * Url
      */
     url: string | null;
-    place?: PlaceResponse | null;
-    city?: CityResponse | null;
+    place?: PlaceResponseOutput | null;
+    city?: CityResponseOutput | null;
     /**
      * Legal Roles
      */
@@ -553,7 +585,29 @@ export type PlaceIndexResponse = {
 /**
  * PlaceResponse
  */
-export type PlaceResponse = {
+export type PlaceResponseInput = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Lat
+     */
+    lat: number | string | null;
+    /**
+     * Lon
+     */
+    lon: number | string | null;
+};
+
+/**
+ * PlaceResponse
+ */
+export type PlaceResponseOutput = {
     /**
      * Uuid
      */
@@ -613,8 +667,8 @@ export type RawOfferIndexResponse = {
      * Invoice
      */
     invoice?: boolean | null;
-    place?: PlaceResponse | null;
-    city?: CityResponse | null;
+    place?: PlaceResponseOutput | null;
+    city?: CityResponseOutput | null;
     /**
      * Place Name
      */
@@ -1030,6 +1084,36 @@ export type OfferCreateRawOfferResponses = {
      */
     201: unknown;
 };
+
+export type OfferGetOfferEmailData = {
+    body?: never;
+    path: {
+        /**
+         * Offer Uuid
+         */
+        offer_uuid: string;
+    };
+    query?: never;
+    url: '/offers/{offer_uuid}/email';
+};
+
+export type OfferGetOfferEmailErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type OfferGetOfferEmailError = OfferGetOfferEmailErrors[keyof OfferGetOfferEmailErrors];
+
+export type OfferGetOfferEmailResponses = {
+    /**
+     * Successful Response
+     */
+    200: OfferEmail;
+};
+
+export type OfferGetOfferEmailResponse = OfferGetOfferEmailResponses[keyof OfferGetOfferEmailResponses];
 
 export type OfferGetSimilarOffersByUserData = {
     body?: never;
