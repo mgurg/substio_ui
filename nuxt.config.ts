@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
-    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module'],
+    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module', '@nuxtjs/sitemap',],
     css: ['~/assets/css/main.css'],
 
     app: {
@@ -72,5 +72,12 @@ export default defineNuxtConfig({
 
     sourcemap: {
         client: 'hidden',
+    },
+
+    sitemap: {
+        siteUrl:  process.env.NUXT_PUBLIC_DOMAIN || 'https://example.com',
+        gzip: true,
+        exclude: ['/dev/**', '/raw/**'],
+        routes: [],
     },
 })
