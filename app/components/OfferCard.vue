@@ -125,6 +125,7 @@ const isUrgent = computed(() => {
 
 
 const sendEmail = async (offer) => {
+  umTrackEvent('show-offer', { offer: offer.uuid });
   if (isSending.value) return // Prevent multiple clicks
 
   isSending.value = true

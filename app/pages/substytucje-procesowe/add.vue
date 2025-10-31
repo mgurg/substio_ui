@@ -5,9 +5,11 @@
       <div class="mb-8">
         <h1 class="flex items-center text-3xl font-bold mb-2 gap-4">
           <UButton icon="i-lucide-arrow-left" to="/raw" variant="outline">wróć</UButton>
-          <span class="flex-1">Dodaj nową ofertę</span>
+          <span class="flex-1">Stwórz post o substytucji procesowej w kilka sekund!</span>
         </h1>
-        <p class="text-gray-600 dark:text-gray-400">Wypełnij formularz aby dodać nową ofertę do systemu</p>
+        <p class="text-gray-600 dark:text-gray-400">Skorzystaj z prostego generatora postów na Facebooka, aby w kilka
+          chwil utworzyć profesjonalne ogłoszenie o substytucji procesowej. Wypełnij krótki formularz, a my przygotujemy
+          gotowy post z odpowiednim formatowaniem — idealny do publikacji w grupach prawniczych.</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
