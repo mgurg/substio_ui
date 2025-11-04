@@ -62,6 +62,7 @@ nuxtApp.hooks.hookOnce('page:finish', () => {
           variant="subtle"
           block
           to="/substytucje-procesowe/add"
+          @click="umTrackEvent('create-offer')"
       />
     </template>
   </UHeader>
