@@ -862,7 +862,15 @@ const populateFormWithOfferData = async (offerData) => {
   if (offerData.description) formData.value.description = offerData.description
   if (offerData.email) formData.value.email = offerData.email
   if (offerData.date) formData.value.date = offerData.date
-  if (offerData.hour) formData.value.hour = offerData.hour
+  if (offerData.hour) {
+    // Convert HH:MM:SS to HH:MM for time input
+    const hourStr = String(offerData.hour).trim()
+    if (hourStr.length >= 5) {
+      formData.value.hour = hourStr.substring(0, 5)
+    } else {
+      formData.value.hour = hourStr
+    }
+  }
   formData.value.invoiceRequired = offerData.invoice === true
   offerStatus.value = offerData.status
 

@@ -175,6 +175,8 @@
         :detailed="true"
     />
 
+    <StructuredDataList :offers="offers" />
+
     <!-- No Results -->
     <div v-if="!isLoadingOffers && offers.length === 0" class="text-center py-8">
       <UIcon name="i-lucide-search-x" class="h-12 w-12 mx-auto mb-4 text-gray-400" />
@@ -197,6 +199,7 @@
 import { useI18n } from '#imports'
 import { offerListOffers, placeGetCities, offerGetLegalRoles } from "@/client/index.ts"
 import { ref, watch, onMounted, computed } from "vue"
+import StructuredDataList from "~/components/StructuredDataList.vue";
 
 const { t } = useI18n()
 
