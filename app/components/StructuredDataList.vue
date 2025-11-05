@@ -22,10 +22,41 @@ function buildStructuredData(offers: any[]) {
         "@type": "JobPosting",
         "title": `Substytucja procesowa – ${offer.place_name || offer.city?.name || 'nieokreślone miejsce'}`,
         "description": offer.description,
+        "datePosted": new Date(offer.created_at).toISOString().split('T')[0],
         "hiringOrganization": {
-          "@type": "LegalService",
-          "name": offer.author,
-          "email": offer.email
+          "@type": "Organization",
+          "name": offer.author
+        },
+        "jobLocation": offer.place ? {
+          "@type": "Place",
+          "name": offer.place.name,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": offer.place.name.replace(/^Sąd.*w /, '').replace(/^Komenda.*w /, '')
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": offer.place.lat,
+            "longitude": offer.place.lon
+          }
+        } : offer.city ? {
+          "@type": "Place",
+          "name": offer.city.name,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": offer.city.name
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": offer.city.lat,
+            "longitude": offer.city.lon
+          }
+        } : {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "PL"
+          }
         },
         "url": `https://${baseDomain}/substytucje-procesowe`,
         "validThrough": offer.valid_to
