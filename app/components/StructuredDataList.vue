@@ -60,6 +60,7 @@ function buildJobPosting(offer: any): object {
     "title": `Substytucja procesowa – ${offer.place_name || offer.city?.name || 'nieokreślone miejsce'}`,
     "description": offer.description,
     "datePosted": new Date(offer.valid_to).toISOString().split('T')[0],
+    "employmentType": "CONTRACTOR",
     "hiringOrganization": {
       "@type": "Organization",
       "name": offer.author
