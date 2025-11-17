@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "hey-client-axios": "bunx openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios",
+    "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios",
     "start": "node --import ./.output/server/sentry.server.config.mjs .output/server/index.mjs"
   },
   "dependencies": {

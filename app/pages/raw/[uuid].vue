@@ -605,7 +605,7 @@ const resetForm = () => {
     date: null,
     hour: null,
     invoiceRequired: false,
-    submitEmail: true
+    submitEmail: false
   }
   facilitySearch.value = ''
   citySearch.value = ''
