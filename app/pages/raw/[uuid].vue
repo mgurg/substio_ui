@@ -540,7 +540,7 @@ const formData = ref({
   date: null,
   hour: null,
   invoiceRequired: false,
-  submitEmail: true
+  submitEmail: false
 })
 
 // Search states
