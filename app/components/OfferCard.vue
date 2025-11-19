@@ -29,7 +29,6 @@
         <!-- Contact Button - Always Visible -->
         <div class="flex-shrink-0">
           <UButton
-              v-if="offer.email"
               color="primary"
               icon="i-lucide-mail"
               size="md"
@@ -39,9 +38,6 @@
           >
             <span class="hidden sm:inline">Kontakt</span>
           </UButton>
-          <UBadge v-else variant="soft" icon="i-lucide-lock" color="gray" size="lg" class="px-3 py-1">
-            <span class="hidden sm:inline">Kontakt dla zalogowanych</span>
-          </UBadge>
         </div>
       </div>
     </template>
@@ -78,8 +74,8 @@
 
     <!-- Footer with Additional Info -->
     <div
-v-if="detailed && (offer.valid_to || offer.url || offer.author)"
-         class="border-t border-gray-200 dark:border-gray-700 pt-3 mt-4">
+        v-if="detailed && (offer.valid_to || offer.url || offer.author)"
+        class="border-t border-gray-200 dark:border-gray-700 pt-3 mt-4">
       <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500">
         <!-- Author -->
         <div v-if="offer.author" class="flex items-center">
@@ -125,14 +121,14 @@ const isUrgent = computed(() => {
 
 
 const sendEmail = async (offer) => {
-  umTrackEvent('show-email', { offer: offer.uuid });
+  umTrackEvent('show-email', {offer: offer.uuid});
   if (isSending.value) return // Prevent multiple clicks
 
   isSending.value = true
 
   try {
     const response = await offerGetOfferEmail({
-      path: { offer_uuid: offer.uuid }
+      path: {offer_uuid: offer.uuid}
     })
 
     const email = response?.data?.email

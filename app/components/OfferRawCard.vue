@@ -18,19 +18,13 @@
 
       <!-- right section: badges -->
       <div class="flex items-center gap-2">
-        <UBadge :color="statusColor" size="md">{{ offer.status }}</UBadge>
-        <UBadge
-            v-if="hasEmailInRaw"
-            color="neutral"
-            size="md"
-            icon="i-lucide-mail-check"
-        />
+        <UBadge :color="statusColor" size="lg">{{ offer.status }}</UBadge>
       </div>
     </div>
 
     <!-- Description / Raw text -->
     <p class="text-md text-gray-800 py-3">
-      {{ offer.description || truncate(offer.raw_data, 220) }}
+      {{ offer.description || truncate(offer.raw_data, 250) }}
     </p>
 
     <!-- Place, date, roles -->
@@ -72,14 +66,6 @@
       >
         Zobacz ofertę
       </UButton>
-      <UButton
-          v-if="offer.email"
-          :href="`mailto:${offer.email}`"
-          size="md"
-          variant="outline"
-      >
-        Kontakt
-      </UButton>
       <UButton icon="i-lucide-trash-2" color="error" @click="rejectOffer(offer.uuid)">Odrzuć</UButton>
       <UButton icon="i-lucide-pencil" :to="`/raw/${offer.uuid}`">Edytuj</UButton>
     </div>
@@ -102,10 +88,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   offerUpdated: []
 }>()
-
-const hasEmailInRaw = computed(() =>
-    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(props.offer.raw_data ?? "")
-)
 
 const statusColor = computed(() => {
   switch (props.offer.status) {

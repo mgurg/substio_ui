@@ -105,29 +105,7 @@ export type CityIndexResponse = {
 /**
  * CityResponse
  */
-export type CityResponseInput = {
-    /**
-     * Uuid
-     */
-    uuid: string;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Lat
-     */
-    lat: number | string | null;
-    /**
-     * Lon
-     */
-    lon: number | string | null;
-};
-
-/**
- * CityResponse
- */
-export type CityResponseOutput = {
+export type CityResponse = {
     /**
      * Uuid
      */
@@ -289,15 +267,11 @@ export type OfferIndexResponse = {
      */
     description: string;
     /**
-     * Email
-     */
-    email: string | null;
-    /**
      * Url
      */
     url: string | null;
-    place?: PlaceResponseOutput | null;
-    city?: CityResponseOutput | null;
+    place?: PlaceResponse | null;
+    city?: CityResponse | null;
     /**
      * Legal Roles
      */
@@ -314,6 +288,10 @@ export type OfferIndexResponse = {
      * Valid To
      */
     valid_to?: string | null;
+    /**
+     * Created At
+     */
+    created_at?: string | null;
 };
 
 /**
@@ -372,6 +350,10 @@ export type OfferUpdate = {
      * Place Name
      */
     place_name?: string | null;
+    /**
+     * Author
+     */
+    author?: string | null;
     /**
      * Email
      */
@@ -589,29 +571,7 @@ export type PlaceIndexResponse = {
 /**
  * PlaceResponse
  */
-export type PlaceResponseInput = {
-    /**
-     * Uuid
-     */
-    uuid: string;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Lat
-     */
-    lat: number | string | null;
-    /**
-     * Lon
-     */
-    lon: number | string | null;
-};
-
-/**
- * PlaceResponse
- */
-export type PlaceResponseOutput = {
+export type PlaceResponse = {
     /**
      * Uuid
      */
@@ -671,8 +631,8 @@ export type RawOfferIndexResponse = {
      * Invoice
      */
     invoice?: boolean | null;
-    place?: PlaceResponseOutput | null;
-    city?: CityResponseOutput | null;
+    place?: PlaceResponse | null;
+    city?: CityResponse | null;
     /**
      * Place Name
      */
