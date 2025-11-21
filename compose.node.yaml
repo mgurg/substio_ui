@@ -1,0 +1,16 @@
+services:
+  nuxt-app:
+    image: node:24-slim
+    container_name: substio_ui-dev
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules  # Avoid mounting node_modules to sync local dependencies
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NUXT_HOST=0.0.0.0  # Necessary for Nuxt to bind to all addresses inside Docker
+      - NUXT_PORT=3000
+      - CHOKIDAR_USEPOLLING=true  # Enable polling for file watching
+    command: sh -c "npm install && npm run dev"
