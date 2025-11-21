@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --omit=dev=false
+RUN npm ci
 
 # Copy all project files
 COPY . .
