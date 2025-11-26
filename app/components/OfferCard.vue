@@ -80,7 +80,7 @@
         <!-- Author -->
         <div v-if="offer.author" class="flex items-center">
           <UIcon name="i-lucide-user" class="h-3 w-3 mr-1"/>
-          <span>{{ offer.author }}</span>
+          <span>{{ offer.author.split(' ')[0] }}</span>
         </div>
 
         <!-- Valid To -->
