@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
+import {computed, ref, watch, onActivated} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {offerListRawOffers} from "@/client"
 import type {OfferStatus, RawOfferIndexResponse} from '@/client/types.gen.ts'
@@ -117,5 +117,7 @@ watch(() => route.query.status, (newStatus) => {
   }
 })
 
-fetchOffers()
+onActivated(() => {
+  fetchOffers()
+})
 </script>
