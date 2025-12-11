@@ -136,11 +136,12 @@
           </div>
 
           <button
-              class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              disabled
+              class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              :disabled="isSending"
               @click="applyForOffer"
           >
-            🚧 Aplikuj na zlecenie
+            <span v-if="isSending">Pobieranie...</span>
+            <span v-else>Aplikuj na zlecenie</span>
           </button>
         </div>
       </div>
@@ -150,10 +151,12 @@
 
 <script setup>
 import {ref} from 'vue'
-import {offerListMapOffers} from "@/client/index.ts";
+import {offerGetOfferEmail, offerListMapOffers} from "@/client/index.ts";
 
 const mapRef = ref(null)
 const selectedOffer = ref(null)
+
+const isSending = ref(false)
 
 // Offers fetched from API
 const legalOffers = ref([])
@@ -289,6 +292,51 @@ const onClusterClick = (event) => {
         zoom: zoom
       })
     })
+  }
+}
+
+
+const applyForOffer = async () => {
+  const offer = selectedOffer.value
+  if (!offer) return
+
+  if (isSending.value) return
+
+  umTrackEvent('show-email', {offer: offer.id})
+
+  isSending.value = true
+  try {
+    const response = await offerGetOfferEmail({
+      path: {offer_uuid: offer.id}
+    })
+
+    const email = response?.data?.email
+
+    if (!email) {
+      toast.add({
+        title: "Błąd",
+        description: "Nie udało się pobrać adresu e-mail.",
+        color: "error"
+      })
+      return
+    }
+
+    const subject = `Zastępstwo procesowe ${offer.placeName ?? ''}`
+    const body = `Dzień dobry,\n\nPiszę w sprawie zastępstwa ${offer.placeName ?? ''}.\n\n`
+
+    const encodedSubject = encodeURIComponent(subject)
+    const encodedBody = encodeURIComponent(body)
+
+    window.location.href = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`
+  } catch (e) {
+    console.error(e)
+    toast.add({
+      title: "Błąd",
+      description: "Wystąpił błąd podczas pobierania adresu e-mail.",
+      color: "error"
+    })
+  } finally {
+    isSending.value = false
   }
 }
 
