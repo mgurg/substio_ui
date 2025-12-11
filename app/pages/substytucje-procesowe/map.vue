@@ -1,15 +1,21 @@
 <template>
   <UContainer>
-    <UPageSection title="Mapa zleceń prawniczych" class="py-6 md:py-8">
-      <p class="prose prose-gray max-w-5xl mx-auto !mt-2 !mb-0">
+    <div title="Mapa zleceń prawniczych" class="py-6 md:py-12 text-center">
+      <h2 class="text-3xl font-bold tracking-tight  sm:text-4xl mb-4">
+        Mapa zleceń prawniczych
+      </h2>
+      <p class="text-lg max-w-3xl mx-auto">
         Mapa zleceń prawniczych to intuicyjna platforma prezentująca aktualne oferty substytucji procesowych z całej
-        Polski.
-        <br><br>
-        Przeglądaj dostępne zlecenia na interaktywnej mapie i szybko znajdź sprawy, które odpowiadają Twojej
-        specjalizacji. Idealne narzędzie dla adwokatów i radców prawnych szukających dodatkowych zleceń lub wsparcia w
-        prowadzeniu spraw.
+        Polski. Przeglądaj dostępne zlecenia na interaktywnej mapie i szybko znajdź sprawy, które odpowiadają Twojej
+        specjalizacji.
       </p>
-    </UPageSection>
+
+      <div class="flex justify-center">
+        <UButton class="my-6" size="xl" trailing-icon="i-lucide-arrow-right" to="/substytucje-procesowe">Zobacz
+          wszystkie
+        </UButton>
+      </div>
+    </div>
     <UPageSection class="py-4 md:py-6 mt-0" style="height: 600px; position: relative;">
       <MapboxMap
           ref="mapRef"
