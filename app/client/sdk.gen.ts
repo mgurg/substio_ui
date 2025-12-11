@@ -2,7 +2,7 @@
 
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { DefaultReadRootData, DefaultReadRootResponses, HealthcheckHealthCheckData, HealthcheckHealthCheckResponses, OfferAcceptOfferData, OfferAcceptOfferErrors, OfferAcceptOfferResponses, OfferCreateOfferData, OfferCreateOfferErrors, OfferCreateOfferResponses, OfferCreateRawOfferData, OfferCreateRawOfferErrors, OfferCreateRawOfferResponses, OfferGetLegalRolesData, OfferGetLegalRolesResponses, OfferGetOfferByIdData, OfferGetOfferByIdErrors, OfferGetOfferByIdResponses, OfferGetOfferEmailData, OfferGetOfferEmailErrors, OfferGetOfferEmailResponses, OfferGetRawOfferData, OfferGetRawOfferErrors, OfferGetRawOfferResponses, OfferGetSimilarOffersByUserData, OfferGetSimilarOffersByUserErrors, OfferGetSimilarOffersByUserResponses, OfferImportRawOffersData, OfferImportRawOffersErrors, OfferImportRawOffersResponses, OfferListOffersData, OfferListOffersErrors, OfferListOffersResponses, OfferListRawOffersData, OfferListRawOffersErrors, OfferListRawOffersResponses, OfferOffersCountData, OfferOffersCountResponses, OfferParseRawOfferData, OfferParseRawOfferErrors, OfferParseRawOfferResponses, OfferRejectOfferData, OfferRejectOfferErrors, OfferRejectOfferResponses, OfferUpdateOfferData, OfferUpdateOfferErrors, OfferUpdateOfferResponses, PlaceCreateCityData, PlaceCreateCityErrors, PlaceCreateCityResponses, PlaceCreatePlaceData, PlaceCreatePlaceErrors, PlaceCreatePlaceResponses, PlaceGetCitiesData, PlaceGetCitiesErrors, PlaceGetCitiesResponses, PlaceGetCityData, PlaceGetCityErrors, PlaceGetCityResponses, PlaceGetFacilitiesData, PlaceGetFacilitiesErrors, PlaceGetFacilitiesResponses, PlaceGetFacilityData, PlaceGetFacilityErrors, PlaceGetFacilityResponses } from './types.gen';
+import type { DefaultReadRootData, DefaultReadRootResponses, HealthcheckHealthCheckData, HealthcheckHealthCheckResponses, OfferAcceptOfferData, OfferAcceptOfferErrors, OfferAcceptOfferResponses, OfferCreateOfferData, OfferCreateOfferErrors, OfferCreateOfferResponses, OfferCreateRawOfferData, OfferCreateRawOfferErrors, OfferCreateRawOfferResponses, OfferGetLegalRolesData, OfferGetLegalRolesResponses, OfferGetOfferByIdData, OfferGetOfferByIdErrors, OfferGetOfferByIdResponses, OfferGetOfferEmailData, OfferGetOfferEmailErrors, OfferGetOfferEmailResponses, OfferGetRawOfferData, OfferGetRawOfferErrors, OfferGetRawOfferResponses, OfferGetSimilarOffersByUserData, OfferGetSimilarOffersByUserErrors, OfferGetSimilarOffersByUserResponses, OfferImportRawOffersData, OfferImportRawOffersErrors, OfferImportRawOffersResponses, OfferListMapOffersData, OfferListMapOffersResponses, OfferListOffersData, OfferListOffersErrors, OfferListOffersResponses, OfferListRawOffersData, OfferListRawOffersErrors, OfferListRawOffersResponses, OfferOffersCountData, OfferOffersCountResponses, OfferParseRawOfferData, OfferParseRawOfferErrors, OfferParseRawOfferResponses, OfferRejectOfferData, OfferRejectOfferErrors, OfferRejectOfferResponses, OfferUpdateOfferData, OfferUpdateOfferErrors, OfferUpdateOfferResponses, PlaceCreateCityData, PlaceCreateCityErrors, PlaceCreateCityResponses, PlaceCreatePlaceData, PlaceCreatePlaceErrors, PlaceCreatePlaceResponses, PlaceGetCitiesData, PlaceGetCitiesErrors, PlaceGetCitiesResponses, PlaceGetCityData, PlaceGetCityErrors, PlaceGetCityResponses, PlaceGetFacilitiesData, PlaceGetFacilitiesErrors, PlaceGetFacilitiesResponses, PlaceGetFacilityData, PlaceGetFacilityErrors, PlaceGetFacilityResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -21,400 +21,259 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 /**
  * Get Legal Roles
  */
-export const offerGetLegalRoles = <ThrowOnError extends boolean = false>(options?: Options<OfferGetLegalRolesData, ThrowOnError>) => {
-    return (options?.client ?? client).get<OfferGetLegalRolesResponses, unknown, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/legal_roles',
-        ...options
-    });
-};
+export const offerGetLegalRoles = <ThrowOnError extends boolean = false>(options?: Options<OfferGetLegalRolesData, ThrowOnError>) => (options?.client ?? client).get<OfferGetLegalRolesResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/legal_roles',
+    ...options
+});
 
 /**
  * Offers Count
  */
-export const offerOffersCount = <ThrowOnError extends boolean = false>(options?: Options<OfferOffersCountData, ThrowOnError>) => {
-    return (options?.client ?? client).get<OfferOffersCountResponses, unknown, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/count',
-        ...options
-    });
-};
+export const offerOffersCount = <ThrowOnError extends boolean = false>(options?: Options<OfferOffersCountData, ThrowOnError>) => (options?.client ?? client).get<OfferOffersCountResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/count',
+    ...options
+});
 
 /**
  * List Offers
  */
-export const offerListOffers = <ThrowOnError extends boolean = false>(options?: Options<OfferListOffersData, ThrowOnError>) => {
-    return (options?.client ?? client).get<OfferListOffersResponses, OfferListOffersErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers',
-        ...options
-    });
-};
+export const offerListOffers = <ThrowOnError extends boolean = false>(options?: Options<OfferListOffersData, ThrowOnError>) => (options?.client ?? client).get<OfferListOffersResponses, OfferListOffersErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers',
+    ...options
+});
 
 /**
  * Create Offer
  */
-export const offerCreateOffer = <ThrowOnError extends boolean = false>(options: Options<OfferCreateOfferData, ThrowOnError>) => {
-    return (options.client ?? client).post<OfferCreateOfferResponses, OfferCreateOfferErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const offerCreateOffer = <ThrowOnError extends boolean = false>(options: Options<OfferCreateOfferData, ThrowOnError>) => (options.client ?? client).post<OfferCreateOfferResponses, OfferCreateOfferErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get Offer By Id
  */
-export const offerGetOfferById = <ThrowOnError extends boolean = false>(options: Options<OfferGetOfferByIdData, ThrowOnError>) => {
-    return (options.client ?? client).get<OfferGetOfferByIdResponses, OfferGetOfferByIdErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/{offer_uuid}',
-        ...options
-    });
-};
+export const offerGetOfferById = <ThrowOnError extends boolean = false>(options: Options<OfferGetOfferByIdData, ThrowOnError>) => (options.client ?? client).get<OfferGetOfferByIdResponses, OfferGetOfferByIdErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/{offer_uuid}',
+    ...options
+});
 
 /**
  * Update Offer
  */
-export const offerUpdateOffer = <ThrowOnError extends boolean = false>(options: Options<OfferUpdateOfferData, ThrowOnError>) => {
-    return (options.client ?? client).patch<OfferUpdateOfferResponses, OfferUpdateOfferErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/{offer_uuid}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const offerUpdateOffer = <ThrowOnError extends boolean = false>(options: Options<OfferUpdateOfferData, ThrowOnError>) => (options.client ?? client).patch<OfferUpdateOfferResponses, OfferUpdateOfferErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/{offer_uuid}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * List Raw Offers
  */
-export const offerListRawOffers = <ThrowOnError extends boolean = false>(options?: Options<OfferListRawOffersData, ThrowOnError>) => {
-    return (options?.client ?? client).get<OfferListRawOffersResponses, OfferListRawOffersErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw',
-        ...options
-    });
-};
+export const offerListRawOffers = <ThrowOnError extends boolean = false>(options?: Options<OfferListRawOffersData, ThrowOnError>) => (options?.client ?? client).get<OfferListRawOffersResponses, OfferListRawOffersErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw',
+    ...options
+});
 
 /**
  * Create Raw Offer
  */
-export const offerCreateRawOffer = <ThrowOnError extends boolean = false>(options: Options<OfferCreateRawOfferData, ThrowOnError>) => {
-    return (options.client ?? client).post<OfferCreateRawOfferResponses, OfferCreateRawOfferErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const offerCreateRawOffer = <ThrowOnError extends boolean = false>(options: Options<OfferCreateRawOfferData, ThrowOnError>) => (options.client ?? client).post<OfferCreateRawOfferResponses, OfferCreateRawOfferErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Map Offers
+ */
+export const offerListMapOffers = <ThrowOnError extends boolean = false>(options?: Options<OfferListMapOffersData, ThrowOnError>) => (options?.client ?? client).get<OfferListMapOffersResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/map',
+    ...options
+});
 
 /**
  * Get Offer Email
  */
-export const offerGetOfferEmail = <ThrowOnError extends boolean = false>(options: Options<OfferGetOfferEmailData, ThrowOnError>) => {
-    return (options.client ?? client).get<OfferGetOfferEmailResponses, OfferGetOfferEmailErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/{offer_uuid}/email',
-        ...options
-    });
-};
+export const offerGetOfferEmail = <ThrowOnError extends boolean = false>(options: Options<OfferGetOfferEmailData, ThrowOnError>) => (options.client ?? client).get<OfferGetOfferEmailResponses, OfferGetOfferEmailErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/{offer_uuid}/email',
+    ...options
+});
 
 /**
  * Get Similar Offers By User
  */
-export const offerGetSimilarOffersByUser = <ThrowOnError extends boolean = false>(options: Options<OfferGetSimilarOffersByUserData, ThrowOnError>) => {
-    return (options.client ?? client).get<OfferGetSimilarOffersByUserResponses, OfferGetSimilarOffersByUserErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/{offer_uuid}/similar',
-        ...options
-    });
-};
+export const offerGetSimilarOffersByUser = <ThrowOnError extends boolean = false>(options: Options<OfferGetSimilarOffersByUserData, ThrowOnError>) => (options.client ?? client).get<OfferGetSimilarOffersByUserResponses, OfferGetSimilarOffersByUserErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/{offer_uuid}/similar',
+    ...options
+});
 
 /**
  * Import Raw Offers
  */
-export const offerImportRawOffers = <ThrowOnError extends boolean = false>(options: Options<OfferImportRawOffersData, ThrowOnError>) => {
-    return (options.client ?? client).post<OfferImportRawOffersResponses, OfferImportRawOffersErrors, ThrowOnError>({
-        ...formDataBodySerializer,
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw/import',
-        ...options,
-        headers: {
-            'Content-Type': null,
-            ...options.headers
-        }
-    });
-};
+export const offerImportRawOffers = <ThrowOnError extends boolean = false>(options: Options<OfferImportRawOffersData, ThrowOnError>) => (options.client ?? client).post<OfferImportRawOffersResponses, OfferImportRawOffersErrors, ThrowOnError>({
+    ...formDataBodySerializer,
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw/import',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
+});
 
 /**
  * Get Raw Offer
  */
-export const offerGetRawOffer = <ThrowOnError extends boolean = false>(options: Options<OfferGetRawOfferData, ThrowOnError>) => {
-    return (options.client ?? client).get<OfferGetRawOfferResponses, OfferGetRawOfferErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw/{offer_uuid}',
-        ...options
-    });
-};
+export const offerGetRawOffer = <ThrowOnError extends boolean = false>(options: Options<OfferGetRawOfferData, ThrowOnError>) => (options.client ?? client).get<OfferGetRawOfferResponses, OfferGetRawOfferErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw/{offer_uuid}',
+    ...options
+});
 
 /**
  * Parse Raw Offer
  */
-export const offerParseRawOffer = <ThrowOnError extends boolean = false>(options: Options<OfferParseRawOfferData, ThrowOnError>) => {
-    return (options.client ?? client).get<OfferParseRawOfferResponses, OfferParseRawOfferErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw/{offer_uuid}/parse',
-        ...options
-    });
-};
+export const offerParseRawOffer = <ThrowOnError extends boolean = false>(options: Options<OfferParseRawOfferData, ThrowOnError>) => (options.client ?? client).get<OfferParseRawOfferResponses, OfferParseRawOfferErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw/{offer_uuid}/parse',
+    ...options
+});
 
 /**
  * Accept Offer
  */
-export const offerAcceptOffer = <ThrowOnError extends boolean = false>(options: Options<OfferAcceptOfferData, ThrowOnError>) => {
-    return (options.client ?? client).patch<OfferAcceptOfferResponses, OfferAcceptOfferErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw/{offer_uuid}/accept',
-        ...options
-    });
-};
+export const offerAcceptOffer = <ThrowOnError extends boolean = false>(options: Options<OfferAcceptOfferData, ThrowOnError>) => (options.client ?? client).patch<OfferAcceptOfferResponses, OfferAcceptOfferErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw/{offer_uuid}/accept',
+    ...options
+});
 
 /**
  * Reject Offer
  */
-export const offerRejectOffer = <ThrowOnError extends boolean = false>(options: Options<OfferRejectOfferData, ThrowOnError>) => {
-    return (options.client ?? client).patch<OfferRejectOfferResponses, OfferRejectOfferErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/offers/raw/{offer_uuid}/reject',
-        ...options
-    });
-};
+export const offerRejectOffer = <ThrowOnError extends boolean = false>(options: Options<OfferRejectOfferData, ThrowOnError>) => (options.client ?? client).patch<OfferRejectOfferResponses, OfferRejectOfferErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/offers/raw/{offer_uuid}/reject',
+    ...options
+});
 
 /**
  * Create Place
  */
-export const placeCreatePlace = <ThrowOnError extends boolean = false>(options: Options<PlaceCreatePlaceData, ThrowOnError>) => {
-    return (options.client ?? client).post<PlaceCreatePlaceResponses, PlaceCreatePlaceErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/places/',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const placeCreatePlace = <ThrowOnError extends boolean = false>(options: Options<PlaceCreatePlaceData, ThrowOnError>) => (options.client ?? client).post<PlaceCreatePlaceResponses, PlaceCreatePlaceErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/places/',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Create City
  */
-export const placeCreateCity = <ThrowOnError extends boolean = false>(options: Options<PlaceCreateCityData, ThrowOnError>) => {
-    return (options.client ?? client).post<PlaceCreateCityResponses, PlaceCreateCityErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/places/city',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const placeCreateCity = <ThrowOnError extends boolean = false>(options: Options<PlaceCreateCityData, ThrowOnError>) => (options.client ?? client).post<PlaceCreateCityResponses, PlaceCreateCityErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/places/city',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Get Facilities
  */
-export const placeGetFacilities = <ThrowOnError extends boolean = false>(options: Options<PlaceGetFacilitiesData, ThrowOnError>) => {
-    return (options.client ?? client).get<PlaceGetFacilitiesResponses, PlaceGetFacilitiesErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/places/facility/{place_name}',
-        ...options
-    });
-};
+export const placeGetFacilities = <ThrowOnError extends boolean = false>(options: Options<PlaceGetFacilitiesData, ThrowOnError>) => (options.client ?? client).get<PlaceGetFacilitiesResponses, PlaceGetFacilitiesErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/places/facility/{place_name}',
+    ...options
+});
 
 /**
  * Get Facility
  */
-export const placeGetFacility = <ThrowOnError extends boolean = false>(options: Options<PlaceGetFacilityData, ThrowOnError>) => {
-    return (options.client ?? client).get<PlaceGetFacilityResponses, PlaceGetFacilityErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/places/facility/uuid/{place_uuid}',
-        ...options
-    });
-};
+export const placeGetFacility = <ThrowOnError extends boolean = false>(options: Options<PlaceGetFacilityData, ThrowOnError>) => (options.client ?? client).get<PlaceGetFacilityResponses, PlaceGetFacilityErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/places/facility/uuid/{place_uuid}',
+    ...options
+});
 
 /**
  * Get City
  */
-export const placeGetCity = <ThrowOnError extends boolean = false>(options: Options<PlaceGetCityData, ThrowOnError>) => {
-    return (options.client ?? client).get<PlaceGetCityResponses, PlaceGetCityErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/places/city/uuid/{city_uuid}',
-        ...options
-    });
-};
+export const placeGetCity = <ThrowOnError extends boolean = false>(options: Options<PlaceGetCityData, ThrowOnError>) => (options.client ?? client).get<PlaceGetCityResponses, PlaceGetCityErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/places/city/uuid/{city_uuid}',
+    ...options
+});
 
 /**
  * Get Cities
  */
-export const placeGetCities = <ThrowOnError extends boolean = false>(options: Options<PlaceGetCitiesData, ThrowOnError>) => {
-    return (options.client ?? client).get<PlaceGetCitiesResponses, PlaceGetCitiesErrors, ThrowOnError>({
-        responseType: 'json',
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/places/city/{city_name}',
-        ...options
-    });
-};
+export const placeGetCities = <ThrowOnError extends boolean = false>(options: Options<PlaceGetCitiesData, ThrowOnError>) => (options.client ?? client).get<PlaceGetCitiesResponses, PlaceGetCitiesErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/places/city/{city_name}',
+    ...options
+});
 
 /**
  * Read Root
  */
-export const defaultReadRoot = <ThrowOnError extends boolean = false>(options?: Options<DefaultReadRootData, ThrowOnError>) => {
-    return (options?.client ?? client).get<DefaultReadRootResponses, unknown, ThrowOnError>({
-        responseType: 'json',
-        url: '/',
-        ...options
-    });
-};
+export const defaultReadRoot = <ThrowOnError extends boolean = false>(options?: Options<DefaultReadRootData, ThrowOnError>) => (options?.client ?? client).get<DefaultReadRootResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    url: '/',
+    ...options
+});
 
 /**
  * Perform a Health Check
  */
-export const healthcheckHealthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthcheckHealthCheckData, ThrowOnError>) => {
-    return (options?.client ?? client).get<HealthcheckHealthCheckResponses, unknown, ThrowOnError>({
-        responseType: 'json',
-        url: '/health',
-        ...options
-    });
-};
+export const healthcheckHealthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthcheckHealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthcheckHealthCheckResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    url: '/health',
+    ...options
+});

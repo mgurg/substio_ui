@@ -295,6 +295,32 @@ export type OfferIndexResponse = {
 };
 
 /**
+ * OfferMapResponse
+ */
+export type OfferMapResponse = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Lat
+     */
+    lat: string;
+    /**
+     * Lon
+     */
+    lon: string;
+    /**
+     * Place Name
+     */
+    place_name?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+};
+
+/**
  * OfferRawAdd
  */
 export type OfferRawAdd = {
@@ -1049,6 +1075,24 @@ export type OfferCreateRawOfferResponses = {
      */
     201: unknown;
 };
+
+export type OfferListMapOffersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/offers/map';
+};
+
+export type OfferListMapOffersResponses = {
+    /**
+     * Response Offer-List Map Offers
+     *
+     * Successful Response
+     */
+    200: Array<OfferMapResponse>;
+};
+
+export type OfferListMapOffersResponse = OfferListMapOffersResponses[keyof OfferListMapOffersResponses];
 
 export type OfferGetOfferEmailData = {
     body?: never;
