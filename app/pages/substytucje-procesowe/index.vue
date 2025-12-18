@@ -375,6 +375,8 @@ const saveCity = () => {
       console.warn('localStorage not available, using in-memory storage', error)
       savedCityData.value = cityToSave
     }
+
+    umTrackEvent('save-city', {city: selectedCity.name, uuid: selectedCity.uuid});
   }
 }
 

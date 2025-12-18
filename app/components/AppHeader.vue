@@ -40,6 +40,12 @@ nuxtApp.hooks.hookOnce('page:finish', () => {
 <!--          class="hidden lg:block"-->
 <!--      />-->
 
+<!--      <UButton-->
+<!--          label="Mapa zleceń"-->
+<!--          variant="subtle"-->
+<!--          class="hidden lg:block"-->
+<!--          to="/substytucje-procesowe/map"-->
+<!--      />-->
       <UButton
           label="Dodaj ogłoszenie"
           variant="subtle"
@@ -55,6 +61,12 @@ nuxtApp.hooks.hookOnce('page:finish', () => {
 <!--          :items="items"-->
 <!--          orientation="vertical"-->
 <!--          class="-mx-2.5"-->
+<!--      />-->
+<!--      <UButton-->
+<!--          label="Mapa zleceń"-->
+<!--          variant="subtle"-->
+<!--          class="hidden lg:block"-->
+<!--          to="/substytucje-procesowe/map"-->
 <!--      />-->
       <UButton
           class="mt-4"

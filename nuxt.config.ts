@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
-    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module', '@nuxtjs/sitemap',],
+    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module', '@nuxtjs/sitemap', 'nuxt-mapbox'],
     css: ['~/assets/css/main.css'],
 
     app: {
@@ -44,6 +44,10 @@ export default defineNuxtConfig({
         // customEndpoint: '/my-custom-endpoint',
         // enabled: false,
         // logErrors: true,
+    },
+
+    mapbox: {
+        accessToken: process.env.MAPBOX_TOKEN
     },
 
     runtimeConfig: {
