@@ -21,7 +21,7 @@
     "axios": "^1.13.2",
     "eslint": "^9.39.1",
     "mapbox-gl": "^3.16.0",
-    "nuxt": "4.1.2",
+    "nuxt": "^4.2.2",
     "nuxt-mapbox": "1.6.4",
     "nuxt-umami": "^3.2.1",
     "typescript": "^5.9.3",
