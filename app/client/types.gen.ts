@@ -318,6 +318,10 @@ export type OfferMapResponse = {
      * Description
      */
     description?: string | null;
+    /**
+     * Date
+     */
+    date?: string | null;
 };
 
 /**

@@ -197,7 +197,8 @@ const fetchOffers = async () => {
         id: o.uuid,
         placeName: o.place_name || '',
         description: o.description || '',
-        coordinates: [finalLon, finalLat]
+        coordinates: [finalLon, finalLat],
+        date: o.date|| '',
       }
     })
   } catch (e) {
