@@ -166,15 +166,39 @@ const fetchOffers = async () => {
     const response = await offerListMapOffers()
     const items = response?.data ?? []
 
-    // Map API response to only the fields we need for the map and UI
+    // Track coordinates to detect duplicates
+    const coordMap = new Map()
+
+    // Map API response and handle duplicate coordinates
     legalOffers.value = items.map((o) => {
       const lat = parseFloat(o.lat)
       const lon = parseFloat(o.lon)
+      let finalLon = isFinite(lon) ? lon : 0
+      let finalLat = isFinite(lat) ? lat : 0
+
+      // Create a key for this coordinate pair
+      const coordKey = `${finalLat},${finalLon}`
+
+      // If we've seen these coordinates before, add a small offset
+      if (coordMap.has(coordKey)) {
+        const count = coordMap.get(coordKey)
+        coordMap.set(coordKey, count + 1)
+
+        // Add small offset (roughly 50-100 meters) in a circular pattern
+        const angle = (count * 137.5) * (Math.PI / 180) // Golden angle for even distribution
+        const offset = 0.001 * (1 + count * 0.3) // Increase offset for each duplicate
+        finalLon += offset * Math.cos(angle)
+        finalLat += offset * Math.sin(angle)
+      } else {
+        coordMap.set(coordKey, 1)
+      }
+
       return {
         id: o.uuid,
         placeName: o.place_name || '',
         description: o.description || '',
-        coordinates: [isFinite(lon) ? lon : 0, isFinite(lat) ? lat : 0]
+        coordinates: [finalLon, finalLat],
+        date: o.date|| '',
       }
     })
   } catch (e) {
