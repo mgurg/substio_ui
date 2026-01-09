@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import type {NavigationMenuItem} from '@nuxt/ui'
+
+const config = useRuntimeConfig()
+
 
 const items: NavigationMenuItem[] = [
   {
@@ -14,7 +17,8 @@ const items: NavigationMenuItem[] = [
   },
   {
     label: 'Blog',
-    to: '/',
+    to: "https://blog." + config.public.baseDomain,
+    target: '_blank'
   }
 ]
 </script>
@@ -28,6 +32,6 @@ const items: NavigationMenuItem[] = [
       <p class="text-muted text-sm">Copyright © {{ new Date().getFullYear() }}</p>
     </template>
 
-    <UNavigationMenu :items="items" variant="link" />
+    <UNavigationMenu :items="items" variant="link"/>
   </UFooter>
 </template>
