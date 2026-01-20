@@ -527,7 +527,7 @@ const isSubmitting = ref(false)
 
 // Form data with proper initial values
 const formData = ref({
-  status: 'new',
+  status: 'active',
   placeCategory: 'court',
   placeType: null,
   facility: null,
