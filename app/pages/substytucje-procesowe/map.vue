@@ -1,31 +1,36 @@
 <template>
-  <UContainer>
-    <div title="Mapa zleceń prawniczych" class="py-6 md:py-12 text-center">
-      <h2 class="text-3xl font-bold tracking-tight  sm:text-4xl mb-4">
-        Mapa zleceń prawniczych
-      </h2>
-      <p class="text-lg max-w-3xl mx-auto">
-        Mapa zleceń prawniczych to intuicyjna platforma prezentująca aktualne oferty substytucji procesowych z całej
-        Polski. Przeglądaj dostępne zlecenia na interaktywnej mapie i szybko znajdź sprawy, które odpowiadają Twojej
-        specjalizacji.
-      </p>
+  <div>
+    <!-- Header section with container -->
+    <UContainer>
+      <div title="Mapa zleceń prawniczych" class="py-6 md:py-12 text-center">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+          Mapa zleceń prawniczych
+        </h2>
+        <p class="text-lg max-w-3xl mx-auto">
+          Mapa zleceń prawniczych to intuicyjna platforma prezentująca aktualne oferty substytucji procesowych z całej
+          Polski. Przeglądaj dostępne zlecenia na interaktywnej mapie i szybko znajdź sprawy, które odpowiadają Twojej
+          specjalizacji.
+        </p>
 
-      <div class="flex justify-center">
-        <UButton class="my-6" size="xl" trailing-icon="i-lucide-arrow-right" to="/substytucje-procesowe">Zobacz
-          wszystkie
-        </UButton>
+        <div class="flex justify-center">
+          <UButton class="my-6" size="xl" trailing-icon="i-lucide-arrow-right" to="/substytucje-procesowe">
+            Zobacz wszystkie
+          </UButton>
+        </div>
       </div>
-    </div>
-    <UPageSection class="py-4 md:py-6 mt-0" style="height: 600px; position: relative;">
+    </UContainer>
+
+    <!-- Map section without container - 90% viewport width -->
+    <div class="w-[90vw] mx-auto py-4 md:py-6 relative" style="height: 600px;">
       <MapboxMap
           ref="mapRef"
           map-id="legalOffersMap"
           style="position: absolute; top: 0; bottom: 0; width: 100%; height: 100%; z-index: 1;"
           :options="{
-            style: 'mapbox://styles/mapbox/light-v11',
-            center: [19.0, 52.0],
-            zoom: 6
-          }"
+              style: 'mapbox://styles/mapbox/light-v11',
+              center: [19.0, 52.0],
+              zoom: 6
+            }"
           @styleload="onStyleLoad"
       >
         <MapboxSource
@@ -71,20 +76,6 @@
         </h3>
 
         <div class="space-y-3">
-          <!--          <div class="flex items-start">-->
-          <!--            <svg-->
-          <!--                class="w-5 h-5 text-blue-600 mr-2 mt-0.5 shrink-0" fill="none" stroke="currentColor"-->
-          <!--                viewBox="0 0 24 24">-->
-          <!--              <path-->
-          <!--                  stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
-          <!--                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>-->
-          <!--            </svg>-->
-          <!--            <div>-->
-          <!--              <p class="text-sm font-medium text-gray-700">Sąd</p>-->
-          <!--              <p class="text-sm text-gray-900">{{ selectedOffer.court }}</p>-->
-          <!--            </div>-->
-          <!--          </div>-->
-
           <div class="flex items-start">
             <svg
                 class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
@@ -116,20 +107,6 @@
             </div>
           </div>
 
-          <!--          <div class="flex items-start">-->
-          <!--            <svg-->
-          <!--                class="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"-->
-          <!--                viewBox="0 0 24 24">-->
-          <!--              <path-->
-          <!--                  stroke-linecap="round" stroke-linejoin="round" stroke-width="2"-->
-          <!--                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>-->
-          <!--            </svg>-->
-          <!--            <div>-->
-          <!--              <p class="text-sm font-medium text-gray-700">Wynagrodzenie</p>-->
-          <!--              <p class="text-lg font-bold text-green-600">{{ selectedOffer.fee }} PLN</p>-->
-          <!--            </div>-->
-          <!--          </div>-->
-
           <div class="pt-2 border-t border-gray-200">
             <p class="text-sm font-medium text-gray-700 mb-1">Opis</p>
             <p class="text-sm text-gray-600">{{ selectedOffer.description }}</p>
@@ -145,8 +122,8 @@
           </button>
         </div>
       </div>
-    </UPageSection>
-  </UContainer>
+    </div>
+  </div>
 </template>
 
 <script setup>
