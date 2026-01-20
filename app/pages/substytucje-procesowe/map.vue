@@ -21,7 +21,7 @@
     </UContainer>
 
     <!-- Map section without container - 90% viewport width -->
-    <div class="w-[90vw] mx-auto py-4 md:py-6 relative" style="height: 600px;">
+    <div class="w-[90vw] mx-auto py-4 md:py-6 relative" style="height: calc(100vh - 450px);">
       <MapboxMap
           ref="mapRef"
           map-id="legalOffersMap"
@@ -175,7 +175,7 @@ const fetchOffers = async () => {
         placeName: o.place_name || '',
         description: o.description || '',
         coordinates: [finalLon, finalLat],
-        date: o.date|| '',
+        date: o.date || '',
       }
     })
   } catch (e) {
