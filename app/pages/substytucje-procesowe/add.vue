@@ -118,7 +118,7 @@
               </UFormField>
 
               <!-- Author and Email -->
-              <div class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="Autor:" name="author" required>
                   <UInput
                       v-model="formData.author"
@@ -166,8 +166,8 @@
               </UFormField>
 
               <!-- Date and Time -->
-              <div class="space-y-4">
-                <UFormField label="Data:" name="date" description="Oferty bez podanej daty są ważne 7 dni">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <UFormField label="Data:" name="date">
                   <UInput
                       v-model="formData.date"
                       type="date"
@@ -207,6 +207,11 @@
                   </UInput>
                 </UFormField>
               </div>
+
+              <!-- Date Description -->
+              <p class="text-sm text-gray-500 dark:text-gray-400 -mt-2">
+                Oferty bez podanej daty są ważne 7 dni
+              </p>
 
               <!-- Invoice Checkbox -->
               <UFormField label="Faktura:" name="invoiceRequired">
