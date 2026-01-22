@@ -7,7 +7,7 @@
         orientation="horizontal"
         :links="links"
     >
-      <a href="/substytucje-procesowe/map" class="hidden md:block">
+      <a href="/substytucje-procesowe/map" class="hidden lg:block">
         <img
             src="~/assets/map.png"
             alt="Illustration"
