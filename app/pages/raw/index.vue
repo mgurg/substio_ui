@@ -2,7 +2,16 @@
   <UContainer>
     <UCard>
       <template #header>
-        <h1 class="text-3xl font-extrabold">Nowe oferty</h1>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 class="text-3xl font-extrabold">Nowe oferty</h1>
+          <UButton
+              to="/raw/add"
+              icon="i-lucide-plus"
+              color="primary"
+          >
+            Dodaj ofertę
+          </UButton>
+        </div>
       </template>
       <!-- Filter -->
       <div class="flex items-center gap-4 mb-5">
