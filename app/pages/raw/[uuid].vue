@@ -12,10 +12,33 @@
         <USkeleton v-if="isLoading" class="h-32 w-full"/>
 
         <div v-else>
-          <p><strong>UUID:</strong> {{ offer?.uuid }}</p>
-          <p><strong>Author:</strong> {{ offer?.author }}</p>
-          <p><strong>Raw Data:</strong></p>
-          <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded">{{ offer?.raw_data }}</p>
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <UButton
+                v-if="offer?.email"
+                :to="`https://${offer.email.split('@')[1]}`"
+                target="_blank"
+                size="sm"
+                variant="outline"
+                icon="i-lucide-globe"
+            >
+              {{ offer.email.split('@')[1] }}
+            </UButton>
+            <UButton
+                v-if="offer?.offer_uid"
+                :to="offer.offer_uid"
+                target="_blank"
+                size="sm"
+                variant="outline"
+                icon="i-lucide-external-link"
+            >
+              Zobacz ogłoszenie
+            </UButton>
+          </div>
+
+          <div class="space-y-2">
+            <p><strong>Author:</strong> {{ offer?.author }}</p>
+            <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded">{{ offer?.raw_data }}</p>
+          </div>
 
 
           <!-- Similar Offers -->
@@ -38,7 +61,7 @@
                   target="_blank"
                   class="ml-2 text-primary-600 hover:text-primary-700"
               >
-                <UIcon name="i-lucide-external-link" class="w-4 h-4" />
+                <UIcon name="i-lucide-external-link" class="w-4 h-4"/>
               </ULink>
             </div>
           </div>
@@ -53,7 +76,6 @@
             Generuj
           </UButton>
         </div>
-
 
 
         <!-- Generated Data Section -->
@@ -444,7 +466,7 @@ import DebugPanel from "~/components/DebugPanel.vue";
 import {
   offerGetLegalRoles,
   offerGetRawOffer,
-    offerGetSimilarOffersByUser,
+  offerGetSimilarOffersByUser,
   offerParseRawOffer,
   offerUpdateOffer,
   placeGetCities,
@@ -527,7 +549,7 @@ const isSubmitting = ref(false)
 
 // Form data with proper initial values
 const formData = ref({
-  status: 'new',
+  status: 'active',
   placeCategory: 'court',
   placeType: null,
   facility: null,
@@ -592,7 +614,7 @@ const toggleRole = (roleValue) => {
 
 const resetForm = () => {
   formData.value = {
-    status: 'new',
+    status: 'active',
     placeCategory: 'court',
     placeType: null,
     facility: null,

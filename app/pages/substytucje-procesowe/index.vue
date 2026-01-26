@@ -7,17 +7,16 @@
       </template>
 
       <UForm :state="formData">
-        <div class="space-y-6">
-          <!-- Filters Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 gap-y-6">
-            <!-- Row 1: City and Distance -->
-            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left Column - Filters -->
+          <div class="lg:col-span-9 space-y-6">
+            <!-- City Section -->
+            <div class="space-y-4">
               <!-- City Filter (only show when no city is saved) -->
               <UFormField
                   v-if="!savedCityData"
                   label="Miasto:"
                   name="city"
-                  class="w-full"
               >
                 <div class="space-y-2">
                   <USelectMenu
@@ -47,12 +46,11 @@
                   v-if="savedCityData"
                   label="Miasto:"
                   name="savedCity"
-                  class="w-full"
               >
                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
                   <div class="flex items-center">
                     <UIcon name="i-lucide-map-pin" class="mr-2 h-5 w-5 text-green-600"/>
-                    <span class="font-medium text-green-800">{{ savedCityData.name }}</span>
+                    <span class="font-medium text-green-800">{{ savedCityData.name }} ({{ formData.distance }} km)</span>
                   </div>
                   <UButton
                       color="red"
@@ -66,12 +64,11 @@
                 </div>
               </UFormField>
 
-              <!-- Distance Filter (show when city is selected or saved) -->
+              <!-- Distance Slider (only show when city is selected but not saved) -->
               <UFormField
-                  v-if="formData.city || savedCityData"
+                  v-if="formData.city && !savedCityData"
                   label="Odległość (km):"
                   name="distance"
-                  class="w-full"
               >
                 <div class="space-y-3">
                   <USlider
@@ -90,67 +87,59 @@
               </UFormField>
             </div>
 
-            <!-- Row 2: Legal Roles and Invoice -->
-            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Invoice Required Filter -->
-              <UFormField
-                  label="Wymagana faktura:"
-                  name="invoiceRequired"
-                  class="w-full"
-              >
-                <UCheckbox
-                    v-model="formData.invoiceRequired"
-                    label="Wymagana faktura"
-                />
-              </UFormField>
+            <!-- Legal Roles Row -->
+            <UFormField
+                label="Role prawne:"
+                name="legalRoles"
+            >
+              <div class="flex flex-wrap gap-2">
+                <UButton
+                    v-for="role in legalRoles"
+                    :key="role.value"
+                    :variant="formData.selectedLegalRoles.includes(role.value) ? 'solid' : 'outline'"
+                    color="primary"
+                    type="button"
+                    size="md"
+                    :loading="isLoadingRoles"
+                    @click="toggleLegalRole(role.value)"
+                >
+                  {{ role.label }}
+                </UButton>
+              </div>
+            </UFormField>
 
-              <!-- Legal Role Filter -->
-              <UFormField
-                  label="Role prawne:"
-                  name="legalRoles"
-                  class="w-full"
-              >
-                <div class="flex flex-wrap gap-2">
-                  <UButton
-                      v-for="role in legalRoles"
-                      :key="role.value"
-                      :variant="formData.selectedLegalRoles.includes(role.value) ? 'solid' : 'outline'"
-                      color="primary"
-                      type="button"
-                      size="md"
-                      :loading="isLoadingRoles"
-                      @click="toggleLegalRole(role.value)"
-                  >
-                    {{ role.label }}
-                  </UButton>
-                </div>
-              </UFormField>
+            <!-- Search / Invoice / Clear row -->
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
+              <!-- Search -->
+              <div class="lg:col-span-7">
+                <UFormField label="Szukaj:" name="search">
+                  <UInput
+                      v-model="formData.search"
+                      placeholder="Wyszukaj oferty..."
+                      icon="i-lucide-search"
+                      size="lg"
+                  />
+                </UFormField>
+              </div>
 
+              <!-- Invoice -->
+              <div class="lg:col-span-3">
+                <UFormField label="Wymagana faktura:" name="invoiceRequired">
+                  <div class="pt-3">
+                    <UCheckbox
+                        v-model="formData.invoiceRequired"
+                        label="Wymagana faktura"
+                    />
+                  </div>
+                </UFormField>
+              </div>
 
-            </div>
-
-            <!-- Row 3: Search and Clear Filters -->
-            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-              <!-- Search Filter -->
-              <UFormField
-                  label="Szukaj:"
-                  name="search"
-                  class="w-full"
-              >
-                <UInput
-                    v-model="formData.search"
-                    placeholder="Wyszukaj oferty..."
-                    icon="i-lucide-search"
-                    size="lg"
-                />
-              </UFormField>
-
-              <!-- Clear Filters Button -->
-              <div class="flex items-end h-full">
+              <!-- Clear filters -->
+              <div class="lg:col-span-2 flex lg:justify-end">
                 <UButton
                     variant="outline"
                     icon="i-lucide-filter-x"
-                    class="w-full md:w-auto"
+                    class="w-full lg:w-auto"
                     @click="clearAllFilters"
                 >
                   Wyczyść filtry
@@ -158,13 +147,25 @@
               </div>
             </div>
           </div>
+
+          <!-- Right Column - Map -->
+          <div class="lg:col-span-3 hidden lg:flex items-center">
+            <a href="/substytucje-procesowe/map" class="block w-full">
+              <img
+                  src="~/assets/map.png"
+                  alt="Mapa substytucji procesowych"
+                  class="w-full rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+              >
+            </a>
+          </div>
         </div>
       </UForm>
     </UCard>
 
+
     <!-- Loading State -->
     <div v-if="isLoadingOffers" class="flex justify-center py-8">
-      <UIcon name="i-lucide-loader-2" class="animate-spin h-8 w-8" />
+      <UIcon name="i-lucide-loader-2" class="animate-spin h-8 w-8"/>
     </div>
 
     <!-- Offers List -->
@@ -175,11 +176,11 @@
         :detailed="true"
     />
 
-    <StructuredDataList :offers="offers" />
+    <StructuredDataList :offers="offers"/>
 
     <!-- No Results -->
     <div v-if="!isLoadingOffers && offers.length === 0" class="text-center py-8">
-      <UIcon name="i-lucide-search-x" class="h-12 w-12 mx-auto mb-4 text-gray-400" />
+      <UIcon name="i-lucide-search-x" class="h-12 w-12 mx-auto mb-4 text-gray-400"/>
       <p class="text-gray-600">Nie znaleziono ofert spełniających kryteria wyszukiwania.</p>
     </div>
 
@@ -196,12 +197,12 @@
 </template>
 
 <script setup>
-import { useI18n } from '#imports'
-import { offerListOffers, placeGetCities, offerGetLegalRoles } from "@/client/index.ts"
-import { ref, watch, onMounted, computed } from "vue"
+import {useI18n} from '#imports'
+import {offerListOffers, placeGetCities, offerGetLegalRoles} from "@/client/index.ts"
+import {ref, watch, onMounted, computed} from "vue"
 import StructuredDataList from "~/components/StructuredDataList.vue";
 
-const { t } = useI18n()
+const {t} = useI18n()
 
 const debounce = (func, delay) => {
   let timeoutId
@@ -246,7 +247,7 @@ const searchCities = async (searchTerm) => {
   isLoadingCities.value = true
   try {
     const response = await placeGetCities({
-      path: { city_name: searchTerm }
+      path: {city_name: searchTerm}
     })
 
     cities.value = (response.data || []).map(city => ({
@@ -322,7 +323,7 @@ const fetchOffers = async () => {
 const fetchLegalRoles = async () => {
   isLoadingRoles.value = true
   try {
-    const { data } = await offerGetLegalRoles()
+    const {data} = await offerGetLegalRoles()
     if (data) {
       legalRoles.value = data.map((role) => ({
         label: role.name,
@@ -430,7 +431,7 @@ watch(() => formData.value.distance, () => {
 watch(() => formData.value.selectedLegalRoles, () => {
   currentPage.value = 1
   fetchOffers()
-}, { deep: true })
+}, {deep: true})
 
 watch(() => formData.value.invoiceRequired, () => {
   currentPage.value = 1
@@ -450,7 +451,7 @@ watch(() => savedCityData.value, () => {
   if (formData.value.city || savedCityData.value) {
     fetchOffers()
   }
-}, { deep: true })
+}, {deep: true})
 
 // Lifecycle
 onMounted(() => {
