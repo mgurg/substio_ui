@@ -168,43 +168,27 @@
               <!-- Date and Time -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UFormField label="Data:" name="date">
-                  <UInput
-                      v-model="formData.date"
-                      type="date"
-                      placeholder="Wybierz datę"
-                      class="w-full"
-                      :ui="{ trailing: 'pe-1' }"
-                  >
+                  <UInputDate ref="inputDate" v-model="formData.date" :min-value="minDate" class="w-full">
                     <template #trailing>
-                      <UButton
-                          color="neutral"
-                          variant="link"
-                          size="sm"
-                          icon="i-lucide-circle-x"
-                          @click="formData.date = null"
-                      />
+                      <UPopover :reference="inputDate?.inputsRef?.[3]?.$el">
+                        <UButton
+                            color="neutral"
+                            variant="link"
+                            size="sm"
+                            icon="i-lucide-calendar"
+                            aria-label="Wybierz datę"
+                            class="px-0"
+                        />
+                        <template #content>
+                          <UCalendar v-model="formData.date" :min-value="minDate" class="p-2"/>
+                        </template>
+                      </UPopover>
                     </template>
-                  </UInput>
+                  </UInputDate>
                 </UFormField>
 
                 <UFormField label="Godzina:" name="hour">
-                  <UInput
-                      v-model="formData.hour"
-                      type="time"
-                      placeholder="Wybierz godzinę"
-                      class="w-full"
-                      :ui="{ trailing: 'pe-1' }"
-                  >
-                    <template #trailing>
-                      <UButton
-                          color="neutral"
-                          variant="link"
-                          size="sm"
-                          icon="i-lucide-circle-x"
-                          @click="formData.hour = null"
-                      />
-                    </template>
-                  </UInput>
+                  <UInputTime v-model="formData.hour" class="w-full" />
                 </UFormField>
               </div>
 
@@ -303,6 +287,7 @@
 </template>
 
 <script setup>
+import {getLocalTimeZone, today} from '@internationalized/date'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {offerCreateOffer, offerGetLegalRoles, placeGetCities, placeGetFacilities} from "@/client/index.ts"
@@ -322,8 +307,8 @@ const validationSchema = computed(() => {
     description: yup.string().required('Opis jest wymagany').max(1000),
     email: yup.string().email('Nieprawidłowy format email').required('Email jest wymagany').max(128),
     roles: yup.array().of(yup.string()),
-    date: yup.string().nullable(),
-    hour: yup.string().nullable(),
+    date: yup.mixed().nullable(),
+    hour: yup.mixed().nullable(),
     invoiceRequired: yup.boolean()
   }
 
@@ -355,6 +340,8 @@ const validationSchema = computed(() => {
 const isSubmitting = ref(false)
 const showSuccessMessage = ref(false)
 const scratchpad = ref('')
+const inputDate = ref(null)
+const minDate = today(getLocalTimeZone())
 
 // Form data with proper initial values
 const formData = ref({
@@ -566,8 +553,8 @@ const buildCreatePayload = (data) => {
     author: data.author,
     email: data.email,
     roles: data.roles || [],
-    date: data.date || null,
-    hour: data.hour || null,
+    date: data.date ? data.date.toString() : null,
+    hour: data.hour ? data.hour.toString().slice(0, 5) : null,
     invoice: data.invoiceRequired || false,
     source: 'bot'
   }
