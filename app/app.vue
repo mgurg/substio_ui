@@ -1,11 +1,13 @@
 <template>
-  <UApp>
-    <NuxtLoadingIndicator />
+  <UApp :locale="pl">
+    <NuxtLoadingIndicator/>
 
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage/>
     </NuxtLayout>
   </UApp>
 </template>
+
 <script setup lang="ts">
+import {pl} from '@nuxt/ui/locale'
 </script>
