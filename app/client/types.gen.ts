@@ -273,6 +273,10 @@ export type OfferIndexResponse = {
     place?: PlaceResponse | null;
     city?: CityResponse | null;
     /**
+     * Invoice
+     */
+    invoice?: boolean | null;
+    /**
      * Legal Roles
      */
     legal_roles: Array<RolesResponse>;
@@ -292,6 +296,10 @@ export type OfferIndexResponse = {
      * Created At
      */
     created_at?: string | null;
+    /**
+     * City Uuid
+     */
+    readonly city_uuid: string | null;
 };
 
 /**
@@ -822,6 +830,80 @@ export type ValidationError = {
      * Error Type
      */
     type: string;
+};
+
+/**
+ * OfferIndexResponse
+ */
+export type OfferIndexResponseWritable = {
+    /**
+     * Uuid
+     */
+    uuid: string;
+    /**
+     * Author
+     */
+    author: string;
+    /**
+     * Place Name
+     */
+    place_name?: string | null;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Url
+     */
+    url: string | null;
+    place?: PlaceResponse | null;
+    city?: CityResponse | null;
+    /**
+     * Invoice
+     */
+    invoice?: boolean | null;
+    /**
+     * Legal Roles
+     */
+    legal_roles: Array<RolesResponse>;
+    /**
+     * Date
+     */
+    date?: string | null;
+    /**
+     * Hour
+     */
+    hour?: string | null;
+    /**
+     * Valid To
+     */
+    valid_to?: string | null;
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+};
+
+/**
+ * OffersPaginated
+ */
+export type OffersPaginatedWritable = {
+    /**
+     * Data
+     */
+    data: Array<OfferIndexResponseWritable>;
+    /**
+     * Count
+     */
+    count: number;
+    /**
+     * Limit
+     */
+    limit: number;
+    /**
+     * Offset
+     */
+    offset: number;
 };
 
 export type OfferGetLegalRolesData = {
