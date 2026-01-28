@@ -118,6 +118,8 @@
 import {ref} from 'vue'
 import {offerGetOfferEmail, offerListMapOffers} from "@/client/index.ts";
 
+defineOptions({name: 'SubstytucjeProcesoweMap'})
+
 const mapRef = ref(null)
 const selectedOffer = ref(null)
 
