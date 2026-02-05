@@ -56,50 +56,37 @@
       </MapboxMap>
 
       <!-- Offer Details Popup -->
-      <div
+      <UCard
           v-if="selectedOffer"
-          class="absolute bg-white rounded-lg shadow-xl p-6 z-10"
-          style="top: 20px; right: 20px; max-width: 400px;"
+          class="absolute z-10 w-[min(400px,90vw)]"
+          style="top: 20px; right: 20px;"
       >
-        <button
-            class="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-            @click="selectedOffer = null"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
+        <template #header>
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="text-xl font-semibold text-gray-900">
+              {{ selectedOffer.title }}
+            </h3>
+            <UButton
+                icon="i-lucide-x"
+                color="neutral"
+                variant="ghost"
+                size="xs"
+                @click="selectedOffer = null"
+            />
+          </div>
+        </template>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-4 pr-6">
-          {{ selectedOffer.title }}
-        </h3>
-
-        <div class="space-y-3">
-          <div class="flex items-start">
-            <svg
-                class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-              <path
-                  stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-              <path
-                  stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
+        <div class="space-y-4">
+          <div class="flex items-start gap-2">
+            <UIcon name="i-lucide-map-pin" class="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0"/>
             <div>
               <p class="text-sm font-medium text-gray-700">Lokalizacja</p>
               <p class="text-sm text-gray-900">{{ selectedOffer.placeName }}</p>
             </div>
           </div>
 
-          <div class="flex items-start">
-            <svg
-                class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-              <path
-                  stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
+          <div class="flex items-start gap-2">
+            <UIcon name="i-lucide-calendar" class="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0"/>
             <div>
               <p class="text-sm font-medium text-gray-700">Data</p>
               <p class="text-sm text-gray-900">{{ selectedOffer.date }}</p>
@@ -110,17 +97,19 @@
             <p class="text-sm font-medium text-gray-700 mb-1">Opis</p>
             <p class="text-sm text-gray-600">{{ selectedOffer.description }}</p>
           </div>
+        </div>
 
-          <button
-              class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              :disabled="isSending"
+        <template #footer>
+          <UButton
+              color="primary"
+              class="w-full"
+              :loading="isSending"
               @click="applyForOffer"
           >
-            <span v-if="isSending">Pobieranie...</span>
-            <span v-else>Aplikuj na zlecenie</span>
-          </button>
-        </div>
-      </div>
+            Aplikuj na zlecenie
+          </UButton>
+        </template>
+      </UCard>
     </div>
   </div>
 </template>
@@ -128,6 +117,8 @@
 <script setup>
 import {ref} from 'vue'
 import {offerGetOfferEmail, offerListMapOffers} from "@/client/index.ts";
+
+defineOptions({name: 'SubstytucjeProcesoweMap'})
 
 const mapRef = ref(null)
 const selectedOffer = ref(null)
@@ -171,6 +162,7 @@ const fetchOffers = async () => {
 
       return {
         id: o.uuid,
+        title: o.title || o.place_name || '',
         placeName: o.place_name || '',
         description: o.description || '',
         coordinates: [finalLon, finalLat],
