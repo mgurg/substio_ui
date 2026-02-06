@@ -116,6 +116,7 @@ import {offerCreateOffer} from "@/client/index.ts"
 import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
 import {useCitiesLookup} from "@/composables/useCitiesLookup"
 import {useLegalRoles} from "@/composables/useLegalRoles"
+import {createRawOfferFormData, useRawOfferForm} from "@/composables/useRawOfferForm"
 import {buildCreatePayload} from "@/utils/offerForm"
 import RawOfferFormFields from "@/components/RawOfferFormFields.vue"
 
@@ -168,19 +169,7 @@ const isSubmitting = ref(false)
 const showSuccessMessage = ref(false)
 
 // Form data with proper initial values
-const formData = ref({
-  placeCategory: 'court',
-  facility: null,
-  place: '',
-  city: null,
-  author: '',
-  description: '',
-  email: null,
-  roles: [],
-  date: null,
-  hour: null,
-  invoiceRequired: false
-})
+const formData = ref(createRawOfferFormData())
 
 const {
   facilitySearch,
@@ -213,21 +202,14 @@ const {
 // ====================
 // FORM METHODS
 // ====================
-const setPlaceCategory = (category) => {
-  formData.value.placeCategory = category
-  if (category === 'court') {
-    formData.value.place = ''
-    formData.value.city = null
-    citySearch.value = ''
-    cities.value = []
-  } else if (category === 'other') {
-    formData.value.facility = null
-    facilitySearch.value = ''
-    facilities.value = []
-  }
-
-  showSuccessMessage.value = false
-}
+const {setPlaceCategory, resetForm} = useRawOfferForm({
+  formData,
+  facilitySearch,
+  facilities,
+  citySearch,
+  cities,
+  showSuccessMessage
+})
 
 const toggleRole = (roleValue) => {
   const currentRoles = formData.value.roles
@@ -236,27 +218,6 @@ const toggleRole = (roleValue) => {
   } else {
     formData.value.roles = [...currentRoles, roleValue]
   }
-}
-
-const resetForm = () => {
-  formData.value = {
-    placeCategory: 'court',
-    facility: null,
-    place: '',
-    city: null,
-    author: '',
-    description: '',
-    email: null,
-    roles: [],
-    date: null,
-    hour: null,
-    invoiceRequired: false
-  }
-  facilitySearch.value = ''
-  citySearch.value = ''
-  facilities.value = []
-  cities.value = []
-  showSuccessMessage.value = false
 }
 
 // ====================

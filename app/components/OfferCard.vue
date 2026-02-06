@@ -95,6 +95,7 @@
 
 <script setup>
 import {offerGetOfferEmail} from "~/client/index.ts";
+import {formatDate} from "@/utils/formatDate"
 
 const toast = useToast()
 const isSending = ref(false)
@@ -161,22 +162,6 @@ const sendEmail = async (offer) => {
 }
 
 
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-
-  try {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pl-PL', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  } catch {
-    return dateString
-  }
-}
 </script>
 
 <style scoped>
