@@ -305,7 +305,9 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
-import {offerCreateOffer, offerGetLegalRoles, placeGetCities, placeGetFacilities} from "@/client/index.ts"
+import {offerCreateOffer} from "@/client/index.ts"
+import {useOfferLookups} from "@/composables/useOfferLookups"
+import {buildCreatePayload} from "@/utils/offerForm"
 
 // ====================
 // CONSTANTS & SETUP
@@ -370,17 +372,27 @@ const formData = ref({
   invoiceRequired: false
 })
 
-// Search states
-const facilitySearch = ref('')
-const facilities = ref([])
-const isLoadingFacilities = ref(false)
-
-const citySearch = ref('')
-const cities = ref([])
-const isLoadingCities = ref(false)
-
-const legalRoles = ref([])
-const isLoadingRoles = ref(false)
+const {
+  facilitySearch,
+  facilities,
+  isLoadingFacilities,
+  citySearch,
+  cities,
+  isLoadingCities,
+  legalRoles,
+  isLoadingRoles,
+  searchFacilities,
+  searchCities,
+  fetchLegalRoles
+} = useOfferLookups({
+  onRolesError: () => {
+    toast.add({
+      title: 'Błąd',
+      description: 'Nie udało się pobrać ról prawnych',
+      color: 'error'
+    })
+  }
+})
 
 // ====================
 // FORM METHODS
@@ -393,7 +405,6 @@ const setPlaceCategory = (category) => {
     citySearch.value = ''
     cities.value = []
   } else if (category === 'other') {
-    formData.value.placeType = null
     formData.value.facility = null
     facilitySearch.value = ''
     facilities.value = []
@@ -433,88 +444,6 @@ const resetForm = () => {
 }
 
 // ====================
-// API METHODS
-// ====================
-const searchFacilities = async (searchTerm, placeType) => {
-  if (!searchTerm || searchTerm.length < 2) {
-    facilities.value = []
-    return
-  }
-
-  isLoadingFacilities.value = true
-  try {
-    const queryParams = placeType ? {place_type: placeType} : {}
-    const response = await placeGetFacilities({
-      path: {place_name: searchTerm},
-      query: queryParams
-    })
-
-    facilities.value = (response.data || []).map(facility => {
-      const street = `${facility.street_name || ""} ${facility.street_number || ""}`.trim();
-
-      return {
-        label: `${facility.name}${street ? ` (${street})` : ""}`,
-        value: facility.uuid,
-        city: facility.city,
-        name: facility.name,
-      };
-    });
-
-  } catch (error) {
-    console.error('Error searching facilities:', error)
-    facilities.value = []
-  } finally {
-    isLoadingFacilities.value = false
-  }
-}
-
-const searchCities = async (searchTerm) => {
-  if (!searchTerm || searchTerm.length < 2) {
-    cities.value = []
-    return
-  }
-
-  isLoadingCities.value = true
-  try {
-    const response = await placeGetCities({
-      path: {city_name: searchTerm}
-    })
-
-    cities.value = (response.data || []).map(city => ({
-      label: city.name + " (" + city.voivodeship_name + ")",
-      value: city.uuid
-    }))
-  } catch (error) {
-    console.error('Error searching cities:', error)
-    cities.value = []
-  } finally {
-    isLoadingCities.value = false
-  }
-}
-
-const fetchLegalRoles = async () => {
-  isLoadingRoles.value = true
-  try {
-    const {data} = await offerGetLegalRoles()
-    if (data) {
-      legalRoles.value = data.map(role => ({
-        label: role.name,
-        value: role.uuid
-      }))
-    }
-  } catch (error) {
-    console.error('Error fetching legal roles:', error)
-    toast.add({
-      title: 'Błąd',
-      description: 'Nie udało się pobrać ról prawnych',
-      color: 'error'
-    })
-  } finally {
-    isLoadingRoles.value = false
-  }
-}
-
-// ====================
 // FORM HANDLERS
 // ====================
 const handleSubmit = async (event) => {
@@ -522,7 +451,9 @@ const handleSubmit = async (event) => {
   showSuccessMessage.value = false
 
   try {
-    const createData = buildCreatePayload(event.data)
+    const createData = buildCreatePayload(event.data, {
+      source: 'user'
+    })
     await offerCreateOffer({
       body: createData
     })
@@ -559,45 +490,15 @@ const handleFormError = (event) => {
   element?.scrollIntoView({behavior: 'smooth', block: 'center'})
 }
 
-const buildCreatePayload = (data) => {
-  const payload = {
-    description: data.description,
-    author: data.author,
-    email: data.email,
-    roles: data.roles || [],
-    date: data.date || null,
-    hour: data.hour || null,
-    invoice: data.invoiceRequired || false,
-    source: 'user'
-  }
-
-  if (data.placeCategory === 'court' && data.facility) {
-    payload.place_name = data.facility.name
-    payload.facility_uuid = data.facility.value
-  } else if (data.placeCategory === 'other') {
-    payload.place_name = data.place
-    if (data.city) {
-      payload.city_name = data.city.cityName
-      payload.city_uuid = data.city.value
-    }
-  }
-
-  return payload
-}
-
 // ====================
 // WATCHERS
 // ====================
-watch([facilitySearch, () => formData.value.placeType], ([searchTerm, placeType]) => {
-  searchFacilities(searchTerm, placeType)
+watch(facilitySearch, (searchTerm) => {
+  searchFacilities(searchTerm)
 })
 
 watch(citySearch, (searchTerm) => {
   searchCities(searchTerm)
-})
-
-watch(() => formData.value.placeType, () => {
-  formData.value.facility = null
 })
 
 // ====================

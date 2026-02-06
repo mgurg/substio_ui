@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios",
-    "start": "node --import ./.output/server/sentry.server.config.mjs .output/server/index.mjs"
+    "start": "node --import ./.output/server/sentry.server.config.mjs .output/server/index.mjs",
+    "test": "vitest"
   },
   "dependencies": {
     "@nuxt/eslint": "1.10.0",

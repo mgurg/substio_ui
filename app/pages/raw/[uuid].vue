@@ -463,15 +463,14 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import DebugPanel from "~/components/DebugPanel.vue";
+import {useOfferLookups} from "@/composables/useOfferLookups"
+import {buildUpdatePayload, mapCityOption, mapFacilityOption} from "@/utils/offerForm"
 import {
-  offerGetLegalRoles,
   offerGetRawOffer,
   offerGetSimilarOffersByUser,
   offerParseRawOffer,
   offerUpdateOffer,
-  placeGetCities,
   placeGetCity,
-  placeGetFacilities,
   placeGetFacility
 } from "@/client/index.ts"
 
@@ -565,17 +564,19 @@ const formData = ref({
   submitEmail: false
 })
 
-// Search states
-const facilitySearch = ref('')
-const facilities = ref([])
-const isLoadingFacilities = ref(false)
-
-const citySearch = ref('')
-const cities = ref([])
-const isLoadingCities = ref(false)
-
-const legalRoles = ref([])
-const isLoadingRoles = ref(false)
+const {
+  facilitySearch,
+  facilities,
+  isLoadingFacilities,
+  citySearch,
+  cities,
+  isLoadingCities,
+  legalRoles,
+  isLoadingRoles,
+  searchFacilities,
+  searchCities,
+  fetchLegalRoles
+} = useOfferLookups({clearOnShort: false})
 
 
 const offerStatus = ref('')
@@ -715,37 +716,6 @@ const generateData = async () => {
   }
 }
 
-const searchFacilities = async (searchTerm, placeType) => {
-  if (!searchTerm || searchTerm.length < 2) return
-
-  isLoadingFacilities.value = true
-  try {
-    const queryParams = placeType ? {place_type: placeType} : {}
-    const response = await placeGetFacilities({
-      path: {place_name: searchTerm},
-      query: queryParams
-    })
-
-    facilities.value = (response.data || []).map(facility => {
-      const street = `${facility.street_name || ""} ${facility.street_number || ""}`.trim();
-
-      return {
-        label: `${facility.name}${street ? ` (${street})` : ""}`,
-        value: facility.uuid,
-        city: facility.city,
-        name: facility.name,
-        street_name: facility.street_name,
-        street_number: facility.street_number,
-      };
-    });
-
-  } catch (error) {
-    console.error('Error searching facilities:', error)
-  } finally {
-    isLoadingFacilities.value = false
-  }
-}
-
 const getCityByUuid = async (cityUuid) => {
   try {
     const response = await placeGetCity({
@@ -767,46 +737,6 @@ const getPlaceByUuid = async (placeUuid) => {
   } catch (error) {
     console.error('Error fetching place by UUID:', error)
     return null
-  }
-}
-
-const searchCities = async (searchTerm) => {
-  if (!searchTerm || searchTerm.length < 2) return
-
-  isLoadingCities.value = true
-  try {
-    const response = await placeGetCities({
-      path: {city_name: searchTerm}
-    })
-
-    cities.value = (response.data || []).map(city => ({
-      label: city.name + " (" + city.voivodeship_name + ")",
-      value: city.uuid,
-      cityName: city.name,
-      voivodeshipName: city.voivodeship_name
-    }))
-
-  } catch (error) {
-    console.error('Error searching cities:', error)
-  } finally {
-    isLoadingCities.value = false
-  }
-}
-
-const fetchLegalRoles = async () => {
-  isLoadingRoles.value = true
-  try {
-    const {data} = await offerGetLegalRoles()
-    if (data) {
-      legalRoles.value = data.map(role => ({
-        label: role.name,
-        value: role.uuid
-      }))
-    }
-  } catch (error) {
-    console.error('Error fetching legal roles:', error)
-  } finally {
-    isLoadingRoles.value = false
   }
 }
 
@@ -848,33 +778,6 @@ const handleFormError = (event) => {
   element?.scrollIntoView({behavior: 'smooth', block: 'center'})
 }
 
-const buildUpdatePayload = (data) => {
-  const payload = {
-    status: data.status,
-    description: data.description || null,
-    author: data.author || null,
-    email: data.email,
-    roles: data.roles || [],
-    date: data.date,
-    hour: data.hour,
-    invoice: data.invoiceRequired,
-    submit_email: data.submitEmail,
-  }
-
-  if (data.placeCategory === 'court' && data.facility) {
-    payload.place_name = data.facility.name
-    payload.facility_uuid = data.facility.value
-  } else if (data.placeCategory === 'other') {
-    payload.place_name = data.place
-    if (data.city) {
-      payload.city_name = data.city.cityName
-      payload.city_uuid = data.city.value
-    }
-  }
-
-  return payload
-}
-
 // ====================
 // UTILITY METHODS
 // ====================
@@ -899,10 +802,7 @@ const populateFormWithOfferData = async (offerData) => {
   if (offerData.place) {
     // --- Court branch ---
     formData.value.placeCategory = 'court'
-    formData.value.facility = {
-      label: offerData.place.name,
-      value: offerData.place.uuid
-    }
+    formData.value.facility = mapFacilityOption(offerData.place)
     facilitySearch.value = offerData.place.name
 
     const placeName = offerData.place.name.toLowerCase()
@@ -925,18 +825,7 @@ const populateFormWithOfferData = async (offerData) => {
       }
     }
 
-    const facilityLabel = facilityData.street_name
-        ? `${facilityData.name} (${facilityData.street_name})`
-        : facilityData.name
-
-    formData.value.facility = {
-      label: facilityLabel,
-      value: facilityData.uuid,
-      city: facilityData.city,
-      name: facilityData.name,
-      street_name: facilityData.street_name,
-      street_number: facilityData.street_number,
-    }
+    formData.value.facility = mapFacilityOption(facilityData)
 
     let cityData = offerData.city
 
@@ -948,16 +837,7 @@ const populateFormWithOfferData = async (offerData) => {
       }
     }
 
-    const cityLabel = cityData.voivodeship_name
-        ? `${cityData.name} (${cityData.voivodeship_name})`
-        : cityData.name
-
-    formData.value.city = {
-      label: cityLabel,
-      value: cityData.uuid,
-      cityName: cityData.name,
-      voivodeshipName: cityData.voivodeship_name
-    }
+    formData.value.city = mapCityOption(cityData)
     citySearch.value = cityData.name
   }
 
