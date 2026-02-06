@@ -20,154 +20,39 @@
                 ref="formRef"
                 :schema="validationSchema"
                 :state="formData"
-                class="space-y-6"
                 @submit="handleSubmit"
                 @error="handleFormError"
             >
-              <!-- Category Selection -->
-              <UFormField
-                  label="Kategoria:"
-                  name="placeCategory"
+              <RawOfferFormFields
+                  v-model:form-data="formData"
+                  v-model:facility-search="facilitySearch"
+                  :facilities="facilities"
+                  :is-loading-facilities="isLoadingFacilities"
+                  v-model:city-search="citySearch"
+                  :cities="cities"
+                  :is-loading-cities="isLoadingCities"
+                  :legal-roles="legalRoles"
+                  :require-fields="true"
+                  :roles-field-group-size="'sm'"
+                  roles-field-group-class="flex-wrap"
+                  roles-button-class="mb-2"
+                  :is-submitting="isSubmitting"
+                  submit-label="Dodaj ofertę"
+                  submit-loading-label="Dodawanie..."
+                  submit-icon="i-lucide-plus"
+                  submit-size="lg"
+                  submit-class="w-full"
+                  reset-label="Wyczyść formularz"
+                  reset-icon="i-lucide-refresh-cw"
+                  reset-size="lg"
+                  reset-class="w-full"
+                  actions-class="flex flex-col gap-3 pt-4"
+                  :show-date-description="true"
+                  :on-set-place-category="setPlaceCategory"
+                  :on-toggle-role="toggleRole"
+                  :on-reset="resetForm"
               >
-                <UFieldGroup>
-                  <UButton
-                      :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
-                      color="primary"
-                      type="button"
-                      @click="setPlaceCategory('court')"
-                  >
-                    Sąd
-                  </UButton>
-                  <UButton
-                      :variant="formData.placeCategory === 'other' ? 'solid' : 'outline'"
-                      color="primary"
-                      type="button"
-                      @click="setPlaceCategory('other')"
-                  >
-                    Inne
-                  </UButton>
-                </UFieldGroup>
-              </UFormField>
-
-              <!-- Court Fields -->
-              <template v-if="formData.placeCategory === 'court'">
-                <UFormField
-                    label="Placówka:"
-                    name="facility"
-                    required
-                >
-                  <USelectMenu
-                      v-model="formData.facility"
-                      v-model:search-term="facilitySearch"
-                      :items="facilities"
-                      :loading="isLoadingFacilities"
-                      placeholder="Wyszukaj placówkę"
-                      icon="i-lucide-building"
-                      searchable
-                      class="w-full"
-                      :highlight="!!formData.facility"
-                      color="primary"
-                      :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
-                  />
-                </UFormField>
-              </template>
-
-              <!-- Other Fields -->
-              <template v-else-if="formData.placeCategory === 'other'">
-                <UFormField
-                    label="Miejsce:"
-                    name="place"
-                    required
-                >
-                  <UInput
-                      v-model="formData.place"
-                      placeholder="Podaj nazwę miejsca"
-                      class="w-full"
-                  />
-                </UFormField>
-
-                <UFormField
-                    label="Miasto:"
-                    name="city"
-                    required
-                >
-                  <USelectMenu
-                      v-model="formData.city"
-                      v-model:search-term="citySearch"
-                      :items="cities"
-                      :loading="isLoadingCities"
-                      placeholder="Wyszukaj miasto"
-                      icon="i-lucide-map-pin"
-                      searchable
-                      class="w-full"
-                      :highlight="!!formData.city"
-                      color="primary"
-                      :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
-                  />
-                </UFormField>
-              </template>
-
-              <!-- Description -->
-              <UFormField label="Opis:" name="description" required>
-                <UTextarea
-                    v-model="formData.description"
-                    placeholder="Wprowadź opis oferty"
-                    :rows="4"
-                    class="w-full"
-                />
-              </UFormField>
-
-              <!-- Author and Email -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <UFormField label="Autor:" name="author" required>
-                  <UInput
-                      v-model="formData.author"
-                      placeholder="Wprowadź autora oferty"
-                      class="w-full"
-                  />
-                </UFormField>
-
-                <UFormField label="Email:" name="email" required>
-                  <UInput
-                      v-model="formData.email"
-                      type="email"
-                      placeholder="email@example.com"
-                      class="w-full"
-                      :ui="{ trailing: 'pe-1' }"
-                  >
-                    <template #trailing>
-                      <UButton
-                          color="neutral"
-                          variant="link"
-                          size="sm"
-                          icon="i-lucide-circle-x"
-                          @click="formData.email = null"
-                      />
-                    </template>
-                  </UInput>
-                </UFormField>
-              </div>
-
-              <!-- Legal Roles -->
-              <UFormField label="Role prawne:" name="roles">
-                <UFieldGroup size="sm" class="flex-wrap">
-                  <UButton
-                      v-for="role in legalRoles"
-                      :key="role.value"
-                      :variant="formData.roles.includes(role.value) ? 'solid' : 'outline'"
-                      color="primary"
-                      type="button"
-                      class="mb-2"
-                      @click="toggleRole(role.value)"
-                  >
-                    {{ role.label }}
-                  </UButton>
-                </UFieldGroup>
-              </UFormField>
-
-              <!-- Date and Time -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <UFormField label="Data:" name="date">
+                <template #dateInput>
                   <UInputDate ref="inputDate" v-model="formData.date" :min-value="minDate" class="w-full">
                     <template #trailing>
                       <UPopover :reference="inputDate?.inputsRef?.[3]?.$el">
@@ -185,49 +70,11 @@
                       </UPopover>
                     </template>
                   </UInputDate>
-                </UFormField>
-
-                <UFormField label="Godzina:" name="hour">
+                </template>
+                <template #timeInput>
                   <UInputTime v-model="formData.hour" class="w-full" />
-                </UFormField>
-              </div>
-
-              <!-- Date Description -->
-              <p class="text-sm text-gray-500 dark:text-gray-400 -mt-2">
-                Oferty bez podanej daty są ważne 7 dni
-              </p>
-
-              <!-- Invoice Checkbox -->
-              <UFormField label="Faktura:" name="invoiceRequired">
-                <UCheckbox
-                    v-model="formData.invoiceRequired"
-                    label="Wymagana faktura"
-                />
-              </UFormField>
-
-              <!-- Submit Buttons -->
-              <div class="flex flex-col gap-3 pt-4">
-                <UButton
-                    type="submit"
-                    :loading="isSubmitting"
-                    size="lg"
-                    icon="i-lucide-plus"
-                    class="w-full"
-                >
-                  {{ isSubmitting ? 'Dodawanie...' : 'Dodaj ofertę' }}
-                </UButton>
-
-                <UButton
-                    variant="outline"
-                    type="button"
-                    size="lg"
-                    icon="i-lucide-refresh-cw"
-                    class="w-full"
-                    @click="resetForm"
-                >
-                  Wyczyść formularz
-                </UButton>
-              </div>
+                </template>
+              </RawOfferFormFields>
             </UForm>
           </div>
 
@@ -295,6 +142,7 @@ import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
 import {useCitiesLookup} from "@/composables/useCitiesLookup"
 import {useLegalRoles} from "@/composables/useLegalRoles"
 import {buildCreatePayload} from "@/utils/offerForm"
+import RawOfferFormFields from "@/components/RawOfferFormFields.vue"
 
 // ====================
 // CONSTANTS & SETUP

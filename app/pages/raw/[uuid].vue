@@ -227,226 +227,61 @@
             ref="formRef"
             :schema="validationSchema"
             :state="formData"
-            class="space-y-6"
             @submit="handleSubmit"
             @error="handleFormError"
         >
-          <!-- Category Selection -->
-          <UFormField
-              label="Kategoria:"
-              name="placeCategory"
+          <RawOfferFormFields
+              v-model:form-data="formData"
+              v-model:facility-search="facilitySearch"
+              :facilities="facilities"
+              :is-loading-facilities="isLoadingFacilities"
+              v-model:city-search="citySearch"
+              :cities="cities"
+              :is-loading-cities="isLoadingCities"
+              :legal-roles="legalRoles"
+              author-email-class="flex gap-4 items-end"
+              date-time-class="flex gap-4 items-end"
+              author-input-class="w-72"
+              email-input-class="w-72"
+              date-input-class="w-64"
+              time-input-class="w-36"
+              roles-field-group-size="lg"
+              roles-field-group-class=""
+              :is-submitting="isSubmitting"
+              submit-label="Zaktualizuj ofertę"
+              submit-loading-label="Zapisywanie..."
+              actions-class="flex gap-2"
+              :on-set-place-category="setPlaceCategory"
+              :on-toggle-role="toggleRole"
+              :on-reset="resetForm"
           >
-            <UFieldGroup>
-              <UButton
-                  :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="setPlaceCategory('court')"
-              >
-                Sąd
-              </UButton>
-              <UButton
-                  :variant="formData.placeCategory === 'other' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="setPlaceCategory('other')"
-              >
-                Inne
-              </UButton>
-            </UFieldGroup>
-          </UFormField>
-
-          <!-- Court Fields -->
-          <template v-if="formData.placeCategory === 'court'">
-            <UFormField
-                label="Placówka:"
-                name="facility"
-            >
-              <USelectMenu
-                  v-model="formData.facility"
-                  v-model:search-term="facilitySearch"
-                  :items="facilities"
-                  :loading="isLoadingFacilities"
-                  placeholder="Wyszukaj placówkę"
-                  icon="i-lucide-building"
-                  searchable
-                  class="w-full"
-                  :highlight="!!formData.facility"
-                  color="primary"
-                  :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
-              />
-            </UFormField>
-          </template>
-
-          <!-- Other Fields -->
-          <template v-else-if="formData.placeCategory === 'other'">
-            <UFormField
-                label="Miejsce:"
-                name="place"
-            >
-              <UInput
-                  v-model="formData.place"
-                  placeholder="Podaj nazwę miejsca"
-                  class="w-full"
-              />
-            </UFormField>
-
-            <UFormField
-                label="Miasto:"
-                name="city"
-            >
-              <USelectMenu
-                  v-model="formData.city"
-                  v-model:search-term="citySearch"
-                  :items="cities"
-                  :loading="isLoadingCities"
-                  placeholder="Wyszukaj miasto"
-                  icon="i-lucide-map-pin"
-                  searchable
-                  class="w-full"
-                  :highlight="!!formData.city"
-                  color="primary"
-                  :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
-              />
-            </UFormField>
-          </template>
-
-          <!-- Common Fields -->
-          <UFormField label="Opis:" name="description">
-            <UTextarea
-                v-model="formData.description"
-                placeholder="Wprowadź opis oferty"
-                :rows="4"
-                class="w-full"
-            />
-          </UFormField>
-
-          <div class="flex gap-4 items-end">
-            <UFormField label="Autor:" name="author">
-              <UInput v-model="formData.author" placeholder="Wprowadź autora oferty" class="w-72"/>
-            </UFormField>
-
-            <UFormField label="Email:" name="email">
-              <UInput
-                  v-model="formData.email"
-                  type="email"
-                  placeholder="email@example.com"
-                  class="w-72"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
+            <template #extraFields>
+              <UFormField label="Status:" name="status">
+                <div class="flex gap-2 flex-wrap">
                   <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.email = null"
+                      v-for="status in statusOptions"
+                      :key="status.value"
+                      :icon="status.icon"
+                      :variant="formData.status === status.value ? 'solid' : 'outline'"
+                      :color="status.color"
+                      type="button"
+                      size="md"
+                      :title="status.label"
+                      @click="setStatus(status.value)"
                   />
-                </template>
-              </UInput>
-            </UFormField>
-          </div>
-          <UFormField label="Role prawne:" name="roles">
-            <UFieldGroup size="lg">
-              <UButton
-                  v-for="role in legalRoles"
-                  :key="role.value"
-                  :variant="formData.roles.includes(role.value) ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="toggleRole(role.value)"
-              >
-                {{ role.label }}
-              </UButton>
-            </UFieldGroup>
-          </UFormField>
-
-          <!-- Date and Time -->
-          <div class="flex gap-4 items-end">
-            <UFormField label="Data:" name="date">
-              <UInput
-                  v-model="formData.date"
-                  type="date"
-                  placeholder="Wybierz datę"
-                  class="w-64"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.date = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
-
-            <UFormField label="Godzina:" name="hour">
-              <UInput
-                  v-model="formData.hour"
-                  type="time"
-                  placeholder="Wybierz godzinę"
-                  class="w-36"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.hour = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
-          </div>
-
-          <UFormField label="Faktura:" name="invoiceRequired">
-            <UCheckbox
-                v-model="formData.invoiceRequired"
-                label="Wymagana faktura"
-            />
-          </UFormField>
-
-          <!-- Status Selection Bar -->
-          <UFormField label="Status:" name="status">
-            <div class="flex gap-2 flex-wrap">
-              <UButton
-                  v-for="status in statusOptions"
-                  :key="status.value"
-                  :icon="status.icon"
-                  :variant="formData.status === status.value ? 'solid' : 'outline'"
-                  :color="status.color"
-                  type="button"
-                  size="md"
-                  :title="status.label"
-                  @click="setStatus(status.value)"
-              />
-            </div>
-            <div class="text-sm text-gray-500 mt-1">
-              Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
-            </div>
-          </UFormField>
-          <UFormField label="Powiadomienie:" name="submitEmail">
-            <UCheckbox
-                v-model="formData.submitEmail"
-                label="Wyślij mail"
-            />
-          </UFormField>
-
-          <!-- Submit Buttons -->
-          <div class="flex gap-2">
-            <UButton type="submit" :loading="isSubmitting">
-              {{ isSubmitting ? 'Zapisywanie...' : 'Zaktualizuj ofertę' }}
-            </UButton>
-            <UButton variant="outline" type="button" @click="resetForm">
-              Wyczyść formularz
-            </UButton>
-          </div>
-
+                </div>
+                <div class="text-sm text-gray-500 mt-1">
+                  Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
+                </div>
+              </UFormField>
+              <UFormField label="Powiadomienie:" name="submitEmail">
+                <UCheckbox
+                    v-model="formData.submitEmail"
+                    label="Wyślij mail"
+                />
+              </UFormField>
+            </template>
+          </RawOfferFormFields>
         </UForm>
       </div>
     </div>
@@ -466,6 +301,7 @@ import DebugPanel from "~/components/DebugPanel.vue";
 import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
 import {useCitiesLookup} from "@/composables/useCitiesLookup"
 import {useLegalRoles} from "@/composables/useLegalRoles"
+import RawOfferFormFields from "@/components/RawOfferFormFields.vue"
 import {buildUpdatePayload, mapCityOption, mapFacilityOption} from "@/utils/offerForm"
 import {
   offerGetRawOffer,
