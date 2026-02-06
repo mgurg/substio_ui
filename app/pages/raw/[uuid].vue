@@ -463,7 +463,9 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import DebugPanel from "~/components/DebugPanel.vue";
-import {useOfferLookups} from "@/composables/useOfferLookups"
+import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
+import {useCitiesLookup} from "@/composables/useCitiesLookup"
+import {useLegalRoles} from "@/composables/useLegalRoles"
 import {buildUpdatePayload, mapCityOption, mapFacilityOption} from "@/utils/offerForm"
 import {
   offerGetRawOffer,
@@ -568,15 +570,21 @@ const {
   facilitySearch,
   facilities,
   isLoadingFacilities,
+  searchFacilities
+} = useFacilitiesLookup({clearOnShort: false})
+
+const {
   citySearch,
   cities,
   isLoadingCities,
+  searchCities
+} = useCitiesLookup({clearOnShort: false})
+
+const {
   legalRoles,
   isLoadingRoles,
-  searchFacilities,
-  searchCities,
   fetchLegalRoles
-} = useOfferLookups({clearOnShort: false})
+} = useLegalRoles()
 
 
 const offerStatus = ref('')

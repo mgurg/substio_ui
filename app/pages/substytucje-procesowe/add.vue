@@ -306,7 +306,9 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {offerCreateOffer} from "@/client/index.ts"
-import {useOfferLookups} from "@/composables/useOfferLookups"
+import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
+import {useCitiesLookup} from "@/composables/useCitiesLookup"
+import {useLegalRoles} from "@/composables/useLegalRoles"
 import {buildCreatePayload} from "@/utils/offerForm"
 
 // ====================
@@ -376,16 +378,22 @@ const {
   facilitySearch,
   facilities,
   isLoadingFacilities,
+  searchFacilities
+} = useFacilitiesLookup()
+
+const {
   citySearch,
   cities,
   isLoadingCities,
+  searchCities
+} = useCitiesLookup()
+
+const {
   legalRoles,
   isLoadingRoles,
-  searchFacilities,
-  searchCities,
   fetchLegalRoles
-} = useOfferLookups({
-  onRolesError: () => {
+} = useLegalRoles({
+  onError: () => {
     toast.add({
       title: 'Błąd',
       description: 'Nie udało się pobrać ról prawnych',
