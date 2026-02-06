@@ -30,10 +30,12 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.88.0"
+    "@hey-api/openapi-ts": "^0.88.0",
+    "vitest": "^4.0.18"
   },
   "overrides": {
     "@vercel/nft": "^0.27.4",
+    "confbox": "0.2.2",
     "vite": "npm:rolldown-vite@latest"
   }
 }
