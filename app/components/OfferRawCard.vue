@@ -42,7 +42,7 @@
         </span>
       </div>
 
-      <div v-if="offer.legal_roles.length" class="flex flex-wrap gap-1">
+      <div v-if="offer.legal_roles && offer.legal_roles.length" class="flex flex-wrap gap-1">
         <UBadge
             v-for="role in offer.legal_roles"
             :key="role.uuid"
@@ -62,7 +62,7 @@
           target="_blank"
           size="md"
           variant="outline"
-          ico="i-lucide-link"
+          icon="i-lucide-link"
       >
         Zobacz ofertę
       </UButton>
