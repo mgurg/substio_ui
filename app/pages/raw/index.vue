@@ -25,7 +25,7 @@
       </div>
     </UCard>
 
-    <div>
+    <div ref="scrollArea" class="max-h-[70vh] overflow-y-auto">
       <div v-if="isLoading && offers.length === 0">
         <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
       </div>
@@ -80,6 +80,7 @@ const count = ref<number>(0)
 const limit = ref<number>(10)
 const isLoading = ref<boolean>(false)
 const hasLoaded = ref<boolean>(false)
+const scrollArea = ref<HTMLElement | null>(null)
 const sentinel = ref<HTMLElement | null>(null)
 
 const selectedStatus = ref<OfferStatus | null>((route.query.status as OfferStatus) ?? 'new')
@@ -158,7 +159,7 @@ onMounted(() => {
       }
     },
     {
-      root: null,
+      root: scrollArea,
       rootMargin: '200px'
     }
   )
