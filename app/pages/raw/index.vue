@@ -25,7 +25,7 @@
       </div>
     </UCard>
 
-    <div ref="scrollArea">
+    <div>
       <div v-if="isLoading && offers.length === 0">
         <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
       </div>
@@ -59,6 +59,8 @@
       >
         To wszystko — więcej ofert nie ma.
       </div>
+
+      <div ref="sentinel" class="h-px w-full"/>
     </div>
   </UContainer>
 </template>
@@ -68,7 +70,7 @@ import {computed, ref, watch, onActivated, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {offerListRawOffers} from "@/client"
 import type {OfferStatus, RawOfferIndexResponse} from '@/client/types.gen.ts'
-import {useInfiniteScroll} from '@vueuse/core'
+import {useIntersectionObserver} from '@vueuse/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -78,7 +80,7 @@ const count = ref<number>(0)
 const limit = ref<number>(10)
 const isLoading = ref<boolean>(false)
 const hasLoaded = ref<boolean>(false)
-const scrollArea = ref<HTMLElement | null>(null)
+const sentinel = ref<HTMLElement | null>(null)
 
 const selectedStatus = ref<OfferStatus | null>((route.query.status as OfferStatus) ?? 'new')
 
@@ -148,14 +150,16 @@ onActivated(() => {
 })
 
 onMounted(() => {
-  useInfiniteScroll(
-    scrollArea,
-    () => {
-      fetchOffers()
+  useIntersectionObserver(
+    sentinel,
+    ([entry]) => {
+      if (entry?.isIntersecting && canLoadMore.value && !isLoading.value) {
+        fetchOffers()
+      }
     },
     {
-      distance: 200,
-      canLoadMore: () => canLoadMore.value && !isLoading.value
+      root: null,
+      rootMargin: '200px'
     }
   )
 })
