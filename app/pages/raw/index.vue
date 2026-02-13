@@ -25,7 +25,7 @@
       </div>
     </UCard>
 
-    <div ref="scrollArea" class="max-h-[70vh] overflow-y-auto">
+    <div ref="scrollArea" class="mt-4 max-h-[70vh] overflow-y-auto p-2">
       <div v-if="isLoading && offers.length === 0">
         <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
       </div>
