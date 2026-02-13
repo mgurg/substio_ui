@@ -102,6 +102,35 @@ const canLoadMore = computed(() => {
   return offers.value.length < count.value
 })
 
+let stopObserver: (() => void) | null = null
+const startObserver = () => {
+  if (stopObserver) {
+    return
+  }
+  stopObserver = useIntersectionObserver(
+    sentinel,
+    ([entry]) => {
+      if (entry?.isIntersecting && canLoadMore.value && !isLoading.value) {
+        fetchOffers()
+      }
+    },
+    {
+      root: scrollArea,
+      rootMargin: '200px'
+    }
+  )
+}
+
+const stopObserverIfDone = () => {
+  if (canLoadMore.value) {
+    return
+  }
+  if (stopObserver) {
+    stopObserver()
+    stopObserver = null
+  }
+}
+
 const fetchOffers = async (options: { reset?: boolean } = {}): Promise<void> => {
   if (isLoading.value) {
     return
@@ -132,6 +161,7 @@ const fetchOffers = async (options: { reset?: boolean } = {}): Promise<void> => 
   }
 
   isLoading.value = false
+  stopObserverIfDone()
 }
 
 const handleFilterChange = () => {
@@ -146,22 +176,19 @@ watch(() => route.query.status, (newStatus) => {
   }
 })
 
+watch(canLoadMore, () => {
+  if (canLoadMore.value) {
+    startObserver()
+  } else {
+    stopObserverIfDone()
+  }
+})
+
 onActivated(() => {
   fetchOffers({reset: true})
 })
 
 onMounted(() => {
-  useIntersectionObserver(
-    sentinel,
-    ([entry]) => {
-      if (entry?.isIntersecting && canLoadMore.value && !isLoading.value) {
-        fetchOffers()
-      }
-    },
-    {
-      root: scrollArea,
-      rootMargin: '200px'
-    }
-  )
+  startObserver()
 })
 </script>
