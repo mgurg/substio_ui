@@ -25,34 +25,50 @@
       </div>
     </UCard>
 
-    <div v-if="isLoading">
-      <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
-    </div>
-    <div v-else>
-      <OfferRawCard
-          v-for="offer in offers"
-          :key="offer.uuid"
-          :offer="offer"
-          @offer-updated="fetchOffers"
-      />
-    </div>
+    <div ref="scrollArea">
+      <div v-if="isLoading && offers.length === 0">
+        <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
+      </div>
+      <div v-else>
+        <OfferRawCard
+            v-for="offer in offers"
+            :key="offer.uuid"
+            :offer="offer"
+            @offer-updated="() => fetchOffers({ reset: true })"
+        />
+      </div>
 
-    <div v-if="count > 0 && pageCount > 1" class="flex justify-center mt-6 mb-10 pb-10">
-      <UPagination
-          v-model:page="currentPage"
-          :page-count="pageCount"
-          :total="count"
-          @update:page="handlePageChange"
+      <UProgress
+          v-if="isLoading && offers.length > 0"
+          indeterminate
+          size="xs"
+          class="sticky bottom-0 inset-x-0 z-1 mt-4"
+          :ui="{ base: 'bg-default' }"
       />
+
+      <div
+          v-if="!isLoading && hasLoaded && count === 0"
+          class="text-center text-sm text-muted mt-6 mb-4"
+      >
+        Brak ofert do wyświetlenia.
+      </div>
+
+      <div
+          v-else-if="!isLoading && hasLoaded && offers.length >= count && count > 0"
+          class="text-center text-sm text-muted mt-6 mb-4"
+      >
+        To wszystko — więcej ofert nie ma.
+      </div>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch, onActivated} from 'vue'
+import {computed, ref, watch, onActivated, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {offerListRawOffers} from "@/client"
 import type {OfferStatus, RawOfferIndexResponse} from '@/client/types.gen.ts'
+import {useInfiniteScroll} from '@vueuse/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -61,8 +77,9 @@ const offers = ref<RawOfferIndexResponse[]>([])
 const count = ref<number>(0)
 const limit = ref<number>(10)
 const isLoading = ref<boolean>(false)
+const hasLoaded = ref<boolean>(false)
+const scrollArea = ref<HTMLElement | null>(null)
 
-const currentPage = ref<number>(parseInt(route.query.page as string) || 1)
 const selectedStatus = ref<OfferStatus | null>((route.query.status as OfferStatus) ?? 'new')
 
 const statusOptions = [
@@ -75,13 +92,27 @@ const statusOptions = [
   {label: 'Aktywne', value: 'active'}
 ]
 
-const pageCount = computed(() =>
-    Math.ceil(count.value / limit.value)
-)
+const canLoadMore = computed(() => {
+  if (!hasLoaded.value) {
+    return true
+  }
+  return offers.value.length < count.value
+})
 
-const fetchOffers = async (): Promise<void> => {
+const fetchOffers = async (options: { reset?: boolean } = {}): Promise<void> => {
+  if (isLoading.value) {
+    return
+  }
+  if (options.reset) {
+    offers.value = []
+    count.value = 0
+    hasLoaded.value = false
+  }
+  if (hasLoaded.value && offers.value.length >= count.value) {
+    return
+  }
   isLoading.value = true
-  const offset = (currentPage.value - 1) * limit.value
+  const offset = offers.value.length
 
   const response = await offerListRawOffers({
     query: {
@@ -92,41 +123,40 @@ const fetchOffers = async (): Promise<void> => {
   })
 
   if (response.data) {
-    offers.value = response.data.data
+    offers.value = [...offers.value, ...response.data.data]
     count.value = response.data.count
+    hasLoaded.value = true
   }
 
   isLoading.value = false
 }
 
-const handlePageChange = (page: number) => {
-  currentPage.value = page
-  router.replace({query: {...route.query, page: String(page), status: selectedStatus.value ?? undefined}})
-  fetchOffers()
-}
-
 const handleFilterChange = () => {
-  currentPage.value = 1
-  router.replace({query: {...route.query, page: "1", status: selectedStatus.value ?? undefined}})
-  fetchOffers()
+  router.replace({query: {...route.query, status: selectedStatus.value ?? undefined}})
+  fetchOffers({reset: true})
 }
-
-watch(() => route.query.page, (newPage) => {
-  const parsed = parseInt(newPage as string)
-  if (!isNaN(parsed) && parsed !== currentPage.value) {
-    currentPage.value = parsed
-    fetchOffers()
-  }
-})
 
 watch(() => route.query.status, (newStatus) => {
   if (newStatus !== selectedStatus.value) {
     selectedStatus.value = (newStatus as OfferStatus) ?? 'new'
-    fetchOffers()
+    fetchOffers({reset: true})
   }
 })
 
 onActivated(() => {
-  fetchOffers()
+  fetchOffers({reset: true})
+})
+
+onMounted(() => {
+  useInfiniteScroll(
+    scrollArea,
+    () => {
+      fetchOffers()
+    },
+    {
+      distance: 200,
+      canLoadMore: () => canLoadMore.value && !isLoading.value
+    }
+  )
 })
 </script>
