@@ -26,9 +26,9 @@
               <RawOfferFormFields
                   v-model:form-data="formData"
                   v-model:facility-search="facilitySearch"
+                  v-model:city-search="citySearch"
                   :facilities="facilities"
                   :is-loading-facilities="isLoadingFacilities"
-                  v-model:city-search="citySearch"
                   :cities="cities"
                   :is-loading-cities="isLoadingCities"
                   :legal-roles="legalRoles"
@@ -72,7 +72,7 @@
                   </UInputDate>
                 </template>
                 <template #timeInput>
-                  <UInputTime v-model="formData.hour" class="w-full" />
+                  <UInputTime v-model="formData.hour" class="w-full"/>
                 </template>
               </RawOfferFormFields>
             </UForm>
@@ -230,7 +230,7 @@ const {
 // ====================
 // FORM METHODS
 // ====================
-const {setPlaceCategory, resetForm} = useRawOfferForm({
+const {setPlaceCategory, resetForm: baseResetForm} = useRawOfferForm({
   formData,
   facilitySearch,
   facilities,
@@ -238,6 +238,12 @@ const {setPlaceCategory, resetForm} = useRawOfferForm({
   cities,
   showSuccessMessage
 })
+
+const resetForm = () => {
+  baseResetForm()
+  scratchpad.value = ''
+}
+
 
 const toggleRole = (roleValue) => {
   const currentRoles = formData.value.roles
