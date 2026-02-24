@@ -227,226 +227,61 @@
             ref="formRef"
             :schema="validationSchema"
             :state="formData"
-            class="space-y-6"
             @submit="handleSubmit"
             @error="handleFormError"
         >
-          <!-- Category Selection -->
-          <UFormField
-              label="Kategoria:"
-              name="placeCategory"
+          <RawOfferFormFields
+              v-model:form-data="formData"
+              v-model:facility-search="facilitySearch"
+              :facilities="facilities"
+              :is-loading-facilities="isLoadingFacilities"
+              v-model:city-search="citySearch"
+              :cities="cities"
+              :is-loading-cities="isLoadingCities"
+              :legal-roles="legalRoles"
+              author-email-class="flex gap-4 items-end"
+              date-time-class="flex gap-4 items-end"
+              author-input-class="w-72"
+              email-input-class="w-72"
+              date-input-class="w-64"
+              time-input-class="w-36"
+              roles-field-group-size="lg"
+              roles-field-group-class=""
+              :is-submitting="isSubmitting"
+              submit-label="Zaktualizuj ofertę"
+              submit-loading-label="Zapisywanie..."
+              actions-class="flex gap-2"
+              :on-set-place-category="setPlaceCategory"
+              :on-toggle-role="toggleRole"
+              :on-reset="resetForm"
           >
-            <UFieldGroup>
-              <UButton
-                  :variant="formData.placeCategory === 'court' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="setPlaceCategory('court')"
-              >
-                Sąd
-              </UButton>
-              <UButton
-                  :variant="formData.placeCategory === 'other' ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="setPlaceCategory('other')"
-              >
-                Inne
-              </UButton>
-            </UFieldGroup>
-          </UFormField>
-
-          <!-- Court Fields -->
-          <template v-if="formData.placeCategory === 'court'">
-            <UFormField
-                label="Placówka:"
-                name="facility"
-            >
-              <USelectMenu
-                  v-model="formData.facility"
-                  v-model:search-term="facilitySearch"
-                  :items="facilities"
-                  :loading="isLoadingFacilities"
-                  placeholder="Wyszukaj placówkę"
-                  icon="i-lucide-building"
-                  searchable
-                  class="w-full"
-                  :highlight="!!formData.facility"
-                  color="primary"
-                  :trailing-icon="!!formData.facility ? 'i-lucide-check' : undefined"
-              />
-            </UFormField>
-          </template>
-
-          <!-- Other Fields -->
-          <template v-else-if="formData.placeCategory === 'other'">
-            <UFormField
-                label="Miejsce:"
-                name="place"
-            >
-              <UInput
-                  v-model="formData.place"
-                  placeholder="Podaj nazwę miejsca"
-                  class="w-full"
-              />
-            </UFormField>
-
-            <UFormField
-                label="Miasto:"
-                name="city"
-            >
-              <USelectMenu
-                  v-model="formData.city"
-                  v-model:search-term="citySearch"
-                  :items="cities"
-                  :loading="isLoadingCities"
-                  placeholder="Wyszukaj miasto"
-                  icon="i-lucide-map-pin"
-                  searchable
-                  class="w-full"
-                  :highlight="!!formData.city"
-                  color="primary"
-                  :trailing-icon="!!formData.city ? 'i-lucide-check' : undefined"
-              />
-            </UFormField>
-          </template>
-
-          <!-- Common Fields -->
-          <UFormField label="Opis:" name="description">
-            <UTextarea
-                v-model="formData.description"
-                placeholder="Wprowadź opis oferty"
-                :rows="4"
-                class="w-full"
-            />
-          </UFormField>
-
-          <div class="flex gap-4 items-end">
-            <UFormField label="Autor:" name="author">
-              <UInput v-model="formData.author" placeholder="Wprowadź autora oferty" class="w-72"/>
-            </UFormField>
-
-            <UFormField label="Email:" name="email">
-              <UInput
-                  v-model="formData.email"
-                  type="email"
-                  placeholder="email@example.com"
-                  class="w-72"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
+            <template #extraFields>
+              <UFormField label="Status:" name="status">
+                <div class="flex gap-2 flex-wrap">
                   <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.email = null"
+                      v-for="status in statusOptions"
+                      :key="status.value"
+                      :icon="status.icon"
+                      :variant="formData.status === status.value ? 'solid' : 'outline'"
+                      :color="status.color"
+                      type="button"
+                      size="md"
+                      :title="status.label"
+                      @click="setStatus(status.value)"
                   />
-                </template>
-              </UInput>
-            </UFormField>
-          </div>
-          <UFormField label="Role prawne:" name="roles">
-            <UFieldGroup size="lg">
-              <UButton
-                  v-for="role in legalRoles"
-                  :key="role.value"
-                  :variant="formData.roles.includes(role.value) ? 'solid' : 'outline'"
-                  color="primary"
-                  type="button"
-                  @click="toggleRole(role.value)"
-              >
-                {{ role.label }}
-              </UButton>
-            </UFieldGroup>
-          </UFormField>
-
-          <!-- Date and Time -->
-          <div class="flex gap-4 items-end">
-            <UFormField label="Data:" name="date">
-              <UInput
-                  v-model="formData.date"
-                  type="date"
-                  placeholder="Wybierz datę"
-                  class="w-64"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.date = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
-
-            <UFormField label="Godzina:" name="hour">
-              <UInput
-                  v-model="formData.hour"
-                  type="time"
-                  placeholder="Wybierz godzinę"
-                  class="w-36"
-                  :ui="{ trailing: 'pe-1' }"
-              >
-                <template #trailing>
-                  <UButton
-                      color="neutral"
-                      variant="link"
-                      size="sm"
-                      icon="i-lucide-circle-x"
-                      @click="formData.hour = null"
-                  />
-                </template>
-              </UInput>
-            </UFormField>
-          </div>
-
-          <UFormField label="Faktura:" name="invoiceRequired">
-            <UCheckbox
-                v-model="formData.invoiceRequired"
-                label="Wymagana faktura"
-            />
-          </UFormField>
-
-          <!-- Status Selection Bar -->
-          <UFormField label="Status:" name="status">
-            <div class="flex gap-2 flex-wrap">
-              <UButton
-                  v-for="status in statusOptions"
-                  :key="status.value"
-                  :icon="status.icon"
-                  :variant="formData.status === status.value ? 'solid' : 'outline'"
-                  :color="status.color"
-                  type="button"
-                  size="md"
-                  :title="status.label"
-                  @click="setStatus(status.value)"
-              />
-            </div>
-            <div class="text-sm text-gray-500 mt-1">
-              Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
-            </div>
-          </UFormField>
-          <UFormField label="Powiadomienie:" name="submitEmail">
-            <UCheckbox
-                v-model="formData.submitEmail"
-                label="Wyślij mail"
-            />
-          </UFormField>
-
-          <!-- Submit Buttons -->
-          <div class="flex gap-2">
-            <UButton type="submit" :loading="isSubmitting">
-              {{ isSubmitting ? 'Zapisywanie...' : 'Zaktualizuj ofertę' }}
-            </UButton>
-            <UButton variant="outline" type="button" @click="resetForm">
-              Wyczyść formularz
-            </UButton>
-          </div>
-
+                </div>
+                <div class="text-sm text-gray-500 mt-1">
+                  Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
+                </div>
+              </UFormField>
+              <UFormField label="Powiadomienie:" name="submitEmail">
+                <UCheckbox
+                    v-model="formData.submitEmail"
+                    label="Wyślij mail"
+                />
+              </UFormField>
+            </template>
+          </RawOfferFormFields>
         </UForm>
       </div>
     </div>
@@ -463,15 +298,17 @@ import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import DebugPanel from "~/components/DebugPanel.vue";
+import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
+import {useCitiesLookup} from "@/composables/useCitiesLookup"
+import {useLegalRoles} from "@/composables/useLegalRoles"
+import RawOfferFormFields from "@/components/RawOfferFormFields.vue"
+import {buildUpdatePayload, mapCityOption, mapFacilityOption} from "@/utils/offerForm"
 import {
-  offerGetLegalRoles,
   offerGetRawOffer,
   offerGetSimilarOffersByUser,
   offerParseRawOffer,
   offerUpdateOffer,
-  placeGetCities,
   placeGetCity,
-  placeGetFacilities,
   placeGetFacility
 } from "@/client/index.ts"
 
@@ -565,17 +402,25 @@ const formData = ref({
   submitEmail: false
 })
 
-// Search states
-const facilitySearch = ref('')
-const facilities = ref([])
-const isLoadingFacilities = ref(false)
+const {
+  facilitySearch,
+  facilities,
+  isLoadingFacilities,
+  searchFacilities
+} = useFacilitiesLookup({clearOnShort: false})
 
-const citySearch = ref('')
-const cities = ref([])
-const isLoadingCities = ref(false)
+const {
+  citySearch,
+  cities,
+  isLoadingCities,
+  searchCities
+} = useCitiesLookup({clearOnShort: false})
 
-const legalRoles = ref([])
-const isLoadingRoles = ref(false)
+const {
+  legalRoles,
+  isLoadingRoles,
+  fetchLegalRoles
+} = useLegalRoles()
 
 
 const offerStatus = ref('')
@@ -715,37 +560,6 @@ const generateData = async () => {
   }
 }
 
-const searchFacilities = async (searchTerm, placeType) => {
-  if (!searchTerm || searchTerm.length < 2) return
-
-  isLoadingFacilities.value = true
-  try {
-    const queryParams = placeType ? {place_type: placeType} : {}
-    const response = await placeGetFacilities({
-      path: {place_name: searchTerm},
-      query: queryParams
-    })
-
-    facilities.value = (response.data || []).map(facility => {
-      const street = `${facility.street_name || ""} ${facility.street_number || ""}`.trim();
-
-      return {
-        label: `${facility.name}${street ? ` (${street})` : ""}`,
-        value: facility.uuid,
-        city: facility.city,
-        name: facility.name,
-        street_name: facility.street_name,
-        street_number: facility.street_number,
-      };
-    });
-
-  } catch (error) {
-    console.error('Error searching facilities:', error)
-  } finally {
-    isLoadingFacilities.value = false
-  }
-}
-
 const getCityByUuid = async (cityUuid) => {
   try {
     const response = await placeGetCity({
@@ -767,46 +581,6 @@ const getPlaceByUuid = async (placeUuid) => {
   } catch (error) {
     console.error('Error fetching place by UUID:', error)
     return null
-  }
-}
-
-const searchCities = async (searchTerm) => {
-  if (!searchTerm || searchTerm.length < 2) return
-
-  isLoadingCities.value = true
-  try {
-    const response = await placeGetCities({
-      path: {city_name: searchTerm}
-    })
-
-    cities.value = (response.data || []).map(city => ({
-      label: city.name + " (" + city.voivodeship_name + ")",
-      value: city.uuid,
-      cityName: city.name,
-      voivodeshipName: city.voivodeship_name
-    }))
-
-  } catch (error) {
-    console.error('Error searching cities:', error)
-  } finally {
-    isLoadingCities.value = false
-  }
-}
-
-const fetchLegalRoles = async () => {
-  isLoadingRoles.value = true
-  try {
-    const {data} = await offerGetLegalRoles()
-    if (data) {
-      legalRoles.value = data.map(role => ({
-        label: role.name,
-        value: role.uuid
-      }))
-    }
-  } catch (error) {
-    console.error('Error fetching legal roles:', error)
-  } finally {
-    isLoadingRoles.value = false
   }
 }
 
@@ -848,33 +622,6 @@ const handleFormError = (event) => {
   element?.scrollIntoView({behavior: 'smooth', block: 'center'})
 }
 
-const buildUpdatePayload = (data) => {
-  const payload = {
-    status: data.status,
-    description: data.description || null,
-    author: data.author || null,
-    email: data.email,
-    roles: data.roles || [],
-    date: data.date,
-    hour: data.hour,
-    invoice: data.invoiceRequired,
-    submit_email: data.submitEmail,
-  }
-
-  if (data.placeCategory === 'court' && data.facility) {
-    payload.place_name = data.facility.name
-    payload.facility_uuid = data.facility.value
-  } else if (data.placeCategory === 'other') {
-    payload.place_name = data.place
-    if (data.city) {
-      payload.city_name = data.city.cityName
-      payload.city_uuid = data.city.value
-    }
-  }
-
-  return payload
-}
-
 // ====================
 // UTILITY METHODS
 // ====================
@@ -899,10 +646,7 @@ const populateFormWithOfferData = async (offerData) => {
   if (offerData.place) {
     // --- Court branch ---
     formData.value.placeCategory = 'court'
-    formData.value.facility = {
-      label: offerData.place.name,
-      value: offerData.place.uuid
-    }
+    formData.value.facility = mapFacilityOption(offerData.place)
     facilitySearch.value = offerData.place.name
 
     const placeName = offerData.place.name.toLowerCase()
@@ -925,18 +669,7 @@ const populateFormWithOfferData = async (offerData) => {
       }
     }
 
-    const facilityLabel = facilityData.street_name
-        ? `${facilityData.name} (${facilityData.street_name})`
-        : facilityData.name
-
-    formData.value.facility = {
-      label: facilityLabel,
-      value: facilityData.uuid,
-      city: facilityData.city,
-      name: facilityData.name,
-      street_name: facilityData.street_name,
-      street_number: facilityData.street_number,
-    }
+    formData.value.facility = mapFacilityOption(facilityData)
 
     let cityData = offerData.city
 
@@ -948,16 +681,7 @@ const populateFormWithOfferData = async (offerData) => {
       }
     }
 
-    const cityLabel = cityData.voivodeship_name
-        ? `${cityData.name} (${cityData.voivodeship_name})`
-        : cityData.name
-
-    formData.value.city = {
-      label: cityLabel,
-      value: cityData.uuid,
-      cityName: cityData.name,
-      voivodeshipName: cityData.voivodeship_name
-    }
+    formData.value.city = mapCityOption(cityData)
     citySearch.value = cityData.name
   }
 

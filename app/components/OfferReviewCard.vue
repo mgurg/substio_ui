@@ -99,6 +99,8 @@
 </template>
 
 <script setup>
+import {formatDate} from "@/utils/formatDate"
+
 const props = defineProps({
   offer: {
     type: Object,
@@ -109,29 +111,12 @@ const props = defineProps({
 const emit = defineEmits(['reject', 'accept'])
 
 const approveOffer = () => {
-  umTrackEvent('approve-offer', { offer: offer.uuid });
+  umTrackEvent('approve-offer', {offer: props.offer.uuid})
   emit('accept', props.offer)
 }
 
 const rejectOffer = () => {
-  umTrackEvent('reject-offer', { offer: offer.uuid });
+  umTrackEvent('reject-offer', {offer: props.offer.uuid})
   emit('reject', props.offer)
-}
-
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  try {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pl-PL', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  } catch {
-    return dateString
-  }
 }
 </script>

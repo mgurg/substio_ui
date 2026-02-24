@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "hey-client-axios": "openapi-ts -i http://localhost:5000/openapi.json -o ./app/client -c @hey-api/client-axios",
-    "start": "node --import ./.output/server/sentry.server.config.mjs .output/server/index.mjs"
+    "start": "node --import ./.output/server/sentry.server.config.mjs .output/server/index.mjs",
+    "test": "vitest"
   },
   "dependencies": {
     "@nuxt/eslint": "1.10.0",
@@ -31,7 +32,7 @@
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "^0.88.0",
-    "vitest": "^4.0.18"
+    "vitest": "^3.2.4"
   },
   "overrides": {
     "@vercel/nft": "^0.27.4",
