@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="mb-8">
         <h1 class="flex items-center text-3xl font-bold mb-2 gap-4">
-          <UButton icon="i-lucide-arrow-left" to="/raw" variant="outline">wróć</UButton>
+          <UButton icon="i-lucide-arrow-left" to="/substytucje-procesowe" variant="outline">wróć</UButton>
           <span class="flex-1">Stwórz post o substytucji procesowej w kilka sekund!</span>
         </h1>
         <p class="text-gray-600 dark:text-gray-400">Skorzystaj z prostego generatora postów na Facebooka, aby w kilka

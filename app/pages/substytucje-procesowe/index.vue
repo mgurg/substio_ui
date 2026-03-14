@@ -196,46 +196,48 @@
   </UContainer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useI18n} from '#imports'
 import {offerListOffers, placeGetCities, offerGetLegalRoles} from "@/client/index.ts"
 import {ref, watch, onMounted, computed} from "vue"
 import StructuredDataList from "~/components/StructuredDataList.vue";
+import type {CityIndexResponse, LegalRoleIndexResponse, OfferIndexResponse} from "@/client/types.gen.ts"
 
 const {t} = useI18n()
 
-const debounce = (func, delay) => {
-  let timeoutId
-  return (...args) => {
+const debounce = (func: Function, delay: number) => {
+  let timeoutId: any
+  return (...args: any[]) => {
     clearTimeout(timeoutId)
+    // @ts-ignore
     timeoutId = setTimeout(() => func.apply(this, args), delay)
   }
 }
 
 // Reactive data
-const offers = ref([])
+const offers = ref<OfferIndexResponse[]>([])
 const count = ref(0)
 const limit = ref(10)
 const currentPage = ref(1)
 const isLoadingOffers = ref(false)
 
 const citySearch = ref('')
-const cities = ref([])
+const cities = ref<CityIndexResponse[]>([])
 const isLoadingCities = ref(false)
 
 // Legal roles data
-const legalRoles = ref([])
+const legalRoles = ref<LegalRoleIndexResponse[]>([])
 const isLoadingRoles = ref(false)
 
 const formData = ref({
-  city: null,
+  city: null as CityIndexResponse | null,
   distance: 30,
-  selectedLegalRoles: [],
+  selectedLegalRoles: [] as string[],
   invoiceRequired: false,
   search: ''
 })
 
-const savedCityData = ref(null)
+const savedCityData = ref<CityIndexResponse | null>(null)
 
 // Computed
 const pageCount = computed(() => Math.ceil(count.value / limit.value))

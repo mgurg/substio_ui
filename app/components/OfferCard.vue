@@ -93,36 +93,35 @@
   </UCard>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {offerGetOfferEmail} from "~/client/index.ts";
 import {formatDate} from "@/utils/formatDate"
+import type {OfferIndexResponse} from "~/client";
 
 const toast = useToast()
 const isSending = ref(false)
 
-const props = defineProps({
-  offer: {
-    type: Object,
-    required: true
-  },
-  detailed: {
-    type: Boolean,
-    default: false
-  }
-})
+const props = defineProps<{
+  offer: OfferIndexResponse
+  detailed?: boolean
+}>()
 
 // Check if the offer is urgent based on description keywords
 const isUrgent = computed(() => {
   if (!props.offer.description) return false
   const urgentKeywords = ['pilne', 'natychmiast', 'jak najszybciej']
   return urgentKeywords.some(keyword =>
-      props.offer.description.toLowerCase().includes(keyword.toLowerCase())
+      props.offer.description!.toLowerCase().includes(keyword.toLowerCase())
   )
 })
 
 
-const sendEmail = async (offer) => {
-  umTrackEvent('show-email', {offer: offer.uuid});
+const sendEmail = async (offer: OfferIndexResponse) => {
+  // @ts-ignore
+  if (typeof umTrackEvent === 'function') {
+    // @ts-ignore
+    umTrackEvent('show-email', {offer: offer.uuid});
+  }
   if (isSending.value) return // Prevent multiple clicks
 
   isSending.value = true

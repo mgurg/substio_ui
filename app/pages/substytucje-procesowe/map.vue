@@ -114,19 +114,19 @@
   </div>
 </template>
 
-<script setup>
-import {ref} from 'vue'
+<script setup lang="ts">
+import {ref, computed} from 'vue'
 import {offerGetOfferEmail, offerListMapOffers} from "@/client/index.ts";
 
 defineOptions({name: 'SubstytucjeProcesoweMap'})
 
 const mapRef = ref(null)
-const selectedOffer = ref(null)
+const selectedOffer = ref<any>(null)
 
 const isSending = ref(false)
 
 // Offers fetched from API
-const legalOffers = ref([])
+const legalOffers = ref<any[]>([])
 
 const fetchOffers = async () => {
   try {
@@ -134,12 +134,12 @@ const fetchOffers = async () => {
     const items = response?.data ?? []
 
     // Track coordinates to detect duplicates
-    const coordMap = new Map()
+    const coordMap = new Map<string, number>()
 
     // Map API response and handle duplicate coordinates
     legalOffers.value = items.map((o) => {
-      const lat = parseFloat(o.lat)
-      const lon = parseFloat(o.lon)
+      const lat = parseFloat(o.lat!)
+      const lon = parseFloat(o.lon!)
       let finalLon = isFinite(lon) ? lon : 0
       let finalLat = isFinite(lat) ? lat : 0
 
@@ -148,7 +148,7 @@ const fetchOffers = async () => {
 
       // If we've seen these coordinates before, add a small offset
       if (coordMap.has(coordKey)) {
-        const count = coordMap.get(coordKey)
+        const count = coordMap.get(coordKey)!
         coordMap.set(coordKey, count + 1)
 
         // Add small offset (roughly 50-100 meters) in a circular pattern
