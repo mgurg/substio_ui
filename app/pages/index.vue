@@ -96,11 +96,14 @@ const links = [
   }
 ]
 
-const { data: offersResponse } = await useAsyncData('latest-offers', () => offerListOffers({
-  query: {offset: 0, limit: 3},
-}))
+const { data: offersResponse } = await useAsyncData('latest-offers', async () => {
+  const response = await offerListOffers({
+    query: { offset: 0, limit: 3 },
+  })
+  return response.data
+})
 
-const offers = computed(() => offersResponse.value?.data?.data ?? [])
+const offers = computed(() => offersResponse.value?.data ?? [])
 
 </script>
 
