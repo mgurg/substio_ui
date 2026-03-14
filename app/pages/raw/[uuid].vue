@@ -308,8 +308,7 @@ import {
   offerGetSimilarOffersByUser,
   offerParseRawOffer,
   offerUpdateOffer,
-  placeGetCity,
-  placeGetFacility
+  placeGetCity
 } from "@/client/index.ts"
 
 // ====================
@@ -572,18 +571,6 @@ const getCityByUuid = async (cityUuid) => {
   }
 }
 
-const getPlaceByUuid = async (placeUuid) => {
-  try {
-    const response = await placeGetFacility({
-      path: {place_uuid: placeUuid}
-    })
-    return response.data
-  } catch (error) {
-    console.error('Error fetching place by UUID:', error)
-    return null
-  }
-}
-
 // ====================
 // FORM HANDLERS
 // ====================
@@ -646,13 +633,15 @@ const populateFormWithOfferData = async (offerData) => {
   if (offerData.place) {
     // --- Court branch ---
     formData.value.placeCategory = 'court'
-    formData.value.facility = mapFacilityOption(offerData.place)
-    facilitySearch.value = offerData.place.name
 
     const placeName = offerData.place.name.toLowerCase()
     if (placeName.includes('rejonowy')) formData.value.placeType = 'SR'
     else if (placeName.includes('apelacyjny')) formData.value.placeType = 'SA'
     else if (placeName.includes('okręgowy')) formData.value.placeType = 'SO'
+    const facilityOption = mapFacilityOption(offerData.place)
+    formData.value.facility = facilityOption
+    facilitySearch.value = offerData.place.name
+    facilities.value = [facilityOption]
   } else if (offerData.city) {
     // --- Other branch ---
     formData.value.placeCategory = 'other'
@@ -660,17 +649,6 @@ const populateFormWithOfferData = async (offerData) => {
     if (offerData.place_name) {
       formData.value.place = offerData.place_name
     }
-    let facilityData = offerData.facility
-
-    if (!facilityData.street_name && facilityData.uuid) {
-      const completeFacilityData = await getPlaceByUuid(facilityData.uuid)
-      if (completeFacilityData) {
-        facilityData = completeFacilityData
-      }
-    }
-
-    formData.value.facility = mapFacilityOption(facilityData)
-
     let cityData = offerData.city
 
 
@@ -681,8 +659,10 @@ const populateFormWithOfferData = async (offerData) => {
       }
     }
 
-    formData.value.city = mapCityOption(cityData)
+    const cityOption = mapCityOption(cityData)
+    formData.value.city = cityOption
     citySearch.value = cityData.name
+    cities.value = [cityOption]
   }
 
   if (offerData.legal_roles?.length) {
@@ -745,8 +725,10 @@ watch(citySearch, (searchTerm) => {
   searchCities(searchTerm)
 })
 
-watch(() => formData.value.placeType, () => {
-  formData.value.facility = null
+watch(() => formData.value.placeType, (newPlaceType, oldPlaceType) => {
+  if (oldPlaceType && newPlaceType !== oldPlaceType) {
+    formData.value.facility = null
+  }
 })
 
 // ====================
