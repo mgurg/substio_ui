@@ -59,24 +59,7 @@
               :on-reset="resetForm"
           >
             <template #extraFields>
-              <UFormField label="Status:" name="status">
-                <div class="flex gap-2 flex-wrap">
-                  <UButton
-                      v-for="status in statusOptions"
-                      :key="status.value"
-                      :icon="status.icon"
-                      :variant="formData.status === status.value ? 'solid' : 'outline'"
-                      :color="status.color"
-                      type="button"
-                      size="md"
-                      :title="status.label"
-                      @click="setStatus(status.value)"
-                  />
-                </div>
-                <div class="text-sm text-gray-500 mt-1">
-                  Wybrany status: <span class="font-medium">{{ getStatusLabel(formData.status) }}</span>
-                </div>
-              </UFormField>
+              <RawOfferStatusPicker v-model="formData.status" />
               <UFormField label="Powiadomienie:" name="submitEmail">
                 <UCheckbox
                     v-model="formData.submitEmail"
@@ -107,6 +90,7 @@ import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
 import {useCitiesLookup} from "@/composables/useCitiesLookup"
 import {useLegalRoles} from "@/composables/useLegalRoles"
 import RawOfferFormFields from "@/components/RawOfferFormFields.vue"
+import RawOfferStatusPicker from "@/components/RawOfferStatusPicker.vue"
 import {buildUpdatePayload, mapCityOption, mapFacilityOption} from "@/utils/offerForm"
 import {
   offerGetRawOffer,
@@ -123,18 +107,6 @@ const route = useRoute()
 const toast = useToast()
 const uuid = route.params.uuid
 const isDevelopment = process.env.NODE_ENV === 'development'
-
-
-const statusOptions = [
-  {value: 'imported', label: 'Imported', icon: 'i-lucide-download', color: 'neutral'},
-  {value: 'new', label: 'New', icon: 'i-lucide-plus-circle', color: 'neutral'},
-  {value: 'draft', label: 'Draft', icon: 'i-lucide-file-text', color: 'neutral'},
-  {value: 'spam', label: 'Spam', icon: 'i-lucide-shield-x', color: 'warning'},
-  {value: 'postponed', label: 'Postponed', icon: 'i-lucide-clock', color: 'neutral'},
-  {value: 'accepted', label: 'Accepted', icon: 'i-lucide-check-circle', color: 'green'},
-  {value: 'rejected', label: 'Rejected', icon: 'i-lucide-x-circle', color: 'error'},
-  {value: 'active', label: 'Active', icon: 'i-lucide-play-circle', color: 'primary'}
-]
 
 // ====================
 // VALIDATION SCHEMA
@@ -232,14 +204,6 @@ const offerStatus = ref('')
 // ====================
 // FORM METHODS
 // ====================
-const setStatus = (status) => {
-  formData.value.status = status
-}
-
-const getStatusLabel = (statusValue) => {
-  return statusOptions.find(status => status.value === statusValue)?.label || statusValue
-}
-
 const setPlaceCategory = (category) => {
   formData.value.placeCategory = category
   // Reset category-specific fields
