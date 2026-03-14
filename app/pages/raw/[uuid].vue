@@ -2,221 +2,24 @@
   <UContainer>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Left: Offer Details -->
-      <div v-if="offer?.raw_data">
-        <h2 class="flex items-center text-2xl font-bold mb-4 gap-4">
-          <UButton icon="i-lucide-arrow-left" to="/raw">wróć</UButton>
-          <span class="flex-1">Dane oferty</span>
-          <UBadge size="lg" color="neutral" variant="soft">{{ offerStatus }}</UBadge>
-        </h2>
+      <div>
+        <OfferDetailsView
+            :offer="offer"
+            :status="offerStatus"
+            :is-loading="isLoading"
+            :is-generating="isGenerating"
+            @generate="generateData"
+        >
+          <template #after-content>
+            <SimilarOffersList :offers="similarOffers"/>
+          </template>
+        </OfferDetailsView>
 
-        <USkeleton v-if="isLoading" class="h-32 w-full"/>
-
-        <div v-else>
-          <div class="flex flex-wrap items-center gap-2 mb-2">
-            <UButton
-                v-if="offer?.email"
-                :to="`https://${offer.email.split('@')[1]}`"
-                target="_blank"
-                size="sm"
-                variant="outline"
-                icon="i-lucide-globe"
-            >
-              {{ offer.email.split('@')[1] }}
-            </UButton>
-            <UButton
-                v-if="offer?.offer_uid"
-                :to="offer.offer_uid"
-                target="_blank"
-                size="sm"
-                variant="outline"
-                icon="i-lucide-external-link"
-            >
-              Zobacz ogłoszenie
-            </UButton>
-          </div>
-
-          <div class="space-y-2">
-            <p><strong>Author:</strong> {{ offer?.author }}</p>
-            <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded">{{ offer?.raw_data }}</p>
-          </div>
-
-
-          <!-- Similar Offers -->
-          <div v-if="similarOffers?.length" class="mt-4 space-y-1">
-            <h3 class="text-base font-semibold mb-2">Podobne oferty</h3>
-            <div
-                v-for="offer in similarOffers"
-                :key="offer.uuid"
-                class="text-sm text-gray-800 dark:text-gray-200 flex items-center justify-between"
-            >
-              <div class="truncate w-full">
-                <span class="font-medium mr-2">{{ offer.place_name || 'Brak miejsca' }}:</span>
-                <span>
-        {{ (offer.description ?? '...').slice(0, 60) }}
-        <span v-if="(offer.description ?? '').length > 60">…</span>
-      </span>
-              </div>
-              <ULink
-                  :to="`/raw/${offer.uuid}`"
-                  target="_blank"
-                  class="ml-2 text-primary-600 hover:text-primary-700"
-              >
-                <UIcon name="i-lucide-external-link" class="w-4 h-4"/>
-              </ULink>
-            </div>
-          </div>
-
-
-          <UButton
-              icon="i-lucide-rocket"
-              class="mt-6"
-              :loading="isGenerating"
-              @click="generateData"
-          >
-            Generuj
-          </UButton>
-        </div>
-
-
-        <!-- Generated Data Section -->
-        <div class="mt-8">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-bold">Wygenerowane dane</h2>
-          </div>
-
-          <div v-if="isGenerating" class="space-y-2">
-            <USkeleton class="h-4 w-full"/>
-            <USkeleton class="h-4 w-3/4"/>
-            <USkeleton class="h-4 w-1/2"/>
-          </div>
-
-          <div v-else-if="generatedData">
-            <div
-                v-if="generatedData.success && generatedData.data"
-                class="bg-green-50 border border-green-200 rounded-lg p-4"
-            >
-              <h3 class="font-semibold text-green-800 mb-3">Dane zostały wygenerowane pomyślnie:</h3>
-
-              <div class="space-y-3 text-sm">
-                <div v-if="generatedData.data.location" class="flex items-center justify-between">
-                  <div>
-                    <strong>Lokalizacja:</strong> {{ generatedData.data.location }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('place_type', generatedData.data.location)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div v-if="generatedData.data.location_full_name" class="flex items-center justify-between">
-                  <div>
-                    <strong>Pełna nazwa miejsca:</strong> {{ generatedData.data.location_full_name }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('place_name', generatedData.data.location_full_name)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div
-                    v-if="generatedData.data.date && generatedData.data.date.length"
-                    class="flex items-center justify-between"
-                >
-                  <div>
-                    <strong>Data:</strong> {{ generatedData.data.date.join(', ') }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('date', generatedData.data.date.join(', '))"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div
-                    v-if="generatedData.data.time && generatedData.data.time.length"
-                    class="flex items-center justify-between"
-                >
-                  <div>
-                    <strong>Czas:</strong> {{ generatedData.data.time.join(', ') }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('time', generatedData.data.time.join(', '))"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div v-if="generatedData.data.description" class="flex items-start justify-between">
-                  <div class="flex-1 mr-2">
-                    <strong>Opis:</strong> {{ generatedData.data.description }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('description', generatedData.data.description)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div
-                    v-if="generatedData.data.legal_roles && generatedData.data.legal_roles.length"
-                    class="flex items-center justify-between"
-                >
-                  <div>
-                    <strong>Role prawne:</strong> {{ generatedData.data.legal_roles.join(', ') }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('legal_roles', generatedData.data.legal_roles.join(', '))"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-
-                <div v-if="generatedData.data.email" class="flex items-center justify-between">
-                  <div>
-                    <strong>Email:</strong> {{ generatedData.data.email }}
-                  </div>
-                  <UButton
-                      icon="i-lucide-copy"
-                      size="xs"
-                      variant="outline"
-                      @click="copyField('email', generatedData.data.email)"
-                  >
-                    Kopiuj
-                  </UButton>
-                </div>
-              </div>
-            </div>
-
-            <div v-else-if="!generatedData.success" class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <h3 class="font-semibold text-red-800 mb-2">Błąd podczas generowania:</h3>
-              <p class="text-red-700 text-sm">{{ generatedData.error || 'Nieznany błąd' }}</p>
-            </div>
-          </div>
-
-          <div v-else class="text-gray-500 text-sm">
-            Kliknij "Generuj" aby wygenerować dane z surowych danych oferty.
-          </div>
-        </div>
+        <GeneratedDataPreview
+            :is-generating="isGenerating"
+            :generated-data="generatedData"
+            @copy="copyField"
+        />
       </div>
 
       <!-- Right: Form -->
@@ -297,7 +100,9 @@
 import {useRoute} from 'vue-router'
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
-import DebugPanel from "~/components/DebugPanel.vue";
+import SimilarOffersList from "~/components/SimilarOffersList.vue";
+import GeneratedDataPreview from "~/components/GeneratedDataPreview.vue";
+import OfferDetailsView from "~/components/OfferDetailsView.vue";
 import {useFacilitiesLookup} from "@/composables/useFacilitiesLookup"
 import {useCitiesLookup} from "@/composables/useCitiesLookup"
 import {useLegalRoles} from "@/composables/useLegalRoles"
