@@ -166,25 +166,25 @@ const validationSchema = computed(() => {
   }
 
   if (formData.value.placeCategory === 'court') {
-    return yup.object({
+    return yup.object().shape({
       ...baseSchema,
-      facility: yup.object({
+      facility: yup.object().shape({
         label: yup.string().required(),
         value: yup.string().required()
       }).required('Wybierz placówkę')
     })
   } else if (formData.value.placeCategory === 'other') {
-    return yup.object({
+    return yup.object().shape({
       ...baseSchema,
       place: yup.string().required('Podaj nazwę miejsca'),
-      city: yup.object({
+      city: yup.object().shape({
         label: yup.string().required(),
         value: yup.string().required()
       }).required('Wybierz miasto')
     })
   }
 
-  return yup.object(baseSchema)
+  return yup.object().shape(baseSchema)
 })
 
 // ====================
