@@ -17,7 +17,7 @@ const items: NavigationMenuItem[] = [
   },
   {
     label: 'Blog',
-    to: "https://blog." + config.public.baseDomain,
+    to: config.public.blogUrl,
     target: '_blank'
   }
 ]
