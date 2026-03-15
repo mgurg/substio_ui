@@ -1,166 +1,11 @@
 <template>
   <UContainer>
     <!-- Filters Section -->
-    <UCard>
-      <template #header>
-        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">{{ t('homepage.title') }}</h1>
-      </template>
-
-      <UForm :state="formData">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Left Column - Filters -->
-          <div class="lg:col-span-9 space-y-6">
-            <!-- City Section -->
-            <div class="space-y-4">
-              <!-- City Filter (only show when no city is saved) -->
-              <UFormField
-                  v-if="!savedCityData"
-                  label="Miasto:"
-                  name="city"
-              >
-                <div class="space-y-2">
-                  <USelectMenu
-                      v-model="formData.city"
-                      v-model:search-term="citySearch"
-                      :items="cities"
-                      :loading="isLoadingCities"
-                      placeholder="Wyszukaj miasto"
-                      icon="i-lucide-map-pin"
-                      searchable
-                      class="w-full"
-                  />
-                  <UButton
-                      :disabled="!formData.city"
-                      color="primary"
-                      size="md"
-                      icon="i-lucide-save"
-                      @click="saveCity"
-                  >
-                    Zapisz miasto
-                  </UButton>
-                </div>
-              </UFormField>
-
-              <!-- Saved City Display (show when city is saved) -->
-              <UFormField
-                  v-if="savedCityData"
-                  label="Miasto:"
-                  name="savedCity"
-              >
-                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-                  <div class="flex items-center">
-                    <UIcon name="i-lucide-map-pin" class="mr-2 h-5 w-5 text-green-600"/>
-                    <span class="font-medium text-green-800">{{ savedCityData.name }} ({{ formData.distance }} km)</span>
-                  </div>
-                  <UButton
-                      color="red"
-                      variant="outline"
-                      size="md"
-                      icon="i-lucide-trash-2"
-                      @click="clearSavedCity"
-                  >
-                    Usuń
-                  </UButton>
-                </div>
-              </UFormField>
-
-              <!-- Distance Slider (only show when city is selected but not saved) -->
-              <UFormField
-                  v-if="formData.city && !savedCityData"
-                  label="Odległość (km):"
-                  name="distance"
-              >
-                <div class="space-y-3">
-                  <USlider
-                      v-model="formData.distance"
-                      :min="10"
-                      :max="50"
-                      :step="10"
-                      class="w-full"
-                  />
-                  <div class="flex justify-between text-sm text-gray-600">
-                    <span>10 km</span>
-                    <span class="font-medium">{{ formData.distance }} km</span>
-                    <span>50 km</span>
-                  </div>
-                </div>
-              </UFormField>
-            </div>
-
-            <!-- Legal Roles Row -->
-            <UFormField
-                label="Role prawne:"
-                name="legalRoles"
-            >
-              <div class="flex flex-wrap gap-2">
-                <UButton
-                    v-for="role in legalRoles"
-                    :key="role.value"
-                    :variant="formData.selectedLegalRoles.includes(role.value) ? 'solid' : 'outline'"
-                    color="primary"
-                    type="button"
-                    size="md"
-                    :loading="isLoadingRoles"
-                    @click="toggleLegalRole(role.value)"
-                >
-                  {{ role.label }}
-                </UButton>
-              </div>
-            </UFormField>
-
-            <!-- Search / Invoice / Clear row -->
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
-              <!-- Search -->
-              <div class="lg:col-span-7">
-                <UFormField label="Szukaj:" name="search">
-                  <UInput
-                      v-model="formData.search"
-                      placeholder="Wyszukaj oferty..."
-                      icon="i-lucide-search"
-                      size="lg"
-                  />
-                </UFormField>
-              </div>
-
-              <!-- Invoice -->
-              <div class="lg:col-span-3">
-                <UFormField label="Wymagana faktura:" name="invoiceRequired">
-                  <div class="pt-3">
-                    <UCheckbox
-                        v-model="formData.invoiceRequired"
-                        label="Wymagana faktura"
-                    />
-                  </div>
-                </UFormField>
-              </div>
-
-              <!-- Clear filters -->
-              <div class="lg:col-span-2 flex lg:justify-end">
-                <UButton
-                    variant="outline"
-                    icon="i-lucide-filter-x"
-                    class="w-full lg:w-auto"
-                    @click="clearAllFilters"
-                >
-                  Wyczyść filtry
-                </UButton>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column - Map -->
-          <div class="lg:col-span-3 hidden lg:flex items-center">
-            <a href="/substytucje-procesowe/map" class="block w-full">
-              <img
-                  src="~/assets/map.png"
-                  alt="Mapa substytucji procesowych"
-                  class="w-full rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
-              >
-            </a>
-          </div>
-        </div>
-      </UForm>
-    </UCard>
+    <OffersFilters
+        v-model="formData"
+        v-model:saved-city-data="savedCityData"
+        @clear="clearAllFilters"
+    />
 
 
     <!-- Loading State -->
@@ -196,72 +41,46 @@
   </UContainer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useI18n} from '#imports'
-import {offerListOffers, placeGetCities, offerGetLegalRoles} from "@/client/index.ts"
+import {offerListOffers} from "@/client/index.ts"
 import {ref, watch, onMounted, computed} from "vue"
 import StructuredDataList from "~/components/StructuredDataList.vue";
+import OffersFilters from "~/components/OffersFilters.vue";
+import type {OfferIndexResponse} from "@/client/types.gen.ts"
 
 const {t} = useI18n()
 
-const debounce = (func, delay) => {
-  let timeoutId
-  return (...args) => {
+const debounce = (func: Function, delay: number) => {
+  let timeoutId: any
+  return (...args: any[]) => {
     clearTimeout(timeoutId)
+    // @ts-ignore
     timeoutId = setTimeout(() => func.apply(this, args), delay)
   }
 }
 
 // Reactive data
-const offers = ref([])
+const offers = ref<OfferIndexResponse[]>([])
 const count = ref(0)
 const limit = ref(10)
 const currentPage = ref(1)
 const isLoadingOffers = ref(false)
 
-const citySearch = ref('')
-const cities = ref([])
-const isLoadingCities = ref(false)
-
-// Legal roles data
-const legalRoles = ref([])
-const isLoadingRoles = ref(false)
-
 const formData = ref({
-  city: null,
+  city: null as any | null,
   distance: 30,
-  selectedLegalRoles: [],
+  selectedLegalRoles: [] as string[],
   invoiceRequired: false,
   search: ''
 })
 
-const savedCityData = ref(null)
+const savedCityData = ref<any | null>(null)
 
 // Computed
 const pageCount = computed(() => Math.ceil(count.value / limit.value))
 
 // Methods
-const searchCities = async (searchTerm) => {
-  if (!searchTerm || searchTerm.length < 2) return
-
-  isLoadingCities.value = true
-  try {
-    const response = await placeGetCities({
-      path: {city_name: searchTerm}
-    })
-
-    cities.value = (response.data || []).map(city => ({
-      label: city.name + " (" + city.voivodeship_name + ")",
-      value: city.uuid,
-      ...city // Keep all city data for saving
-    }))
-  } catch (error) {
-    console.error('Error searching cities:', error)
-  } finally {
-    isLoadingCities.value = false
-  }
-}
-
 const buildQueryParams = () => {
   const params = {
     offset: (currentPage.value - 1) * limit.value,
@@ -320,31 +139,6 @@ const fetchOffers = async () => {
   }
 }
 
-const fetchLegalRoles = async () => {
-  isLoadingRoles.value = true
-  try {
-    const {data} = await offerGetLegalRoles()
-    if (data) {
-      legalRoles.value = data.map((role) => ({
-        label: role.name,
-        value: role.uuid
-      }))
-    }
-  } catch (error) {
-    console.error('Error fetching legal roles:', error)
-  } finally {
-    isLoadingRoles.value = false
-  }
-}
-
-const toggleLegalRole = (roleValue) => {
-  if (formData.value.selectedLegalRoles.includes(roleValue)) {
-    formData.value.selectedLegalRoles = formData.value.selectedLegalRoles.filter(r => r !== roleValue)
-  } else {
-    formData.value.selectedLegalRoles = [...formData.value.selectedLegalRoles, roleValue]
-  }
-}
-
 const clearAllFilters = () => {
   formData.value.city = null
   formData.value.distance = 30
@@ -352,44 +146,6 @@ const clearAllFilters = () => {
   formData.value.invoiceRequired = false
   formData.value.search = ''
   currentPage.value = 1
-}
-
-const saveCity = () => {
-  if (!formData.value.city) return
-
-  const selectedCity = cities.value.find(city => city.value === formData.value.city.value)
-
-  if (selectedCity) {
-    const cityToSave = {
-      uuid: selectedCity.uuid,
-      name: selectedCity.name || selectedCity.label,
-      lat: selectedCity.lat,
-      lon: selectedCity.lon
-    }
-
-    // Save to localStorage (Note: This won't work in Claude artifacts)
-    try {
-      localStorage.setItem('savedCity', JSON.stringify(cityToSave))
-      savedCityData.value = cityToSave
-      console.log('City saved successfully:', cityToSave)
-    } catch (error) {
-      console.warn('localStorage not available, using in-memory storage', error)
-      savedCityData.value = cityToSave
-    }
-
-    umTrackEvent('save-city', {city: selectedCity.name, uuid: selectedCity.uuid});
-  }
-}
-
-const clearSavedCity = () => {
-  try {
-    localStorage.removeItem('savedCity')
-  } catch (error) {
-    console.warn('localStorage not available', error)
-  }
-  savedCityData.value = null
-  formData.value.city = null
-  formData.value.distance = 30
 }
 
 const loadSavedCity = () => {
@@ -409,11 +165,6 @@ const handlePageChange = (page) => {
 
 // Debounced search function to avoid too many API calls
 const debouncedFetchOffers = debounce(fetchOffers, 300)
-
-// Watchers
-watch(citySearch, (searchTerm) => {
-  searchCities(searchTerm)
-})
 
 // Watch for filter changes and refetch offers
 watch(() => formData.value.city, () => {

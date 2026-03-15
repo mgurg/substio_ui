@@ -75,19 +75,13 @@
   </UContainer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {offerListOffers} from "@/client/index.ts";
 import {substytucjeFeatures} from "@/constants/substytucjeFeatures";
 
-
-const offers = ref()
-const count = ref(0)
-const limit = ref(10)
-
-
 const features = substytucjeFeatures
 
-const links = ref([
+const links = [
   {
     label: 'Dodaj ogłoszenie',
     to: '/substytucje-procesowe/add',
@@ -96,25 +90,20 @@ const links = ref([
   {
     label: 'Przeglądaj oferty',
     to: '/substytucje-procesowe',
-    color: 'neutral',
-    variant: 'subtle',
+    color: 'neutral' as const,
+    variant: 'subtle' as const,
     trailingIcon: 'i-lucide-arrow-right'
   }
-])
+]
 
-const fetchOffers = async () => {
+const { data: offersResponse } = await useAsyncData('latest-offers', async () => {
   const response = await offerListOffers({
-    query: {offset: 0, limit: 3},
-  });
+    query: { offset: 0, limit: 3 },
+  })
+  return response.data
+})
 
-  if (response.data) {
-    offers.value = response.data.data
-    count.value = response.data.count
-    limit.value = response.data.limit
-  }
-}
-
-fetchOffers()
+const offers = computed(() => offersResponse.value?.data ?? [])
 
 </script>
 
