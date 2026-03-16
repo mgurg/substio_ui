@@ -65,6 +65,19 @@ export default defineNuxtConfig({
     future: {
         compatibilityVersion: 4,
     },
+
+    vite: {
+        optimizeDeps: {
+            include: [
+                '@vue/devtools-core',
+                '@vue/devtools-kit',
+                'axios',
+                'mapbox-gl', // CJS
+                'yup',
+            ],
+        },
+    },
+
     sentry: {
         sourceMapsUploadOptions: {
             org: 'subaro',
