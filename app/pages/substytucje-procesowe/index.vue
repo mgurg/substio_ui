@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import {useI18n} from '#imports'
 import {offerListOffers} from "@/client/index.ts"
-import {ref, watch, onMounted, computed} from "vue"
+import {computed, onMounted, ref, watch} from "vue"
 import StructuredDataList from "~/components/StructuredDataList.vue";
 import OffersFilters from "~/components/OffersFilters.vue";
 import type {OfferIndexResponse} from "@/client/types.gen.ts"
@@ -208,7 +208,6 @@ watch(() => savedCityData.value, () => {
 onMounted(() => {
   loadSavedCity()
   fetchOffers()
-  fetchLegalRoles()
 })
 
 definePageMeta({
