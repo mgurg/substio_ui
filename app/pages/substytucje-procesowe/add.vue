@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="mb-8">
         <h1 class="flex items-center text-3xl font-bold mb-2 gap-4">
-          <UButton icon="i-lucide-arrow-left" to="/raw" variant="outline">wróć</UButton>
+          <UButton icon="i-lucide-arrow-left" to="/substytucje-procesowe" variant="outline">wróć</UButton>
           <span class="flex-1">Stwórz post o substytucji procesowej w kilka sekund!</span>
         </h1>
         <p class="text-gray-600 dark:text-gray-400">Skorzystaj z prostego generatora postów na Facebooka, aby w kilka
@@ -63,7 +63,7 @@
               <UIcon name="i-lucide-check-circle" class="text-green-600 mr-3" size="20"/>
               <div>
                 <h3 class="font-semibold text-green-800">Oferta została dodana pomyślnie!</h3>
-                <p class="text-green-700 text-sm mt-1">Możesz dodać kolejną ofertę lub wrócić do listy.</p>
+                <p class="text-green-700 text-sm mt-1">Link do zarządzania ofertą został wysłany na Twój adres e-mail ({{ formData.email }}). Możesz tam monitorować status swojej oferty lub ją anulować.</p>
               </div>
             </div>
             <div class="mt-3 flex gap-2">
@@ -80,7 +80,7 @@
                   size="sm"
                   color="green"
                   variant="outline"
-                  to="/raw"
+                  to="/substytucje-procesowe"
                   icon="i-lucide-list"
               >
                 Powrót do listy
@@ -167,6 +167,7 @@ const validationSchema = computed(() => {
 // ====================
 const isSubmitting = ref(false)
 const showSuccessMessage = ref(false)
+const createdOffer = ref<{uuid: string} | null>(null)
 
 // Form data with proper initial values
 const formData = ref(createRawOfferFormData())
@@ -231,10 +232,12 @@ const handleSubmit = async (event) => {
     const createData = buildCreatePayload(event.data, {
       source: 'user'
     })
-    await offerCreateOffer({
+    const {data} = await offerCreateOffer({
       body: createData
     })
 
+    // @ts-ignore
+    createdOffer.value = data
     showSuccessMessage.value = true
 
     toast.add({
