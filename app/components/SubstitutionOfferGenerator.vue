@@ -1,33 +1,24 @@
 <template>
-  <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+  <div class="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
     <div class="flex items-center justify-between mb-3">
-      <h3 class="font-semibold text-blue-900 dark:text-blue-100">Oferta zastępstwa procesowego</h3>
-      <button
-          class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors duration-200 flex items-center gap-2"
-          :class="{ 'bg-green-600 hover:bg-green-700': copied }"
+      <h3 class="font-semibold text-primary-900 dark:text-primary-100">Oferta zastępstwa procesowego</h3>
+      <UButton
+          :color="copied ? 'success' : 'primary'"
+          :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
+          size="sm"
           @click="copyToClipboard"
       >
-        <svg v-if="!copied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-        </svg>
-        <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
         {{ copied ? 'Skopiowano!' : 'Kopiuj' }}
-      </button>
+      </UButton>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-md border">
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-md border border-gray-200 dark:border-gray-700">
       <div
           class="text-sm font-mono whitespace-pre-wrap text-gray-800 dark:text-gray-200"
           v-html="formatForDisplay(generatePost)"/>
     </div>
 
     <div class="mt-3 text-xs text-gray-600 dark:text-gray-400 flex items-center gap-4">
-<!--      <span>📘 Facebook markdown: pogrubienie, *kursywa*</span>-->
-<!--      <span>•</span>-->
       <span>Kliknij "Kopiuj" aby skopiować</span>
     </div>
   </div>
@@ -49,8 +40,6 @@ const props = defineProps({
 
 const copied = ref(false)
 
-
-console.log('formData:', props.formData)
 
 // Extract location text with city information
 const getLocationText = computed(() => {

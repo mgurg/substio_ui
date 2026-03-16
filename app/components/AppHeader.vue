@@ -1,28 +1,4 @@
 <script setup lang="ts">
-const nuxtApp = useNuxtApp()
-const { activeHeadings, updateHeadings } = useScrollspy()
-
-const items = computed(() => [{
-  label: 'Features',
-  to: '#features',
-  active: activeHeadings.value.includes('features') && !activeHeadings.value.includes('pricing')
-}, {
-  label: 'Pricing',
-  to: '#pricing',
-  active: activeHeadings.value.includes('pricing')
-}, {
-  label: 'Testimonials',
-  to: '#testimonials',
-  active: activeHeadings.value.includes('testimonials') && !activeHeadings.value.includes('pricing')
-}])
-
-nuxtApp.hooks.hookOnce('page:finish', () => {
-  updateHeadings([
-    document.querySelector('#features'),
-    document.querySelector('#pricing'),
-    document.querySelector('#testimonials')
-  ].filter(Boolean) as Element[])
-})
 </script>
 
 <template>
@@ -34,18 +10,6 @@ nuxtApp.hooks.hookOnce('page:finish', () => {
     </template>
 
     <template #right>
-<!--      <UNavigationMenu-->
-<!--          :items="items"-->
-<!--          variant="link"-->
-<!--          class="hidden lg:block"-->
-<!--      />-->
-
-<!--      <UButton-->
-<!--          label="Mapa zleceń"-->
-<!--          variant="subtle"-->
-<!--          class="hidden lg:block"-->
-<!--          to="/substytucje-procesowe/map"-->
-<!--      />-->
       <UButton
           label="Dodaj ogłoszenie"
           variant="subtle"
@@ -57,17 +21,6 @@ nuxtApp.hooks.hookOnce('page:finish', () => {
     </template>
 
     <template #body>
-<!--      <UNavigationMenu-->
-<!--          :items="items"-->
-<!--          orientation="vertical"-->
-<!--          class="-mx-2.5"-->
-<!--      />-->
-<!--      <UButton-->
-<!--          label="Mapa zleceń"-->
-<!--          variant="subtle"-->
-<!--          class="hidden lg:block"-->
-<!--          to="/substytucje-procesowe/map"-->
-<!--      />-->
       <UButton
           class="mt-4"
           label="Dodaj ogłoszenie"
