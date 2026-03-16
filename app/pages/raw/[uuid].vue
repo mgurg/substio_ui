@@ -1,6 +1,6 @@
 <template>
   <UContainer>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div :class="['grid grid-cols-1 gap-6', offer?.raw_data ? 'md:grid-cols-2' : '']">
       <!-- Left: Offer Details -->
       <div>
         <OfferDetailsView
@@ -16,6 +16,7 @@
         </OfferDetailsView>
 
         <GeneratedDataPreview
+            v-if="offer?.raw_data"
             :is-generating="isGenerating"
             :generated-data="generatedData"
             @copy="copyField"

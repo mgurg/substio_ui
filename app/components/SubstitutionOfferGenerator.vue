@@ -54,6 +54,7 @@ console.log('formData:', props.formData)
 
 // Extract location text with city information
 const getLocationText = computed(() => {
+  if (!props.formData) return 'Miejsce'
   if (props.formData.placeCategory === 'court') {
     if (props.formData.facility) {
       return `#${props.formData.facility.city} - ${props.formData.facility.label}`
@@ -78,6 +79,7 @@ const formatDate = (dateString) => {
 
 // Generate the post content
 const generatePost = computed(() => {
+  if (!props.formData) return ''
   const parts = []
 
   // Title
