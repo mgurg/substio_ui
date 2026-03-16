@@ -5,8 +5,8 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  formData: Object
-})
+<script setup lang="ts">
+defineProps<{
+  formData: any
+}>()
 </script>
