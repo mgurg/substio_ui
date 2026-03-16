@@ -109,7 +109,7 @@
   </UContainer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted, ref, watch} from 'vue'
 import * as yup from 'yup'
 import {offerCreateOffer} from "@/client/index.ts"
@@ -140,6 +140,7 @@ const validationSchema = computed(() => {
     invoiceRequired: yup.boolean()
   }
 
+  // @ts-ignore
   if (formData.value.placeCategory === 'court') {
     return yup.object({
       ...baseSchema,
@@ -148,6 +149,7 @@ const validationSchema = computed(() => {
         value: yup.string().required()
       }).required('Wybierz placówkę')
     })
+  // @ts-ignore
   } else if (formData.value.placeCategory === 'other') {
     return yup.object({
       ...baseSchema,
