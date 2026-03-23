@@ -111,8 +111,8 @@ const fetchOffers = async () => {
     const coordMap = new Map<string, number>()
 
     legalOffers.value = items.map((o) => {
-      const lat = parseFloat(o.lat!)
-      const lon = parseFloat(o.lon!)
+      const lat = parseFloat(o.coordinates?.lat || '')
+      const lon = parseFloat(o.coordinates?.lon || '')
       let finalLon = isFinite(lon) ? lon : 0
       let finalLat = isFinite(lat) ? lat : 0
 

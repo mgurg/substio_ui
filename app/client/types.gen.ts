@@ -5,13 +5,39 @@ export type ClientOptions = {
 };
 
 /**
+ * Address
+ */
+export type Address = {
+    /**
+     * Street
+     */
+    street?: string | null;
+    /**
+     * Street Name
+     */
+    street_name?: string | null;
+    /**
+     * Street Number
+     */
+    street_number?: string | null;
+    /**
+     * Postal Code
+     */
+    postal_code?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+};
+
+/**
  * Body_offer-import_raw_offers
  */
 export type BodyOfferImportRawOffers = {
     /**
      * File
      */
-    file: Blob | File;
+    file: string;
 };
 
 /**
@@ -22,30 +48,8 @@ export type CityAdd = {
      * City Name
      */
     city_name: string;
-    /**
-     * Lat
-     */
-    lat: number | string;
-    /**
-     * Lon
-     */
-    lon: number | string;
-    /**
-     * Lat Min
-     */
-    lat_min?: number | string | null;
-    /**
-     * Lat Max
-     */
-    lat_max?: number | string | null;
-    /**
-     * Lon Min
-     */
-    lon_min?: number | string | null;
-    /**
-     * Lon Max
-     */
-    lon_max?: number | string | null;
+    coordinates: CoordinatesInput;
+    range?: CoordinateRange | null;
     /**
      * Population
      */
@@ -87,41 +91,69 @@ export type CityIndexResponse = {
     /**
      * Name
      */
-    name?: string | null;
-    /**
-     * Lat
-     */
-    lat: string | null;
-    /**
-     * Lon
-     */
-    lon: string | null;
-    /**
-     * Voivodeship Name
-     */
-    voivodeship_name: string;
-};
-
-/**
- * CityResponse
- */
-export type CityResponse = {
-    /**
-     * Uuid
-     */
-    uuid: string;
-    /**
-     * Name
-     */
     name: string;
     /**
      * Lat
      */
-    lat: string | null;
+    lat?: number | null;
     /**
      * Lon
      */
-    lon: string | null;
+    lon?: number | null;
+    /**
+     * Voivodeship Name
+     */
+    voivodeship_name?: string | null;
+};
+
+/**
+ * CoordinateRange
+ */
+export type CoordinateRange = {
+    /**
+     * Lat Min
+     */
+    lat_min?: number | string | null;
+    /**
+     * Lat Max
+     */
+    lat_max?: number | string | null;
+    /**
+     * Lon Min
+     */
+    lon_min?: number | string | null;
+    /**
+     * Lon Max
+     */
+    lon_max?: number | string | null;
+};
+
+/**
+ * Coordinates
+ */
+export type CoordinatesInput = {
+    /**
+     * Lat
+     */
+    lat: number | string;
+    /**
+     * Lon
+     */
+    lon: number | string;
+};
+
+/**
+ * Coordinates
+ */
+export type CoordinatesOutput = {
+    /**
+     * Lat
+     */
+    lat: string;
+    /**
+     * Lon
+     */
+    lon: string;
 };
 
 /**
@@ -193,25 +225,13 @@ export type OfferAdd = {
      */
     facility_uuid?: string | null;
     /**
-     * Facility Name
-     */
-    facility_name?: string | null;
-    /**
      * City Uuid
      */
     city_uuid?: string | null;
     /**
-     * City Name
+     * Roles
      */
-    city_name?: string | null;
-    /**
-     * Place Name
-     */
-    place_name?: string | null;
-    /**
-     * Email
-     */
-    email: string;
+    roles?: Array<string> | null;
     /**
      * Date
      */
@@ -221,6 +241,10 @@ export type OfferAdd = {
      */
     hour?: string | null;
     /**
+     * Price
+     */
+    price?: number | null;
+    /**
      * Description
      */
     description?: string | null;
@@ -228,12 +252,16 @@ export type OfferAdd = {
      * Invoice
      */
     invoice?: boolean | null;
-    status?: OfferStatus | null;
     /**
-     * Roles
+     * Submit Email
      */
-    roles?: Array<string> | null;
-    source: SourceType;
+    submit_email?: boolean | null;
+    status?: OfferStatus | null;
+    source?: SourceType | null;
+    /**
+     * Email
+     */
+    email?: string | null;
 };
 
 /**
@@ -263,23 +291,17 @@ export type OfferIndexResponse = {
      */
     place_name?: string | null;
     /**
-     * Description
+     * City Name
      */
-    description: string;
+    city_name?: string | null;
     /**
-     * Url
+     * City Uuid
      */
-    url: string | null;
-    place?: PlaceResponse | null;
-    city?: CityResponse | null;
+    city_uuid?: string | number | null;
     /**
-     * Invoice
+     * Facility Uuid
      */
-    invoice?: boolean | null;
-    /**
-     * Legal Roles
-     */
-    legal_roles: Array<RolesResponse>;
+    facility_uuid?: string | number | null;
     /**
      * Date
      */
@@ -289,17 +311,30 @@ export type OfferIndexResponse = {
      */
     hour?: string | null;
     /**
+     * Price
+     */
+    price?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Invoice
+     */
+    invoice?: boolean | null;
+    status: OfferStatus;
+    /**
+     * Added At
+     */
+    added_at?: string | null;
+    /**
      * Valid To
      */
     valid_to?: string | null;
     /**
-     * Created At
+     * Legal Roles
      */
-    created_at?: string | null;
-    /**
-     * City Uuid
-     */
-    readonly city_uuid: string | null;
+    legal_roles?: Array<LegalRoleIndexResponse>;
 };
 
 /**
@@ -310,14 +345,7 @@ export type OfferMapResponse = {
      * Uuid
      */
     uuid: string;
-    /**
-     * Lat
-     */
-    lat: string;
-    /**
-     * Lon
-     */
-    lon: string;
+    coordinates?: CoordinatesOutput | null;
     /**
      * Place Name
      */
@@ -369,37 +397,21 @@ export type OfferStatus = 'imported' | 'new' | 'draft' | 'spam' | 'postponed' | 
  */
 export type OfferUpdate = {
     /**
+     * Author
+     */
+    author?: string | null;
+    /**
      * Facility Uuid
      */
     facility_uuid?: string | null;
-    /**
-     * Facility Name
-     */
-    facility_name?: string | null;
     /**
      * City Uuid
      */
     city_uuid?: string | null;
     /**
-     * City Name
+     * Roles
      */
-    city_name?: string | null;
-    /**
-     * Place Name
-     */
-    place_name?: string | null;
-    /**
-     * Author
-     */
-    author?: string | null;
-    /**
-     * Email
-     */
-    email?: string | null;
-    /**
-     * Url
-     */
-    url?: string | null;
+    roles?: Array<string> | null;
     /**
      * Date
      */
@@ -421,18 +433,26 @@ export type OfferUpdate = {
      */
     invoice?: boolean | null;
     /**
-     * Visible
-     */
-    visible?: boolean | null;
-    status?: OfferStatus | null;
-    /**
-     * Roles
-     */
-    roles?: Array<string> | null;
-    /**
      * Submit Email
      */
     submit_email?: boolean | null;
+    status?: OfferStatus | null;
+    /**
+     * Email
+     */
+    email?: string | null;
+    /**
+     * Place Name
+     */
+    place_name?: string | null;
+    /**
+     * Lat
+     */
+    lat?: number | null;
+    /**
+     * Lon
+     */
+    lon?: number | null;
 };
 
 /**
@@ -458,13 +478,13 @@ export type OffersPaginated = {
      */
     count: number;
     /**
-     * Limit
-     */
-    limit: number;
-    /**
      * Offset
      */
     offset: number;
+    /**
+     * Limit
+     */
+    limit: number;
 };
 
 /**
@@ -497,25 +517,9 @@ export type PlaceAdd = {
      */
     name: string;
     /**
-     * Street
+     * Department
      */
-    street?: string | null;
-    /**
-     * Street Name
-     */
-    street_name?: string | null;
-    /**
-     * Street Number
-     */
-    street_number?: string | null;
-    /**
-     * Postal Code
-     */
-    postal_code?: string | null;
-    /**
-     * City
-     */
-    city?: string | null;
+    department?: string | null;
     /**
      * Phone
      */
@@ -525,25 +529,11 @@ export type PlaceAdd = {
      */
     email?: string | null;
     /**
-     * Epuap
-     */
-    epuap?: string | null;
-    /**
-     * Department
-     */
-    department?: string | null;
-    /**
-     * Lat
-     */
-    lat: number | string | null;
-    /**
-     * Lon
-     */
-    lon: number | string | null;
-    /**
      * Website
      */
     website?: string | null;
+    address?: Address | null;
+    coordinates?: CoordinatesInput | null;
 };
 
 /**
@@ -559,73 +549,11 @@ export type PlaceIndexResponse = {
      * Uuid
      */
     uuid: string;
+    /**
+     * Name
+     */
+    name: string;
     category: PlaceCategory;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Street Name
-     */
-    street_name?: string | null;
-    /**
-     * Street Number
-     */
-    street_number?: string | null;
-    /**
-     * Postal Code
-     */
-    postal_code?: string | null;
-    /**
-     * City
-     */
-    city?: string | null;
-    /**
-     * Phone
-     */
-    phone?: string | null;
-    /**
-     * Email
-     */
-    email?: string | null;
-    /**
-     * Department
-     */
-    department?: string | null;
-    /**
-     * Lat
-     */
-    lat: string | null;
-    /**
-     * Lon
-     */
-    lon: string | null;
-    /**
-     * Website
-     */
-    website?: string | null;
-};
-
-/**
- * PlaceResponse
- */
-export type PlaceResponse = {
-    /**
-     * Uuid
-     */
-    uuid: string;
-    /**
-     * Name
-     */
-    name: string;
-    /**
-     * Lat
-     */
-    lat: string | null;
-    /**
-     * Lon
-     */
-    lon: string | null;
 };
 
 /**
@@ -639,59 +567,61 @@ export type RawOfferIndexResponse = {
     /**
      * Author
      */
-    author?: string | null;
+    author: string;
     /**
      * Author Uid
      */
     author_uid?: string | null;
     /**
-     * Offer Uid
+     * Email
      */
-    offer_uid: string;
+    email?: string | null;
     /**
      * Raw Data
      */
     raw_data?: string | null;
-    source: SourceType;
+    /**
+     * Offer Uid
+     */
+    offer_uid?: string | null;
+    /**
+     * Added At
+     */
+    added_at?: string | null;
+    status: OfferStatus;
+    source?: SourceType | null;
+    /**
+     * Visible
+     */
+    visible?: boolean | null;
+    /**
+     * Url
+     */
+    url?: string | null;
     /**
      * Description
      */
     description?: string | null;
     /**
-     * Email
+     * Price
      */
-    email: string | null;
+    price?: string | null;
     /**
-     * Url
+     * Hour
      */
-    url: string | null;
-    /**
-     * Invoice
-     */
-    invoice?: boolean | null;
-    place?: PlaceResponse | null;
-    city?: CityResponse | null;
-    /**
-     * Place Name
-     */
-    place_name?: string | null;
-    /**
-     * Legal Roles
-     */
-    legal_roles: Array<RolesResponse>;
+    hour?: string | null;
     /**
      * Date
      */
     date?: string | null;
     /**
-     * Hour
+     * City Name
      */
-    hour?: string | null;
-    status?: OfferStatus | null;
+    city_name?: string | null;
     /**
-     * Added At
+     * Place Name
      */
-    added_at: string;
+    place_name?: string | null;
 };
 
 /**
@@ -707,27 +637,13 @@ export type RawOffersPaginated = {
      */
     count: number;
     /**
-     * Limit
-     */
-    limit: number;
-    /**
      * Offset
      */
     offset: number;
-};
-
-/**
- * RolesResponse
- */
-export type RolesResponse = {
     /**
-     * Uuid
+     * Limit
      */
-    uuid: string;
-    /**
-     * Name
-     */
-    name: string;
+    limit: number;
 };
 
 /**
@@ -739,18 +655,9 @@ export type SimilarOfferIndexResponse = {
      */
     uuid: string;
     /**
-     * Description
+     * Author
      */
-    description?: string | null;
-    /**
-     * Place Name
-     */
-    place_name?: string | null;
-    status: OfferStatus;
-    /**
-     * Valid To
-     */
-    valid_to: string;
+    author: string;
 };
 
 /**
@@ -763,29 +670,9 @@ export type SourceType = 'bot' | 'user';
  */
 export type SubstitutionOffer = {
     /**
-     * Location
-     */
-    location?: 'sąd' | 'policja' | 'prokuratura' | null;
-    /**
-     * Location Full Name
-     */
-    location_full_name?: string | null;
-    /**
-     * Date
-     */
-    date?: Array<string> | null;
-    /**
-     * Time
-     */
-    time?: Array<string> | null;
-    /**
      * Description
      */
     description?: string | null;
-    /**
-     * Legal Roles
-     */
-    legal_roles?: Array<'adwokat' | 'radca prawny' | 'aplikant adwokacki' | 'aplikant radcowski'> | null;
     /**
      * Email
      */
@@ -830,80 +717,16 @@ export type ValidationError = {
      * Error Type
      */
     type: string;
-};
-
-/**
- * OfferIndexResponse
- */
-export type OfferIndexResponseWritable = {
     /**
-     * Uuid
+     * Input
      */
-    uuid: string;
+    input?: unknown;
     /**
-     * Author
+     * Context
      */
-    author: string;
-    /**
-     * Place Name
-     */
-    place_name?: string | null;
-    /**
-     * Description
-     */
-    description: string;
-    /**
-     * Url
-     */
-    url: string | null;
-    place?: PlaceResponse | null;
-    city?: CityResponse | null;
-    /**
-     * Invoice
-     */
-    invoice?: boolean | null;
-    /**
-     * Legal Roles
-     */
-    legal_roles: Array<RolesResponse>;
-    /**
-     * Date
-     */
-    date?: string | null;
-    /**
-     * Hour
-     */
-    hour?: string | null;
-    /**
-     * Valid To
-     */
-    valid_to?: string | null;
-    /**
-     * Created At
-     */
-    created_at?: string | null;
-};
-
-/**
- * OffersPaginated
- */
-export type OffersPaginatedWritable = {
-    /**
-     * Data
-     */
-    data: Array<OfferIndexResponseWritable>;
-    /**
-     * Count
-     */
-    count: number;
-    /**
-     * Limit
-     */
-    limit: number;
-    /**
-     * Offset
-     */
-    offset: number;
+    ctx?: {
+        [key: string]: unknown;
+    };
 };
 
 export type OfferGetLegalRolesData = {
