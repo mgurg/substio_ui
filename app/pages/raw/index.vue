@@ -25,7 +25,7 @@
       </div>
     </UCard>
 
-    <div ref="scrollArea" class="mt-4 flex-1 overflow-y-auto p-2">
+    <div ref="scrollArea" class="mt-4 flex-1 p-2">
       <div v-if="isLoading && offers.length === 0">
         <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
       </div>
@@ -115,7 +115,6 @@ const startObserver = () => {
       }
     },
     {
-      root: scrollArea,
       rootMargin: '200px'
     }
   )

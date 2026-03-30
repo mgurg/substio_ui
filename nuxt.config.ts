@@ -74,6 +74,7 @@ export default defineNuxtConfig({
                 'axios',
                 'mapbox-gl', // CJS
                 'yup',
+                '@internationalized/date',
             ],
         },
     },
