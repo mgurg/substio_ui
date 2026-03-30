@@ -37,7 +37,7 @@ export type BodyOfferImportRawOffers = {
     /**
      * File
      */
-    file: string;
+    file: Blob | File;
 };
 
 /**
@@ -229,6 +229,14 @@ export type OfferAdd = {
      */
     city_uuid?: string | null;
     /**
+     * Place Name
+     */
+    place_name?: string | null;
+    /**
+     * City Name
+     */
+    city_name?: string | null;
+    /**
      * Roles
      */
     roles?: Array<string> | null;
@@ -409,6 +417,14 @@ export type OfferUpdate = {
      */
     city_uuid?: string | null;
     /**
+     * Place Name
+     */
+    place_name?: string | null;
+    /**
+     * City Name
+     */
+    city_name?: string | null;
+    /**
      * Roles
      */
     roles?: Array<string> | null;
@@ -441,10 +457,6 @@ export type OfferUpdate = {
      * Email
      */
     email?: string | null;
-    /**
-     * Place Name
-     */
-    place_name?: string | null;
     /**
      * Lat
      */
@@ -554,6 +566,18 @@ export type PlaceIndexResponse = {
      */
     name: string;
     category: PlaceCategory;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * Street Name
+     */
+    street_name?: string | null;
+    /**
+     * Street Number
+     */
+    street_number?: string | null;
 };
 
 /**
