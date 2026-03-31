@@ -75,6 +75,7 @@ export default defineNuxtConfig({
                 'mapbox-gl', // CJS
                 'yup',
                 '@internationalized/date',
+                '@vueuse/core',
             ],
         },
     },

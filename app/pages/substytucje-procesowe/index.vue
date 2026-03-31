@@ -9,35 +9,44 @@
 
 
     <!-- Loading State -->
-    <div v-if="isLoadingOffers" class="flex justify-center py-8">
-      <UIcon name="i-lucide-loader-2" class="animate-spin h-8 w-8"/>
+    <div v-if="isLoadingOffers && offers.length === 0">
+      <USkeleton v-for="i in limit" :key="i" class="h-24 mt-5 rounded-md"/>
     </div>
 
     <!-- Offers List -->
-    <OfferCard
-        v-for="offer in offers"
-        :key="offer.uuid"
-        :offer="offer"
-        :detailed="true"
+    <div v-else>
+      <OfferCard
+          v-for="offer in offers"
+          :key="offer.uuid"
+          :offer="offer"
+          :detailed="true"
+      />
+    </div>
+
+    <UProgress
+        v-if="isLoadingOffers && offers.length > 0"
+        indeterminate
+        size="xs"
+        class="sticky bottom-0 inset-x-0 z-1 mt-4"
+        :ui="{ base: 'bg-default' }"
     />
 
     <StructuredDataList :offers="offers"/>
 
     <!-- No Results -->
-    <div v-if="!isLoadingOffers && offers.length === 0" class="text-center py-8">
+    <div v-if="!isLoadingOffers && hasLoaded && offers.length === 0" class="text-center py-8">
       <UIcon name="i-lucide-search-x" class="h-12 w-12 mx-auto mb-4 text-gray-400"/>
       <p class="text-gray-600">Nie znaleziono ofert spełniających kryteria wyszukiwania.</p>
     </div>
 
-    <!-- Pagination -->
-    <div v-if="offers.length > 0" class="flex justify-center mt-6 mb-10 pb-10">
-      <UPagination
-          v-model:page="currentPage"
-          :page-count="pageCount"
-          :total="count"
-          @update:page="handlePageChange"
-      />
+    <div
+        v-else-if="!isLoadingOffers && hasLoaded && offers.length >= count && count > 0"
+        class="text-center text-sm text-gray-500 mt-6 mb-10 pb-10"
+    >
+      To wszystko — więcej ofert nie ma.
     </div>
+
+    <div ref="sentinel" class="h-px w-full"/>
   </UContainer>
 </template>
 
@@ -48,6 +57,7 @@ import {computed, onMounted, ref, watch} from "vue"
 import StructuredDataList from "~/components/StructuredDataList.vue";
 import OffersFilters from "~/components/OffersFilters.vue";
 import type {OfferIndexResponse} from "@/client/types.gen.ts"
+import {useIntersectionObserver} from '@vueuse/core'
 
 const {t} = useI18n()
 
@@ -64,8 +74,9 @@ const debounce = (func: Function, delay: number) => {
 const offers = ref<OfferIndexResponse[]>([])
 const count = ref(0)
 const limit = ref(10)
-const currentPage = ref(1)
 const isLoadingOffers = ref(false)
+const hasLoaded = ref(false)
+const sentinel = ref<HTMLElement | null>(null)
 
 const formData = ref({
   city: null as any | null,
@@ -78,12 +89,46 @@ const formData = ref({
 const savedCityData = ref<any | null>(null)
 
 // Computed
-const pageCount = computed(() => Math.ceil(count.value / limit.value))
+const canLoadMore = computed(() => {
+  if (!hasLoaded.value) {
+    return true
+  }
+  return offers.value.length < count.value
+})
 
 // Methods
+let stopObserver: (() => void) | null = null
+const startObserver = () => {
+  if (stopObserver) {
+    return
+  }
+  const { stop } = useIntersectionObserver(
+      sentinel,
+      ([entry]) => {
+        if (entry?.isIntersecting && canLoadMore.value && !isLoadingOffers.value) {
+          fetchOffers()
+        }
+      },
+      {
+        rootMargin: '200px'
+      }
+  )
+  stopObserver = stop
+}
+
+const stopObserverIfDone = () => {
+  if (canLoadMore.value) {
+    return
+  }
+  if (stopObserver) {
+    stopObserver()
+    stopObserver = null
+  }
+}
+
 const buildQueryParams = () => {
   const params = {
-    offset: (currentPage.value - 1) * limit.value,
+    offset: offers.value.length,
     limit: limit.value
   }
 
@@ -116,7 +161,18 @@ const buildQueryParams = () => {
   return params
 }
 
-const fetchOffers = async () => {
+const fetchOffers = async (options: { reset?: boolean } = {}) => {
+  if (isLoadingOffers.value) {
+    return
+  }
+  if (options.reset) {
+    offers.value = []
+    count.value = 0
+    hasLoaded.value = false
+  }
+  if (hasLoaded.value && offers.value.length >= count.value) {
+    return
+  }
   isLoadingOffers.value = true
   try {
     const queryParams = buildQueryParams()
@@ -126,16 +182,20 @@ const fetchOffers = async () => {
     })
 
     if (response.data) {
-      offers.value = response.data.data || []
+      offers.value = [...offers.value, ...(response.data.data || [])]
       count.value = response.data.count || 0
       limit.value = response.data.limit || 10
+      hasLoaded.value = true
     }
   } catch (error) {
     console.error('Error fetching offers:', error)
-    offers.value = []
-    count.value = 0
+    if (options.reset) {
+      offers.value = []
+      count.value = 0
+    }
   } finally {
     isLoadingOffers.value = false
+    stopObserverIfDone()
   }
 }
 
@@ -145,7 +205,7 @@ const clearAllFilters = () => {
   formData.value.selectedLegalRoles = []
   formData.value.invoiceRequired = false
   formData.value.search = ''
-  currentPage.value = 1
+  fetchOffers({ reset: true })
 }
 
 const loadSavedCity = () => {
@@ -159,48 +219,43 @@ const loadSavedCity = () => {
   }
 }
 
-const handlePageChange = (page) => {
-  currentPage.value = page
-}
-
 // Debounced search function to avoid too many API calls
-const debouncedFetchOffers = debounce(fetchOffers, 300)
+const debouncedFetchOffers = debounce(() => fetchOffers({ reset: true }), 300)
 
 // Watch for filter changes and refetch offers
 watch(() => formData.value.city, () => {
-  currentPage.value = 1
-  fetchOffers()
+  fetchOffers({ reset: true })
 })
 
 watch(() => formData.value.distance, () => {
   if (formData.value.city || savedCityData.value) {
-    currentPage.value = 1
     debouncedFetchOffers()
   }
 })
 
 watch(() => formData.value.selectedLegalRoles, () => {
-  currentPage.value = 1
-  fetchOffers()
+  fetchOffers({ reset: true })
 }, {deep: true})
 
 watch(() => formData.value.invoiceRequired, () => {
-  currentPage.value = 1
-  fetchOffers()
+  fetchOffers({ reset: true })
 })
 
 watch(() => formData.value.search, () => {
-  currentPage.value = 1
   debouncedFetchOffers()
 })
 
-watch(() => currentPage.value, () => {
-  fetchOffers()
+watch(canLoadMore, () => {
+  if (canLoadMore.value) {
+    startObserver()
+  } else {
+    stopObserverIfDone()
+  }
 })
 
 watch(() => savedCityData.value, () => {
   if (formData.value.city || savedCityData.value) {
-    fetchOffers()
+    fetchOffers({ reset: true })
   }
 }, {deep: true})
 
@@ -208,6 +263,7 @@ watch(() => savedCityData.value, () => {
 onMounted(() => {
   loadSavedCity()
   fetchOffers()
+  startObserver()
 })
 
 definePageMeta({

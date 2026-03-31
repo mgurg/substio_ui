@@ -107,7 +107,7 @@ const startObserver = () => {
   if (stopObserver) {
     return
   }
-  stopObserver = useIntersectionObserver(
+  const { stop } = useIntersectionObserver(
     sentinel,
     ([entry]) => {
       if (entry?.isIntersecting && canLoadMore.value && !isLoading.value) {
@@ -118,6 +118,7 @@ const startObserver = () => {
       rootMargin: '200px'
     }
   )
+  stopObserver = stop
 }
 
 const stopObserverIfDone = () => {
