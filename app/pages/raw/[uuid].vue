@@ -412,6 +412,16 @@ const populateFormWithOfferData = async (offerData) => {
     formData.value.facility = facilityOption
     facilitySearch.value = offerData.place.name
     facilities.value = [facilityOption]
+  } else if (offerData.place_name) {
+    // --- Court branch from place_name ---
+    formData.value.placeCategory = 'court'
+    const placeName = offerData.place_name.toLowerCase()
+    if (placeName.includes('rejonowy')) formData.value.placeType = 'SR'
+    else if (placeName.includes('apelacyjny')) formData.value.placeType = 'SA'
+    else if (placeName.includes('okręgowy')) formData.value.placeType = 'SO'
+
+    facilitySearch.value = offerData.place_name
+    searchFacilities(offerData.place_name, formData.value.placeType)
   } else if (offerData.city) {
     // --- Other branch ---
     formData.value.placeCategory = 'other'
@@ -433,6 +443,14 @@ const populateFormWithOfferData = async (offerData) => {
     formData.value.city = cityOption
     citySearch.value = cityData.name
     cities.value = [cityOption]
+  } else if (offerData.city_name) {
+    // --- Other branch from city_name ---
+    formData.value.placeCategory = 'other'
+    if (offerData.place_name) {
+      formData.value.place = offerData.place_name
+    }
+    citySearch.value = offerData.city_name
+    searchCities(offerData.city_name)
   }
 
   if (offerData.legal_roles?.length) {
