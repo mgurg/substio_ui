@@ -72,13 +72,14 @@ function buildJobPosting(offer: any): object {
 }
 
 function buildStructuredData(offers: any[]) {
+  const slicedOffers = offers.slice(0, 50);
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Aktualne zlecenia substytucyjne",
     "itemListOrder": "https://schema.org/ItemListOrderDescending",
-    "numberOfItems": offers.length,
-    "itemListElement": offers.map((offer, i) => ({
+    "numberOfItems": slicedOffers.length,
+    "itemListElement": slicedOffers.map((offer, i) => ({
       "@type": "ListItem",
       "position": i + 1,
       "item": buildJobPosting(offer)
@@ -94,6 +95,7 @@ watch(
         useHead({
           script: [
             {
+              id: 'structured-data-offers',
               type: 'application/ld+json',
               innerHTML: JSON.stringify(buildStructuredData(offers), null, 2),
               tagPriority: 'low'

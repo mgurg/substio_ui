@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import {useI18n} from '#imports'
-import {offerListOffers} from "@/client/index.ts"
+import {offerListOffers} from "@/client"
 import {computed, onMounted, ref, watch} from "vue"
 import StructuredDataList from "~/components/StructuredDataList.vue";
 import OffersFilters from "~/components/OffersFilters.vue";
