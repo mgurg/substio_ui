@@ -20,8 +20,8 @@ Po pierwsze: mnogość grup. Jest ich kilka, dość licznych, i w gruncie rzeczy
 Niektórzy próbują powielać je w wielu miejscach, żeby zwiększyć dotarcie do potencjalnie zainteresowanych- bo termin coraz
 bliżej, a nie ma możliwości dotarcia do sądu, prokuratury czy gdziekolwiek indacie v danym czasie.
 
-::figure{src="/fb_groups_listing.png" alt="Grupy na FB z ogłoszeniami o zastępstwa prawne" caption="Grupy na FB z ogłoszeniami o zastępstwa prawne"}
-::
+![Grupy na FB z ogłoszeniami o zastępstwa prawne](/fb_groups_listing.png)
+*Grupy na FB z ogłoszeniami o zastępstwa prawne*
 
 ### Powielanie ogłoszeń
 
