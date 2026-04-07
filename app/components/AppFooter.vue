@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type {NavigationMenuItem} from '@nuxt/ui'
 
-const config = useRuntimeConfig()
-
 
 const items: NavigationMenuItem[] = [
   {
@@ -17,8 +15,7 @@ const items: NavigationMenuItem[] = [
   },
   {
     label: 'Blog',
-    to: config.public.blogUrl,
-    target: '_blank'
+    to: '/blog'
   }
 ]
 </script>
