@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm i
+RUN npm ci
 
 # Copy all project files
 COPY . .
@@ -22,9 +22,16 @@ COPY . .
 # Add build args for environment variables
 ARG NUXT_PUBLIC_DOMAIN
 ARG NUXT_BACKEND_API
+ARG SENTRY_AUTH_TOKEN
+ARG MAPBOX_TOKEN
 
 ENV NUXT_PUBLIC_DOMAIN=${NUXT_PUBLIC_DOMAIN}
 ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV MAPBOX_TOKEN=${MAPBOX_TOKEN}
+
+# Increase memory limit for Node.js build process
+ENV NODE_OPTIONS="--max-old-space-size=2560"
 
 # Build the application
 RUN npm run build
