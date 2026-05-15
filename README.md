@@ -93,3 +93,7 @@ Upgrading **Nuxt**
 ```bash
 bunx nuxi@latest upgrade --dedupe
 ```
+
+```bash
+bunx nuxi prepare
+```

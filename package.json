@@ -24,7 +24,7 @@
     "better-sqlite3": "^12.8.0",
     "eslint": "^10.1.0",
     "mapbox-gl": "^3.16.0",
-    "nuxt": "^4.4.2",
+    "nuxt": "^4.4.5",
     "nuxt-mapbox": "1.6.4",
     "nuxt-umami": "^3.2.1",
     "typescript": "^5.9.3",
