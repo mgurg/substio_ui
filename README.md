@@ -36,6 +36,16 @@ bun run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
+## package-lock.json
+
+Bun is the primary package manager. `package-lock.json` is only needed by the Node-based Docker build (`node.Dockerfile`). After changing dependencies with Bun, sync the lock file by running inside a Node 24 container (matching the build environment):
+
+```bash
+docker run --rm -v $(pwd):/app -w /app node:24-slim npm install --package-lock-only
+```
+
+Then commit the updated `package-lock.json`.
+
 ## Docker
 
 ```bash
@@ -60,6 +70,14 @@ docker compose -f compose.dev.yaml build
 
 ```bash
 docker compose -f compose.dev.yaml up
+```
+
+```bash
+docker compose -f compose.node.yaml build
+```
+
+```bash
+docker compose -f compose.node.yaml up
 ```
 
 ```bash
