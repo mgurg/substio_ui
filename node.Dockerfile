@@ -31,7 +31,7 @@ ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV MAPBOX_TOKEN=${MAPBOX_TOKEN}
 
 # Increase memory limit for Node.js build process
-ENV NODE_OPTIONS="--max-old-space-size=1400"
+ENV NODE_OPTIONS="--max-old-space-size=1800 --optimize-for-size"
 
 # Build the application
 RUN npm run build
