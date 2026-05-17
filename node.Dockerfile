@@ -66,8 +66,9 @@ WORKDIR /app
 # Copy only the built output
 COPY --from=build-stage /app/.output /app/.output
 
-# @nuxt/content initializes its SQLite database at runtime under .data/content/
-RUN mkdir -p /app/.data/content && chown -R appuser /app/.data
+# Nuxt Content opens its SQLite database from .output/server and may create
+# journal/WAL files next to it at runtime.
+RUN mkdir -p /app/.data/content && chown -R appuser /app/.output /app/.data
 
 # Switch to the non-privileged user
 USER appuser
