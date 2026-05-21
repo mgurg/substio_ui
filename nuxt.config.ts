@@ -1,8 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import mapboxPackage from 'mapbox-gl/package.json'
+import { fileURLToPath } from 'node:url'
 
 const mapboxWorkerUrl = process.env.MAPBOX_WORKER_URL
-    || `https://api.mapbox.com/mapbox-gl-js/v${mapboxPackage.version}/mapbox-gl-csp-worker.js`
+    || '/_mapbox/mapbox-gl-csp-worker.js'
+
+const mapboxDistDir = fileURLToPath(new URL('./node_modules/mapbox-gl/dist', import.meta.url))
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
@@ -104,5 +106,14 @@ export default defineNuxtConfig({
         gzip: true,
         exclude: ['/dev/**', '/raw/**'],
         routes: [],
+    },
+    nitro: {
+        publicAssets: [
+            {
+                dir: mapboxDistDir,
+                baseURL: '/_mapbox',
+                maxAge: 31536000
+            }
+        ]
     },
 })
