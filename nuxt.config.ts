@@ -1,4 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import mapboxPackage from 'mapbox-gl/package.json'
+
+const mapboxWorkerUrl = process.env.MAPBOX_WORKER_URL
+    || `https://api.mapbox.com/mapbox-gl-js/v${mapboxPackage.version}/mapbox-gl-csp-worker.js`
+
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
@@ -47,7 +52,8 @@ export default defineNuxtConfig({
     },
 
     mapbox: {
-        accessToken: process.env.MAPBOX_TOKEN
+        accessToken: process.env.MAPBOX_TOKEN,
+        workerUrl: mapboxWorkerUrl
     },
 
     runtimeConfig: {
