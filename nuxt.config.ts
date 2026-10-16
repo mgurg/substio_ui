@@ -1,8 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+
+const mapboxWorkerUrl = process.env.MAPBOX_WORKER_URL
+    || '/_mapbox/mapbox-gl-csp-worker.js'
+
+const mapboxDistDir = fileURLToPath(new URL('./node_modules/mapbox-gl/dist', import.meta.url))
+
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: {enabled: true},
-    modules: ['@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module', '@nuxtjs/sitemap', 'nuxt-mapbox'],
+    modules: ['@nuxt/content', '@nuxt/eslint', '@nuxt/test-utils', '@nuxt/ui', '@nuxtjs/i18n', 'nuxt-umami', '@sentry/nuxt/module', '@nuxtjs/sitemap', 'nuxt-mapbox'],
     css: ['~/assets/css/main.css'],
 
     app: {
@@ -47,7 +54,8 @@ export default defineNuxtConfig({
     },
 
     mapbox: {
-        accessToken: process.env.MAPBOX_TOKEN
+        accessToken: process.env.MAPBOX_TOKEN,
+        workerUrl: mapboxWorkerUrl
     },
 
     runtimeConfig: {
@@ -98,5 +106,14 @@ export default defineNuxtConfig({
         gzip: true,
         exclude: ['/dev/**', '/raw/**'],
         routes: [],
+    },
+    nitro: {
+        publicAssets: [
+            {
+                dir: mapboxDistDir,
+                baseURL: '/_mapbox',
+                maxAge: 31536000
+            }
+        ]
     },
 })

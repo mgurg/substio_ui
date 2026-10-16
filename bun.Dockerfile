@@ -1,5 +1,5 @@
 # Stage 1: Build the application using Bun
-FROM oven/bun:1.3-slim AS build-stage
+FROM oven/bun:1.4-slim AS build-stage
 
 # Set working directory
 WORKDIR /app
@@ -7,8 +7,12 @@ WORKDIR /app
 # Copy package.json and lock files
 COPY package*.json bun.lock ./
 
-# Install dependencies using Bun
-RUN bun install
+# Install dependencies without running native Node.js package scripts.
+# Nuxt Content uses Bun's built-in bun:sqlite adapter at runtime.
+RUN bun install --frozen-lockfile --ignore-scripts
+
+# Run the application postinstall explicitly after dependency installation.
+RUN bun run postinstall
 
 # Copy all files
 COPY . .
@@ -29,11 +33,12 @@ ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
 RUN bun run build
 
 # Stage 2: Serve the application using Bun
-FROM oven/bun:1.3-slim AS production-stage
+FROM oven/bun:1.4-slim AS production-stage
 
 # Install curl for health checks in a single layer
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        adduser \
         curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \

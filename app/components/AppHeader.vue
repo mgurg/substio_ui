@@ -11,6 +11,14 @@
 
     <template #right>
       <UButton
+          label="Blog"
+          variant="ghost"
+          color="neutral"
+          to="/blog"
+          class="hidden lg:block"
+      />
+
+      <UButton
           label="Dodaj ogłoszenie"
           variant="subtle"
           class="hidden lg:block"

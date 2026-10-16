@@ -4,9 +4,12 @@
 
 When working on this codebase:
 
-1. **Always use `bun`** instead of `npm`, `pnpm`, or `yarn`.
+1. **Use `bun` by default** instead of `npm`, `pnpm`, or `yarn` for local project work.
 2. **Use `bun run <script>`** to execute scripts defined in `package.json`.
 3. **Use `vitest`** for running tests.
+4. **Dockerfiles are runtime-specific exceptions**: use the package manager and
+   commands native to each Dockerfile's runtime. Node Dockerfiles use Node/npm
+   and `package-lock.json`; Bun Dockerfiles use Bun and `bun.lock`.
 
 ## Project Tech Stack
 
@@ -15,7 +18,8 @@ When working on this codebase:
 - **Validation**: [Yup](https://github.com/jquense/yup) for schemas
 - **Testing**: [Vitest](https://vitest.dev/)
 - **API Client**: Generated via [@hey-api/openapi-ts](https://hey-api.vercel.app/) (Axios)
-- **Dependencies**: Managed via `package.json` and `bun.lockb`
+- **Dependencies**: Managed via `package.json`, `bun.lock`, and the
+  runtime-specific `package-lock.json` used by Node Dockerfiles
 
 ## Project Architecture
 

@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm i
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 # Copy all project files
 COPY . .
@@ -22,9 +22,16 @@ COPY . .
 # Add build args for environment variables
 ARG NUXT_PUBLIC_DOMAIN
 ARG NUXT_BACKEND_API
+ARG SENTRY_AUTH_TOKEN
+ARG MAPBOX_TOKEN
 
 ENV NUXT_PUBLIC_DOMAIN=${NUXT_PUBLIC_DOMAIN}
 ENV NUXT_BACKEND_API=${NUXT_BACKEND_API}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV MAPBOX_TOKEN=${MAPBOX_TOKEN}
+
+# Increase memory limit for Node.js build process
+ENV NODE_OPTIONS="--max-old-space-size=2348"
 
 # Build the application
 RUN npm run build
@@ -58,6 +65,10 @@ WORKDIR /app
 
 # Copy only the built output
 COPY --from=build-stage /app/.output /app/.output
+
+# Nuxt Content opens its SQLite database from .output/server and may create
+# journal/WAL files next to it at runtime.
+RUN mkdir -p /app/.data/content && chown -R appuser /app/.output /app/.data
 
 # Switch to the non-privileged user
 USER appuser
