@@ -31,16 +31,6 @@ export type Address = {
 };
 
 /**
- * Body_offer-import_raw_offers
- */
-export type BodyOfferImportRawOffers = {
-    /**
-     * File
-     */
-    file: Blob | File;
-};
-
-/**
  * CityAdd
  */
 export type CityAdd = {
@@ -174,28 +164,6 @@ export type HealthCheck = {
      * Status
      */
     status?: string;
-};
-
-/**
- * ImportResult
- */
-export type ImportResult = {
-    /**
-     * Total Records
-     */
-    total_records: number;
-    /**
-     * Imported Records
-     */
-    imported_records: number;
-    /**
-     * Skipped Records
-     */
-    skipped_records: number;
-    /**
-     * Errors
-     */
-    errors: Array<string>;
 };
 
 /**
@@ -1088,31 +1056,6 @@ export type OfferGetSimilarOffersByUserResponses = {
 };
 
 export type OfferGetSimilarOffersByUserResponse = OfferGetSimilarOffersByUserResponses[keyof OfferGetSimilarOffersByUserResponses];
-
-export type OfferImportRawOffersData = {
-    body: BodyOfferImportRawOffers;
-    path?: never;
-    query?: never;
-    url: '/offers/raw/import';
-};
-
-export type OfferImportRawOffersErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type OfferImportRawOffersError = OfferImportRawOffersErrors[keyof OfferImportRawOffersErrors];
-
-export type OfferImportRawOffersResponses = {
-    /**
-     * Successful Response
-     */
-    200: ImportResult;
-};
-
-export type OfferImportRawOffersResponse = OfferImportRawOffersResponses[keyof OfferImportRawOffersResponses];
 
 export type OfferGetRawOfferData = {
     body?: never;

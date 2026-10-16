@@ -13,33 +13,31 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@nuxt/content": "^3.12.0",
-    "@nuxt/eslint": "1.15.2",
-    "@nuxt/test-utils": "4.0.0",
-    "@nuxt/ui": "^4.10.0",
-    "@nuxtjs/i18n": "^10.2.4",
-    "@nuxtjs/sitemap": "^8.0.11",
-    "@sentry/nuxt": "^10.46.0",
-    "axios": "^1.14.0",
-    "better-sqlite3": "^12.8.0",
-    "eslint": "^10.1.0",
-    "mapbox-gl": "^3.16.0",
-    "nuxt": "^4.5.2",
+    "@nuxt/content": "^3.16.2",
+    "@nuxt/eslint": "1.17.0",
+    "@nuxt/test-utils": "4.3.3",
+    "@nuxt/ui": "^4.11.3",
+    "@nuxtjs/i18n": "^10.6.0",
+    "@nuxtjs/sitemap": "^9.1.0",
+    "@sentry/nuxt": "^11.6.0",
+    "axios": "^1.20.0",
+    "better-sqlite3": "^13.0.3",
+    "eslint": "^10.12.0",
+    "mapbox-gl": "^3.33.0",
+    "nuxt": "^4.6.1",
     "nuxt-mapbox": "1.6.4",
     "nuxt-umami": "^3.2.1",
-    "rolldown": "~1.2.1",
-    "typescript": "^5.9.3",
-    "vue": "^3.5.31",
-    "vue-router": "^5.0.4",
+    "rolldown": "~1.2.13",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0",
     "yup": "^1.7.1"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.94.5",
-    "vitest": "^4.1.2"
+    "@hey-api/openapi-ts": "^0.99.0",
+    "vitest": "^5.0.4"
   },
   "overrides": {
-    "@vercel/nft": "^0.27.4",
-    "confbox": "0.2.2",
-    "vite": "npm:rolldown-vite@latest"
+    "@vercel/nft": "^1.11.0"
   }
 }
