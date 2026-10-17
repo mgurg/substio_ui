@@ -1,5 +1,5 @@
 # Stage 1: Build the application using Bun
-FROM oven/bun:1.4-slim AS build-stage
+FROM oven/bun:1.4.3-slim AS build-stage
 
 # Set working directory
 WORKDIR /app
@@ -33,7 +33,7 @@ ENV NUXT_UMAMI_HOST=${NUXT_UMAMI_HOST}
 RUN bun run build
 
 # Stage 2: Serve the application using Bun
-FROM oven/bun:1.4-slim AS production-stage
+FROM oven/bun:1.4.3-slim AS production-stage
 
 # Install curl for health checks in a single layer
 RUN apt-get update && \
@@ -62,6 +62,9 @@ WORKDIR /app
 # Copy only the necessary files from the build stage
 COPY --from=build-stage /app/.output /app/.output
 
+# Nuxt Content creates its SQLite database in .data at runtime.
+RUN mkdir -p /app/.data/content && chown -R appuser /app/.output /app/.data
+
 # Switch to the non-privileged user
 USER appuser
 
@@ -71,5 +74,7 @@ EXPOSE 3000
 # Set environment variable for production
 ENV NODE_ENV=production
 
-# Command to run the app using Bun
-CMD ["bun", ".output/server/index.mjs"]
+# Command to run the app using Bun.
+# --no-install: optional imports probed at runtime (e.g. Sentry's hono
+# integration) must not trigger Bun auto-install, which fails as appuser.
+CMD ["bun", "--no-install", ".output/server/index.mjs"]
